@@ -1,0 +1,27 @@
+
+
+##rate limit config
+rate.limit.hourly.limit=1000
+rate.limit.enabled=true
+
+##zk
+rzx.hdp=zk1-pr:2181,zk2-pr:2181,zk3-pr:2181
+
+###RHINO
+rhino.category.url=http://crawl1-pr:28897/skynet/crawl/common/categories
+rhino.site.url=http://crawl1-pr:28897/skynet/crawl/service/getSitesByCateId
+
+rhino.comment.url=http://crawl1-pr:20432/rhino/api/data/social/twitter/commentsByUrl
+rhino.repost.url=http://crawl1-pr:20432/rhino/api/data/social/twitter/repostsByMid
+rhino.facebook.comment.url=http://crawl1-pr:20432/rhino/api/data/social/facebook/commentsByMids
+rhino.facebook.repost.url=http://crawl1-pr:20432/rhino/api/data/social/facebook/retweetsByMids
+rhino.facebook.like.url=http://crawl1-pr:20432/rhino/api/data/social/facebook/likesByMids
+
+rhino.facebook.zpz.url=http://crawl1-pr:20432/rhino/api/data/social/facebook/zpzByMid
+
+#### 获取uid
+rhino.uid.get.url=http://crawl1-pr:20425/rhino/uid/get
+
+taiji.push.api=http://40.125.201.7:8099
+###北京接口
+rhino.facebook.api.prefix=https://172.16.1.3/facebook_es/addPost.php

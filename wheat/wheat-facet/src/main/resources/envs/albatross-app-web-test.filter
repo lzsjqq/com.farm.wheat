@@ -1,0 +1,23 @@
+####es config
+spring.es.clusterNodes=es1:9300,es2:9300,es3:9300
+spring.es.clusterName=es_cluster
+
+rate.limit.hourly.limit=1000
+rate.limit.enabled=true
+
+rzx.hdp=rzx.hdp=hadoop1:2181
+
+rhino.category.url=http://crawl1:28897/skynet/crawl/common/categories
+rhino.site.url=http://crawl1:28897/skynet/crawl/service/getSitesByCateId
+
+rhino.comment.url=http://crawl1:20432/rhino/api/data/social/twitter/commentsByUrl
+rhino.repost.url=http://crawl1:20432/rhino/api/data/social/twitter/repostsByMid
+rhino.facebook.comment.url=http://crawl1:20432/rhino/api/data/social/facebook/commentsByMids
+rhino.facebook.repost.url=http://crawl1:20432/rhino/api/data/social/facebook/retweetsByMids
+rhino.facebook.like.url=http://crawl1:20432/rhino/api/data/social/facebook/likesByMids
+#### 获取uid
+rhino.uid.get.url=http://crawl1:20432/rhino/uid/get
+
+taiji.push.api=http://40.125.201.7:8099
+###北京接口
+rhino.facebook.api.prefix=https://14.116.172.194:6443/facebook_es/addPost.php
