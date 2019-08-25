@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.farm.wheat.share.biz.mapper.simple.SharePriceMapper">
+    <resultMap id="BaseResultMap" type="com.farm.wheat.share.biz.dto.SharePriceDto">
+        <id column="ID_SHARE_PRICE" property="idSharePrice" jdbcType="INTEGER"/>
+        <result column="ID_SHARE_INFO" property="idShareInfo" jdbcType="INTEGER"/>
+        <result column="TODAY_OPEN_PRICE" property="todayOpenPrice" jdbcType="DECIMAL"/>
+        <result column="YESTERDAY_END_PRICE" property="yesterdayEndPrice" jdbcType="DECIMAL"/>
+        <result column="TODAY_PRICE" property="todayPrice" jdbcType="DECIMAL"/>
+        <result column="TODAY_MAX_PRICE" property="todayMaxPrice" jdbcType="DECIMAL"/>
+        <result column="TODAY_MIN_PRICE" property="todayMinPrice" jdbcType="DECIMAL"/>
+        <result column="TRADING_VOLUME" property="tradingVolume" jdbcType="INTEGER"/>
+        <result column="THE_OUTER" property="theOuter" jdbcType="INTEGER"/>
+        <result column="THE_INNER" property="theInner" jdbcType="INTEGER"/>
+        <result column="TRADING_MONEY" property="tradingMoney" jdbcType="DECIMAL"/>
+        <result column="TRADING_DATE" property="tradingDate" jdbcType="DATE"/>
+        <result column="PRICE_CHANGE_RATIO" property="priceChangeRatio" jdbcType="DECIMAL"/>
+        <result column="PRICE_CHANGE" property="priceChange" jdbcType="DECIMAL"/>
+        <result column="TURNOVER_RATE" property="turnoverRate" jdbcType="DECIMAL"/>
+        <result column="AMPLITUDE" property="amplitude" jdbcType="DECIMAL"/>
+        <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR"/>
+        <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID_SHARE_PRICE, ID_SHARE_INFO, TODAY_OPEN_PRICE, YESTERDAY_END_PRICE, TODAY_PRICE,
+    TODAY_MAX_PRICE, TODAY_MIN_PRICE, TRADING_VOLUME, THE_OUTER, THE_INNER, TRADING_MONEY,
+    TRADING_DATE, PRICE_CHANGE_RATIO, PRICE_CHANGE, TURNOVER_RATE, AMPLITUDE, CREATE_TIME,
+    UPDATE_TIME, CREATE_BY, UPDATE_BY
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from share_price
+        where ID_SHARE_PRICE = #{idSharePrice,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from share_price
+    where ID_SHARE_PRICE = #{idSharePrice,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.farm.wheat.share.biz.dto.SharePriceDto">
+    insert into share_price (ID_SHARE_PRICE, ID_SHARE_INFO, TODAY_OPEN_PRICE,
+      YESTERDAY_END_PRICE, TODAY_PRICE, TODAY_MAX_PRICE,
+      TODAY_MIN_PRICE, TRADING_VOLUME, THE_OUTER,
+      THE_INNER, TRADING_MONEY, TRADING_DATE,
+      PRICE_CHANGE_RATIO, PRICE_CHANGE, TURNOVER_RATE,
+      AMPLITUDE, CREATE_TIME, UPDATE_TIME,
+      CREATE_BY, UPDATE_BY)
+    values (#{idSharePrice,jdbcType=INTEGER}, #{idShareInfo,jdbcType=INTEGER}, #{todayOpenPrice,jdbcType=DECIMAL},
+      #{yesterdayEndPrice,jdbcType=DECIMAL}, #{todayPrice,jdbcType=DECIMAL}, #{todayMaxPrice,jdbcType=DECIMAL},
+      #{todayMinPrice,jdbcType=DECIMAL}, #{tradingVolume,jdbcType=INTEGER}, #{theOuter,jdbcType=INTEGER},
+      #{theInner,jdbcType=INTEGER}, #{tradingMoney,jdbcType=DECIMAL}, #{tradingDate,jdbcType=DATE},
+      #{priceChangeRatio,jdbcType=DECIMAL}, #{priceChange,jdbcType=DECIMAL}, #{turnoverRate,jdbcType=DECIMAL},
+      #{amplitude,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+      #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="idShareInfo"  parameterType="com.farm.wheat.share.biz.dto.SharePriceDto">
+        insert into share_price
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="idSharePrice != null">
+                ID_SHARE_PRICE,
+            </if>
+            <if test="idShareInfo != null">
+                ID_SHARE_INFO,
+            </if>
+            <if test="todayOpenPrice != null">
+                TODAY_OPEN_PRICE,
+            </if>
+            <if test="yesterdayEndPrice != null">
+                YESTERDAY_END_PRICE,
+            </if>
+            <if test="todayPrice != null">
+                TODAY_PRICE,
+            </if>
+            <if test="todayMaxPrice != null">
+                TODAY_MAX_PRICE,
+            </if>
+            <if test="todayMinPrice != null">
+                TODAY_MIN_PRICE,
+            </if>
+            <if test="tradingVolume != null">
+                TRADING_VOLUME,
+            </if>
+            <if test="theOuter != null">
+                THE_OUTER,
+            </if>
+            <if test="theInner != null">
+                THE_INNER,
+            </if>
+            <if test="tradingMoney != null">
+                TRADING_MONEY,
+            </if>
+            <if test="tradingDate != null">
+                TRADING_DATE,
+            </if>
+            <if test="priceChangeRatio != null">
+                PRICE_CHANGE_RATIO,
+            </if>
+            <if test="priceChange != null">
+                PRICE_CHANGE,
+            </if>
+            <if test="turnoverRate != null">
+                TURNOVER_RATE,
+            </if>
+            <if test="amplitude != null">
+                AMPLITUDE,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+            <if test="updateBy != null">
+                UPDATE_BY,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="idSharePrice != null">
+                #{idSharePrice,jdbcType=INTEGER},
+            </if>
+            <if test="idShareInfo != null">
+                #{idShareInfo,jdbcType=INTEGER},
+            </if>
+            <if test="todayOpenPrice != null">
+                #{todayOpenPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="yesterdayEndPrice != null">
+                #{yesterdayEndPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="todayPrice != null">
+                #{todayPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="todayMaxPrice != null">
+                #{todayMaxPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="todayMinPrice != null">
+                #{todayMinPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="tradingVolume != null">
+                #{tradingVolume,jdbcType=INTEGER},
+            </if>
+            <if test="theOuter != null">
+                #{theOuter,jdbcType=INTEGER},
+            </if>
+            <if test="theInner != null">
+                #{theInner,jdbcType=INTEGER},
+            </if>
+            <if test="tradingMoney != null">
+                #{tradingMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="tradingDate != null">
+                #{tradingDate,jdbcType=DATE},
+            </if>
+            <if test="priceChangeRatio != null">
+                #{priceChangeRatio,jdbcType=DECIMAL},
+            </if>
+            <if test="priceChange != null">
+                #{priceChange,jdbcType=DECIMAL},
+            </if>
+            <if test="turnoverRate != null">
+                #{turnoverRate,jdbcType=DECIMAL},
+            </if>
+            <if test="amplitude != null">
+                #{amplitude,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.farm.wheat.share.biz.dto.SharePriceDto">
+        update share_price
+        <set>
+            <if test="idShareInfo != null">
+                ID_SHARE_INFO = #{idShareInfo,jdbcType=INTEGER},
+            </if>
+            <if test="todayOpenPrice != null">
+                TODAY_OPEN_PRICE = #{todayOpenPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="yesterdayEndPrice != null">
+                YESTERDAY_END_PRICE = #{yesterdayEndPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="todayPrice != null">
+                TODAY_PRICE = #{todayPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="todayMaxPrice != null">
+                TODAY_MAX_PRICE = #{todayMaxPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="todayMinPrice != null">
+                TODAY_MIN_PRICE = #{todayMinPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="tradingVolume != null">
+                TRADING_VOLUME = #{tradingVolume,jdbcType=INTEGER},
+            </if>
+            <if test="theOuter != null">
+                THE_OUTER = #{theOuter,jdbcType=INTEGER},
+            </if>
+            <if test="theInner != null">
+                THE_INNER = #{theInner,jdbcType=INTEGER},
+            </if>
+            <if test="tradingMoney != null">
+                TRADING_MONEY = #{tradingMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="tradingDate != null">
+                TRADING_DATE = #{tradingDate,jdbcType=DATE},
+            </if>
+            <if test="priceChangeRatio != null">
+                PRICE_CHANGE_RATIO = #{priceChangeRatio,jdbcType=DECIMAL},
+            </if>
+            <if test="priceChange != null">
+                PRICE_CHANGE = #{priceChange,jdbcType=DECIMAL},
+            </if>
+            <if test="turnoverRate != null">
+                TURNOVER_RATE = #{turnoverRate,jdbcType=DECIMAL},
+            </if>
+            <if test="amplitude != null">
+                AMPLITUDE = #{amplitude,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                CREATE_BY = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                UPDATE_BY = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where ID_SHARE_PRICE = #{idSharePrice,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.farm.wheat.share.biz.dto.SharePriceDto">
+    update share_price
+    set ID_SHARE_INFO = #{idShareInfo,jdbcType=INTEGER},
+      TODAY_OPEN_PRICE = #{todayOpenPrice,jdbcType=DECIMAL},
+      YESTERDAY_END_PRICE = #{yesterdayEndPrice,jdbcType=DECIMAL},
+      TODAY_PRICE = #{todayPrice,jdbcType=DECIMAL},
+      TODAY_MAX_PRICE = #{todayMaxPrice,jdbcType=DECIMAL},
+      TODAY_MIN_PRICE = #{todayMinPrice,jdbcType=DECIMAL},
+      TRADING_VOLUME = #{tradingVolume,jdbcType=INTEGER},
+      THE_OUTER = #{theOuter,jdbcType=INTEGER},
+      THE_INNER = #{theInner,jdbcType=INTEGER},
+      TRADING_MONEY = #{tradingMoney,jdbcType=DECIMAL},
+      TRADING_DATE = #{tradingDate,jdbcType=DATE},
+      PRICE_CHANGE_RATIO = #{priceChangeRatio,jdbcType=DECIMAL},
+      PRICE_CHANGE = #{priceChange,jdbcType=DECIMAL},
+      TURNOVER_RATE = #{turnoverRate,jdbcType=DECIMAL},
+      AMPLITUDE = #{amplitude,jdbcType=DECIMAL},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      UPDATE_BY = #{updateBy,jdbcType=VARCHAR}
+    where ID_SHARE_PRICE = #{idSharePrice,jdbcType=INTEGER}
+  </update>
+    <select id="selectByIdShareInfoAndTradingDate" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from share_price
+        where ID_SHARE_INFO = #{idShareInfo}
+        and TRADING_DATE=#{tradingDate}
+    </select>
+</mapper>

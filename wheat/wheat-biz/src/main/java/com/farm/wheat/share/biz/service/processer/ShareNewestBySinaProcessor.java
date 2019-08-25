@@ -1,7 +1,7 @@
-package com.farm.wheat.share.service.processer;
+package com.farm.wheat.share.biz.service.processer;
 
 import com.alibaba.fastjson.JSONObject;
-import com.snow.tiger.ip.proxy.util.NullCheckUtils;
+import com.farm.common.utils.NullCheckUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
@@ -40,7 +40,7 @@ public class ShareNewestBySinaProcessor implements PageProcessor {
                 //从"https://github.com/code4craft"开始抓
                 .addUrl(url)
                 //开启5个线程抓取
-                .thread(5)
+                .thread(1)
                 .setDownloader(new HttpClientDownloader())
                 .setPipelines(list)
 //                .setDownloader(getProxyDownload("127.0.0.1", "8118"))
@@ -65,7 +65,6 @@ public class ShareNewestBySinaProcessor implements PageProcessor {
                         System.out.println(s);
                     }
                 }
-
                 page.putField("proxy", JSONObject.toJSONString(sharePrices));
             }
         }

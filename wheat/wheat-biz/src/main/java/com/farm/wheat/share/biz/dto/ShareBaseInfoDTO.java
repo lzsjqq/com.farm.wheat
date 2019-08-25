@@ -1,4 +1,4 @@
-package com.farm.wheat.share.dto;
+package com.farm.wheat.share.biz.dto;
 
 
 import lombok.Data;
@@ -25,11 +25,11 @@ public class ShareBaseInfoDTO {
     /**
      * 市盈率
      */
-    private BigDecimal PERatio;
+    private BigDecimal peRatio;
     /**
      * 市净率
      */
-    private BigDecimal PBRatio;
+    private BigDecimal pbRatio;
     /**
      * 流通市值
      */
@@ -39,5 +39,5 @@ public class ShareBaseInfoDTO {
      */
     private BigDecimal totalMarketValue;
 
-
+    private Integer source;
 }

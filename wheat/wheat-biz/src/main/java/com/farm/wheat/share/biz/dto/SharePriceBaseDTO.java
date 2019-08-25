@@ -1,4 +1,4 @@
-package com.farm.wheat.share.dto;
+package com.farm.wheat.share.biz.dto;
 
 
 import lombok.Data;
