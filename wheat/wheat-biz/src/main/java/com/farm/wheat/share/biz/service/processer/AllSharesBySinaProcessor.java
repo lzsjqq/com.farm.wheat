@@ -90,7 +90,7 @@ public class AllSharesBySinaProcessor implements PageProcessor {
                             shareInfoDto.setSource(ShareSource.SZ.getSource());
                         }
                         shareInfoDto.setShareName(tds.get(1).xpath("a/text()").get().trim());
-                        shareInfoDto.setIndustry(tds.get(8).get());
+                        shareInfoDto.setIndustry(tds.get(8).xpath("td/text()").get());
                     }
                 }
             }
