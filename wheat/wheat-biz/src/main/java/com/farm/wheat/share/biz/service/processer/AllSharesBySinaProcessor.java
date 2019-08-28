@@ -88,8 +88,10 @@ public class AllSharesBySinaProcessor implements PageProcessor {
                             shareInfoDto.setSource(ShareSource.SH.getSource());
                         } else if (shareCode.startsWith("0") || shareCode.startsWith("3")) {
                             shareInfoDto.setSource(ShareSource.SZ.getSource());
+                        }else {
+                            shareInfoDto.setSource(ShareSource.OTHER.getSource());
                         }
-                        shareInfoDto.setShareName(tds.get(1).xpath("a/text()").get().trim());
+                        shareInfoDto.setShareName(tds.get(1).xpath("span/text()").get().trim());
                         shareInfoDto.setIndustry(tds.get(8).xpath("td/text()").get());
                     }
                 }

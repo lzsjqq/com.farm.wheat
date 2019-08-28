@@ -8,7 +8,10 @@ import com.farm.wheat.share.biz.dto.SharePriceBaseDTO;
 import com.farm.wheat.share.biz.dto.SharePriceDto;
 import com.farm.wheat.share.biz.mapper.simple.ShareInfoMapper;
 import com.farm.wheat.share.biz.mapper.simple.SharePriceMapper;
+import com.farm.wheat.share.biz.service.processer.AllSharesBySinaProcessor;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import us.codecraft.webmagic.ResultItems;
@@ -26,7 +29,7 @@ import java.util.List;
  */
 @Service
 public class AllSharesPipeline implements Pipeline {
-
+    private Logger logger = LoggerFactory.getLogger(AllSharesPipeline.class);
     @Resource
     private ShareInfoMapper shareInfoMapper;
 
@@ -47,7 +50,7 @@ public class AllSharesPipeline implements Pipeline {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 }

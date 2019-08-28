@@ -7,7 +7,8 @@ package com.farm.wheat.share.biz.constant;
  */
 public enum ShareSource {
     SH("sh", 1),
-    SZ("sz", 2);
+    SZ("sz", 2),
+    OTHER("other", 4);
     private String desc;
 
     private int source;
