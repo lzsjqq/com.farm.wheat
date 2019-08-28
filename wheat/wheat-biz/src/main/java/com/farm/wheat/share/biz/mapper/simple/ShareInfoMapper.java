@@ -19,4 +19,6 @@ public interface ShareInfoMapper {
     int updateByPrimaryKeySelective(ShareInfoDto record);
 
     int updateByPrimaryKey(ShareInfoDto record);
+
+    ShareInfoDto selectByShareCode(ShareInfoDto shareInfoDto);
 }

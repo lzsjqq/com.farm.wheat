@@ -5,8 +5,6 @@
         <id column="ID_SHARE_INFO" property="idShareInfo" jdbcType="INTEGER"/>
         <result column="SHARE_CODE" property="shareCode" jdbcType="VARCHAR"/>
         <result column="SHARE_NAME" property="shareName" jdbcType="VARCHAR"/>
-        <result column="PE_RATIO" property="peRatio" jdbcType="DECIMAL"/>
-        <result column="PB_RATIO" property="pbRatio" jdbcType="DECIMAL"/>
         <result column="CIRCULATION_MARKET_VALUE" property="circulationMarketValue" jdbcType="DECIMAL"/>
         <result column="TOTAL_MARKET_VALUE" property="totalMarketValue" jdbcType="DECIMAL"/>
         <result column="SOURCE" property="source" jdbcType="BIT"/>
@@ -16,7 +14,7 @@
         <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
-    ID_SHARE_INFO, SHARE_CODE, SHARE_NAME, PE_RATIO, PB_RATIO, CIRCULATION_MARKET_VALUE,
+    ID_SHARE_INFO, SHARE_CODE, SHARE_NAME,  CIRCULATION_MARKET_VALUE,
     TOTAL_MARKET_VALUE, SOURCE, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY
   </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
@@ -34,7 +32,6 @@
             <if test="idShareInfo!=null">and ID_SHARE_INFO=#{idShareInfo}</if>
             <if test="shareCode!=null">and SHARE_CODE=#{shareCode}</if>
             <if test="shareName!=null">and SHARE_NAME=#{shareName}</if>
-            <if test="peRatio!=null">and PE_RATIO=#{peRatio}</if>
             <if test="circulationMarketValue!=null">and CIRCULATION_MARKET_VALUE=#{circulationMarketValue}</if>
             <if test="totalMarketValue!=null">and TOTAL_MARKET_VALUE=#{totalMarketValue}</if>
             <if test="source!=null">and SOURCE=#{source}</if>
@@ -45,19 +42,21 @@
     delete from share_info
     where ID_SHARE_INFO = #{idShareInfo,jdbcType=INTEGER}
   </delete>
-    <insert id="insert"  useGeneratedKeys="true" keyProperty="idShareInfo"  parameterType="com.farm.wheat.share.biz.dto.ShareInfoDto">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="idShareInfo"
+            parameterType="com.farm.wheat.share.biz.dto.ShareInfoDto">
     insert into share_info (ID_SHARE_INFO, SHARE_CODE, SHARE_NAME,
-      PE_RATIO, PB_RATIO, CIRCULATION_MARKET_VALUE,
+      CIRCULATION_MARKET_VALUE,
       TOTAL_MARKET_VALUE, SOURCE, CREATE_TIME,
       UPDATE_TIME, CREATE_BY, UPDATE_BY
       )
     values (#{idShareInfo,jdbcType=INTEGER}, #{shareCode,jdbcType=VARCHAR}, #{shareName,jdbcType=VARCHAR},
-      #{peRatio,jdbcType=DECIMAL}, #{pbRatio,jdbcType=DECIMAL}, #{circulationMarketValue,jdbcType=DECIMAL},
+      #{circulationMarketValue,jdbcType=DECIMAL},
       #{totalMarketValue,jdbcType=DECIMAL}, #{source,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP},
       #{updateTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR}
       )
   </insert>
-    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="idShareInfo"  parameterType="com.farm.wheat.share.biz.dto.ShareInfoDto">
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="idShareInfo"
+            parameterType="com.farm.wheat.share.biz.dto.ShareInfoDto">
         insert into share_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="idShareInfo != null">
@@ -69,12 +68,7 @@
             <if test="shareName != null">
                 SHARE_NAME,
             </if>
-            <if test="peRatio != null">
-                PE_RATIO,
-            </if>
-            <if test="pbRatio != null">
-                PB_RATIO,
-            </if>
+
             <if test="circulationMarketValue != null">
                 CIRCULATION_MARKET_VALUE,
             </if>
@@ -145,12 +139,7 @@
             <if test="shareName != null">
                 SHARE_NAME = #{shareName,jdbcType=VARCHAR},
             </if>
-            <if test="peRatio != null">
-                PE_RATIO = #{peRatio,jdbcType=DECIMAL},
-            </if>
-            <if test="pbRatio != null">
-                PB_RATIO = #{pbRatio,jdbcType=DECIMAL},
-            </if>
+
             <if test="circulationMarketValue != null">
                 CIRCULATION_MARKET_VALUE = #{circulationMarketValue,jdbcType=DECIMAL},
             </if>
@@ -179,8 +168,6 @@
     update share_info
     set SHARE_CODE = #{shareCode,jdbcType=VARCHAR},
       SHARE_NAME = #{shareName,jdbcType=VARCHAR},
-      PE_RATIO = #{peRatio,jdbcType=DECIMAL},
-      PB_RATIO = #{pbRatio,jdbcType=DECIMAL},
       CIRCULATION_MARKET_VALUE = #{circulationMarketValue,jdbcType=DECIMAL},
       TOTAL_MARKET_VALUE = #{totalMarketValue,jdbcType=DECIMAL},
       SOURCE = #{source,jdbcType=BIT},
@@ -190,4 +177,10 @@
       UPDATE_BY = #{updateBy,jdbcType=VARCHAR}
     where ID_SHARE_INFO = #{idShareInfo,jdbcType=INTEGER}
   </update>
+    <select id="selectByShareCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from share_info
+        where SHARE_CODE = #{shareCode}
+    </select>
 </mapper>

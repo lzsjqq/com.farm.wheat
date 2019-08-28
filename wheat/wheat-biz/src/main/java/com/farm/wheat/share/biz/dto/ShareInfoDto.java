@@ -13,9 +13,7 @@ public class ShareInfoDto  extends  EntityDto{
 
     private String shareName;
 
-    private BigDecimal peRatio;
 
-    private BigDecimal pbRatio;
 
     private BigDecimal circulationMarketValue;
 

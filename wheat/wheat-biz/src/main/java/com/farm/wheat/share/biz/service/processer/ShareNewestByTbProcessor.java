@@ -97,7 +97,6 @@ public class ShareNewestByTbProcessor implements PageProcessor {
                             sharePriceBaseDTO.setCirculationMarketValue(new BigDecimal(prices[44]));
                             sharePriceBaseDTO.setTotalMarketValue(new BigDecimal(prices[45]));
                             sharePriceBaseDTO.setPbRatio(new BigDecimal(prices[46]));
-
                             sharePriceBaseDTOList.add(sharePriceBaseDTO);
                         }
 

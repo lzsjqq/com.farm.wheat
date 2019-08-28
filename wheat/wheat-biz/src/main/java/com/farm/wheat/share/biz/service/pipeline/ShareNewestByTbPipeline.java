@@ -43,12 +43,14 @@ public class ShareNewestByTbPipeline implements Pipeline {
                 for (SharePriceBaseDTO sharePriceBaseDTO : list) {
                     String sharePriceBaseDTOStr = JSONObject.toJSONString(sharePriceBaseDTO);
                     ShareInfoDto shareInfoDto = JSONObject.parseObject(sharePriceBaseDTOStr, ShareInfoDto.class);
-                    ShareInfoDto selectOne = shareInfoMapper.selectSelective(shareInfoDto);
+                    ShareInfoDto selectOne = shareInfoMapper.selectByShareCode(shareInfoDto);
                     // 数据不一致插入数据
                     if (selectOne == null) {
                         shareInfoDto.setCreateBy(ShareConst.SOURCE_TX);
                         shareInfoDto.setUpdateBy(ShareConst.SOURCE_TX);
                         shareInfoMapper.insertSelective(shareInfoDto);
+                    } else {
+                        shareInfoMapper.updateByPrimaryKeySelective(shareInfoDto);
                     }
                     SharePriceDto sharePriceDto = JSONObject.parseObject(sharePriceBaseDTOStr, SharePriceDto.class);
                     sharePriceDto.setIdShareInfo(selectOne == null ? shareInfoDto.getIdShareInfo() : selectOne.getIdShareInfo());

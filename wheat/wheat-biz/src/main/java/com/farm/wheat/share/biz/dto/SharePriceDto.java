@@ -37,5 +37,6 @@ public class SharePriceDto extends  EntityDto {
     private BigDecimal turnoverRate;
 
     private BigDecimal amplitude;
-
+    private BigDecimal peRatio;
+    private BigDecimal pbRatio;
 }

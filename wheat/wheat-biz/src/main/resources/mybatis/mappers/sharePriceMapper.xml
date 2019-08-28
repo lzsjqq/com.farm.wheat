@@ -18,6 +18,8 @@
         <result column="PRICE_CHANGE" property="priceChange" jdbcType="DECIMAL"/>
         <result column="TURNOVER_RATE" property="turnoverRate" jdbcType="DECIMAL"/>
         <result column="AMPLITUDE" property="amplitude" jdbcType="DECIMAL"/>
+        <result column="PE_RATIO" property="peRatio" jdbcType="DECIMAL"/>
+        <result column="PB_RATIO" property="pbRatio" jdbcType="DECIMAL"/>
         <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP"/>
         <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR"/>
@@ -26,7 +28,7 @@
     <sql id="Base_Column_List">
     ID_SHARE_PRICE, ID_SHARE_INFO, TODAY_OPEN_PRICE, YESTERDAY_END_PRICE, TODAY_PRICE,
     TODAY_MAX_PRICE, TODAY_MIN_PRICE, TRADING_VOLUME, THE_OUTER, THE_INNER, TRADING_MONEY,
-    TRADING_DATE, PRICE_CHANGE_RATIO, PRICE_CHANGE, TURNOVER_RATE, AMPLITUDE, CREATE_TIME,
+    TRADING_DATE, PRICE_CHANGE_RATIO, PRICE_CHANGE, TURNOVER_RATE, AMPLITUDE,  PE_RATIO, PB_RATIO,CREATE_TIME,
     UPDATE_TIME, CREATE_BY, UPDATE_BY
   </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
@@ -45,17 +47,18 @@
       TODAY_MIN_PRICE, TRADING_VOLUME, THE_OUTER,
       THE_INNER, TRADING_MONEY, TRADING_DATE,
       PRICE_CHANGE_RATIO, PRICE_CHANGE, TURNOVER_RATE,
-      AMPLITUDE, CREATE_TIME, UPDATE_TIME,
+      AMPLITUDE, PE_RATIO, PB_RATIO,CREATE_TIME, UPDATE_TIME,
       CREATE_BY, UPDATE_BY)
     values (#{idSharePrice,jdbcType=INTEGER}, #{idShareInfo,jdbcType=INTEGER}, #{todayOpenPrice,jdbcType=DECIMAL},
       #{yesterdayEndPrice,jdbcType=DECIMAL}, #{todayPrice,jdbcType=DECIMAL}, #{todayMaxPrice,jdbcType=DECIMAL},
       #{todayMinPrice,jdbcType=DECIMAL}, #{tradingVolume,jdbcType=INTEGER}, #{theOuter,jdbcType=INTEGER},
       #{theInner,jdbcType=INTEGER}, #{tradingMoney,jdbcType=DECIMAL}, #{tradingDate,jdbcType=DATE},
       #{priceChangeRatio,jdbcType=DECIMAL}, #{priceChange,jdbcType=DECIMAL}, #{turnoverRate,jdbcType=DECIMAL},
-      #{amplitude,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+      #{amplitude,jdbcType=DECIMAL},  #{peRatio,jdbcType=DECIMAL}, #{pbRatio,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
       #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR})
   </insert>
-    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="idShareInfo"  parameterType="com.farm.wheat.share.biz.dto.SharePriceDto">
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="idShareInfo"
+            parameterType="com.farm.wheat.share.biz.dto.SharePriceDto">
         insert into share_price
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="idSharePrice != null">
@@ -105,6 +108,12 @@
             </if>
             <if test="amplitude != null">
                 AMPLITUDE,
+            </if>
+            <if test="peRatio != null">
+                PE_RATIO,
+            </if>
+            <if test="pbRatio != null">
+                PB_RATIO,
             </if>
             <if test="createTime != null">
                 CREATE_TIME,
@@ -167,6 +176,12 @@
             </if>
             <if test="amplitude != null">
                 #{amplitude,jdbcType=DECIMAL},
+            </if>
+            <if test="peRatio != null">
+                PE_RATIO = #{peRatio,jdbcType=DECIMAL},
+            </if>
+            <if test="pbRatio != null">
+                PB_RATIO = #{pbRatio,jdbcType=DECIMAL},
             </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=TIMESTAMP},
@@ -262,6 +277,8 @@
       PRICE_CHANGE = #{priceChange,jdbcType=DECIMAL},
       TURNOVER_RATE = #{turnoverRate,jdbcType=DECIMAL},
       AMPLITUDE = #{amplitude,jdbcType=DECIMAL},
+      PE_RATIO = #{peRatio,jdbcType=DECIMAL},
+      PB_RATIO = #{pbRatio,jdbcType=DECIMAL},
       CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       CREATE_BY = #{createBy,jdbcType=VARCHAR},
