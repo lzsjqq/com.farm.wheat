@@ -58,6 +58,82 @@
   </insert>
     <insert id="insertSelective" useGeneratedKeys="true" keyProperty="idShareInfo"
             parameterType="com.farm.wheat.share.biz.dto.ShareInfoDto">
+        insert into share_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="idShareInfo != null">
+                ID_SHARE_INFO,
+            </if>
+            <if test="shareCode != null">
+                SHARE_CODE,
+            </if>
+            <if test="shareName != null">
+                SHARE_NAME,
+            </if>
+            <if test="industry != null">
+                INDUSTRY,
+            </if>
+
+            <if test="circulationMarketValue != null">
+                CIRCULATION_MARKET_VALUE,
+            </if>
+            <if test="totalMarketValue != null">
+                TOTAL_MARKET_VALUE,
+            </if>
+            <if test="source != null">
+                SOURCE,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+            <if test="updateBy != null">
+                UPDATE_BY,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="idShareInfo != null">
+                #{idShareInfo,jdbcType=INTEGER},
+            </if>
+            <if test="shareCode != null">
+                #{shareCode,jdbcType=VARCHAR},
+            </if>
+            <if test="shareName != null">
+                #{shareName,jdbcType=VARCHAR},
+            </if>
+            <if test="industry != null">
+                #{industry,jdbcType=VARCHAR},
+            </if>
+
+            <if test="circulationMarketValue != null">
+                #{circulationMarketValue,jdbcType=DECIMAL},
+            </if>
+            <if test="totalMarketValue != null">
+                #{totalMarketValue,jdbcType=DECIMAL},
+            </if>
+            <if test="source != null">
+                #{source,jdbcType=BIT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <insert id="replaceSelective" useGeneratedKeys="true" keyProperty="idShareInfo"
+            parameterType="com.farm.wheat.share.biz.dto.ShareInfoDto">
         replace into share_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="idShareInfo != null">
@@ -69,7 +145,7 @@
             <if test="shareName != null">
                 SHARE_NAME,
             </if>
-             <if test="industry != null">
+            <if test="industry != null">
                 INDUSTRY,
             </if>
 

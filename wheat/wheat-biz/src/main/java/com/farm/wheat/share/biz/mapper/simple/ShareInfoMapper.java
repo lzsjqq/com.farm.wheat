@@ -12,6 +12,8 @@ public interface ShareInfoMapper {
 
     int insertSelective(ShareInfoDto record);
 
+    int replaceSelective(ShareInfoDto record);
+
     ShareInfoDto selectByPrimaryKey(Integer idShareInfo);
 
     ShareInfoDto selectSelective(ShareInfoDto record);

@@ -42,7 +42,7 @@ public class AllSharesPipeline implements Pipeline {
                     for (ShareInfoDto shareInfoDto : list) {
                         shareInfoDto.setCreateBy("sina");
                         shareInfoDto.setUpdateBy("sina");
-                        shareInfoMapper.insertSelective(shareInfoDto);
+                        shareInfoMapper.replaceSelective(shareInfoDto);
                     }
                 }
             }
