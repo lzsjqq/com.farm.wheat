@@ -24,10 +24,12 @@ public class ShareController implements SinaApi {
     private AllSharesBySinaProcessor allSharesBySinaProcessor;
 
     @RequestMapping(value = "/test", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Override
     public void test(@RequestParam String code) {
         shareNewestByTbProcessor.start(code);
     }
 
+    @RequestMapping(value = "/updateAllShares", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @Override
     public void updateAllShares() {
         allSharesBySinaProcessor.start();

@@ -94,7 +94,7 @@ public class AllSharesBySinaProcessor implements PageProcessor {
                     }
                 }
             }
-            page.putField(ShareConst.SHARE_NEWEST_BY_TB_FIELD, JSONObject.toJSONString(shareInfoDtos));
+            page.putField(ShareConst.SHARE_INFO_BY_TB_FIELD, JSONObject.toJSONString(shareInfoDtos));
             List<Selectable> pages = html.xpath("/html/body/div[1]/div[5]/div[2]/div/div[1]/div[3]/a/text()").nodes();
             if (NullCheckUtils.isNotBlank(pages)) {
                 for (Selectable selectable : pages) {
