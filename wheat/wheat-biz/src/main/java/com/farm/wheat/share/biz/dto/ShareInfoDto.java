@@ -6,13 +6,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class ShareInfoDto  extends  EntityDto{
+public class ShareInfoDto extends EntityDto {
     private Integer idShareInfo;
 
     private String shareCode;
 
     private String shareName;
-
 
 
     private BigDecimal circulationMarketValue;
@@ -21,7 +20,7 @@ public class ShareInfoDto  extends  EntityDto{
 
     private Integer source;
 
-
+    private String industry;
 
 
 }

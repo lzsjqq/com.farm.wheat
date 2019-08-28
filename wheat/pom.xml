@@ -24,8 +24,10 @@
 
     <modules>
         <module>wheat-biz</module>
-        <module>wheat-facet</module>
+        <module>wheat-facade</module>
         <module>wheat-common</module>
+        <module>wheat-api</module>
+        <module>wheat-bootstrap</module>
     </modules>
 
     <dependencies>

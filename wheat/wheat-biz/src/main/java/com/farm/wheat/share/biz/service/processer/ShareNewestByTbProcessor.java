@@ -47,8 +47,6 @@ public class ShareNewestByTbProcessor implements PageProcessor {
 
     public void start(String code) {
         List<Pipeline> list = new ArrayList<>();
-        FilePipeline filePipeline = new FilePipeline();
-        filePipeline.setPath("C:\\Users\\Rzxuser\\Desktop\\hosts");
         list.add(pipeline);
         Spider.create(new ShareNewestByTbProcessor()) // 实例化spider
                 //从"https://github.com/code4craft"开始抓

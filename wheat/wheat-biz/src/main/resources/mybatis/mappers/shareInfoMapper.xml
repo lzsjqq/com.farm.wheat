@@ -5,6 +5,7 @@
         <id column="ID_SHARE_INFO" property="idShareInfo" jdbcType="INTEGER"/>
         <result column="SHARE_CODE" property="shareCode" jdbcType="VARCHAR"/>
         <result column="SHARE_NAME" property="shareName" jdbcType="VARCHAR"/>
+        <result column="INDUSTRY" property="industry" jdbcType="VARCHAR"/>
         <result column="CIRCULATION_MARKET_VALUE" property="circulationMarketValue" jdbcType="DECIMAL"/>
         <result column="TOTAL_MARKET_VALUE" property="totalMarketValue" jdbcType="DECIMAL"/>
         <result column="SOURCE" property="source" jdbcType="BIT"/>
@@ -14,7 +15,7 @@
         <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
-    ID_SHARE_INFO, SHARE_CODE, SHARE_NAME,  CIRCULATION_MARKET_VALUE,
+    ID_SHARE_INFO, SHARE_CODE, SHARE_NAME, INDUSTRY, CIRCULATION_MARKET_VALUE,
     TOTAL_MARKET_VALUE, SOURCE, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY
   </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
@@ -57,7 +58,7 @@
   </insert>
     <insert id="insertSelective" useGeneratedKeys="true" keyProperty="idShareInfo"
             parameterType="com.farm.wheat.share.biz.dto.ShareInfoDto">
-        insert into share_info
+        replace into share_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="idShareInfo != null">
                 ID_SHARE_INFO,
@@ -67,6 +68,9 @@
             </if>
             <if test="shareName != null">
                 SHARE_NAME,
+            </if>
+             <if test="industry != null">
+                INDUSTRY,
             </if>
 
             <if test="circulationMarketValue != null">
@@ -100,6 +104,9 @@
             </if>
             <if test="shareName != null">
                 #{shareName,jdbcType=VARCHAR},
+            </if>
+            <if test="industry != null">
+                #{INDUSTRY,jdbcType=VARCHAR},
             </if>
             <if test="peRatio != null">
                 #{peRatio,jdbcType=DECIMAL},
@@ -138,6 +145,10 @@
             </if>
             <if test="shareName != null">
                 SHARE_NAME = #{shareName,jdbcType=VARCHAR},
+            </if>
+
+            <if test="industry != null">
+                INDUSTRY = #{industry,jdbcType=VARCHAR},
             </if>
 
             <if test="circulationMarketValue != null">

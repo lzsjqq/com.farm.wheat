@@ -5,6 +5,7 @@ import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -15,9 +16,10 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.concurrent.Executor;
-@SpringBootApplication
+
 @EnableScheduling
 @EnableSwagger2
+@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 public class WheatApplication implements SchedulingConfigurer, AsyncConfigurer {
     /**
      * 异步处理

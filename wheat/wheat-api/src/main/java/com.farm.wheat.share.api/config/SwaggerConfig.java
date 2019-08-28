@@ -1,4 +1,4 @@
-package com.farm.wheat.share.biz.facet.config;
+package com.farm.wheat.share.api.config;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.context.annotation.Bean;
