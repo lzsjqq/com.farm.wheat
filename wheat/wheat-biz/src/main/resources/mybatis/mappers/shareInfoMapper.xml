@@ -106,14 +106,9 @@
                 #{shareName,jdbcType=VARCHAR},
             </if>
             <if test="industry != null">
-                #{INDUSTRY,jdbcType=VARCHAR},
+                #{industry,jdbcType=VARCHAR},
             </if>
-            <if test="peRatio != null">
-                #{peRatio,jdbcType=DECIMAL},
-            </if>
-            <if test="pbRatio != null">
-                #{pbRatio,jdbcType=DECIMAL},
-            </if>
+
             <if test="circulationMarketValue != null">
                 #{circulationMarketValue,jdbcType=DECIMAL},
             </if>
