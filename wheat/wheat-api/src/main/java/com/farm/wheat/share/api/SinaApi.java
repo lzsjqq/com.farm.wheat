@@ -13,4 +13,7 @@ public interface SinaApi {
 
     @ApiOperation(value = "test", notes = "test")
     void test(String code);
+
+    @ApiOperation(value = "getAllShares", notes = "更新所有的股票的基本信息")
+    void updateAllShares();
 }
