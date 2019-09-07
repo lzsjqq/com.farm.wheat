@@ -1,4 +1,4 @@
-package com.farm.wheat.share.api;
+package com.farm.wheat.share.api.download;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

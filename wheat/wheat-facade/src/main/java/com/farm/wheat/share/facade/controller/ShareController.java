@@ -1,6 +1,6 @@
 package com.farm.wheat.share.facade.controller;
 
-import com.farm.wheat.share.api.SinaApi;
+import com.farm.wheat.share.api.download.SinaApi;
 import com.farm.wheat.share.biz.service.processer.AllSharesBySinaProcessor;
 import com.farm.wheat.share.biz.service.processer.ShareNewestByTbProcessor;
 import org.springframework.beans.factory.annotation.Autowired;

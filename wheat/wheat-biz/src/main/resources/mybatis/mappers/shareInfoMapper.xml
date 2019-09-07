@@ -265,4 +265,10 @@
         from share_info
         where SHARE_CODE = #{shareCode}
     </select>
+
+    <select id="selectShareInfoByPage" parameterType="com.farm.wheat.share.biz.dto.ShareInfoDto" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from share_info
+    </select>
 </mapper>

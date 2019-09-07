@@ -23,7 +23,7 @@ import java.util.List;
  * Web基础数据源
  */
 @Configuration
-@MapperScan(basePackages = {"com.farm.wheat.share.facet.mapper.simple"}, sqlSessionTemplateRef = "primarySqlSessionTemplate")
+@MapperScan(basePackages = {"com.farm.wheat.share.facet.mapper.*"}, sqlSessionTemplateRef = "primarySqlSessionTemplate")
 public class DataSourceConfig {
 
 

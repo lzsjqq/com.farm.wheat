@@ -2,7 +2,8 @@ package com.farm.wheat.share.biz.mapper.simple;
 
 import com.farm.wheat.share.biz.dto.ShareInfoDto;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Mapper
 public interface ShareInfoMapper {
@@ -23,4 +24,6 @@ public interface ShareInfoMapper {
     int updateByPrimaryKey(ShareInfoDto record);
 
     ShareInfoDto selectByShareCode(ShareInfoDto shareInfoDto);
+
+    List<ShareInfoDto> selectShareInfoByPage(ShareInfoDto record);
 }
