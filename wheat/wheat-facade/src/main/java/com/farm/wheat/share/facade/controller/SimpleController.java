@@ -19,7 +19,8 @@ import java.util.List;
  * @author: xyc
  * @create: 2019-09-07 14:35
  */
-@RestController("simple")
+@RestController
+@RequestMapping("simple")
 public class SimpleController implements SimpleApi {
 
     @Autowired
