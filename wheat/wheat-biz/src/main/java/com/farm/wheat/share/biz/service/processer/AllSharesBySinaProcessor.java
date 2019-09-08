@@ -39,7 +39,7 @@ public class AllSharesBySinaProcessor implements PageProcessor {
 
     private Logger logger = LoggerFactory.getLogger(AllSharesBySinaProcessor.class);
 
-     @Autowired
+    @Autowired
     private AllSharesPipeline pipeline;
     private static String url = "http://vip.stock.finance.sina.com.cn/q/go.php/vIR_CustomSearch/index.phtml?p=%s&sr_p=-1";
     //    private static String testUrl = "https://www.baidu.com/";
@@ -82,14 +82,27 @@ public class AllSharesBySinaProcessor implements PageProcessor {
                         // 解析
                         String shareCode = tds.get(0).xpath("a/text()").get().trim();
                         shareInfoDto.setShareCode(shareCode);
-                        if (shareCode.startsWith("6")) {
+                        if (shareCode.startsWith("600") || shareCode.startsWith("601") || shareCode.startsWith("603")) {
                             shareInfoDto.setSource(ShareSource.SH.getSource());
-                        } else if (shareCode.startsWith("0") || shareCode.startsWith("3")) {
+                        } else if (shareCode.startsWith("000") || shareCode.startsWith("001")) {
                             shareInfoDto.setSource(ShareSource.SZ.getSource());
-                        }else {
+                        } else if (shareCode.startsWith("002")) {
+                            shareInfoDto.setSource(ShareSource.SZ_ZXB.getSource());
+                        } else if (shareCode.startsWith("3")) {
+                            shareInfoDto.setSource(ShareSource.SZ_CY.getSource());
+                        } else if (shareCode.startsWith("688")) {
+                            shareInfoDto.setSource(ShareSource.KC.getSource());
+                        } else if (shareCode.startsWith("83")||shareCode.startsWith("43")) {
+                            shareInfoDto.setSource(ShareSource.XSB.getSource());
+                        } else {
                             shareInfoDto.setSource(ShareSource.OTHER.getSource());
                         }
-                        shareInfoDto.setShareName(tds.get(1).xpath("span/text()").get().trim());
+                        String shareName = tds.get(1).xpath("span/text()").get().trim();
+                        if (!NullCheckUtils.isNotBlank(shareName)) {
+                            System.out.println();
+                        }
+                        shareInfoDto.setShareName(shareName);
+
                         shareInfoDto.setIndustry(tds.get(8).xpath("td/text()").get());
                     }
                 }
@@ -100,12 +113,12 @@ public class AllSharesBySinaProcessor implements PageProcessor {
                 for (Selectable selectable : pages) {
                     String nextPage = selectable.get();
                     if (nextPage.matches("\\d+")) {
-                        page.addTargetRequest(String.format(url,nextPage));
+                        page.addTargetRequest(String.format(url, nextPage));
                     }
                 }
             }
         } catch (Exception e) {
-            throw  e;
+            throw e;
         }
     }
 
