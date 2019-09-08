@@ -3,7 +3,9 @@ package com.farm.wheat.share.biz.service.search.impl;
 import com.farm.wheat.share.biz.dto.ShareInfoDto;
 import com.farm.wheat.share.biz.mapper.simple.ShareInfoMapper;
 import com.farm.wheat.share.biz.service.search.ISharesSearchService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -21,7 +23,9 @@ public class SharesSearchServiceImpl implements ISharesSearchService {
     private ShareInfoMapper shareInfoMapper;
 
     @Override
-    public List<ShareInfoDto> getShareInfoByPage(ShareInfoDto record) {
-        return shareInfoMapper.selectShareInfoByPage(record);
+    public PageInfo<ShareInfoDto> getShareInfoByPage(ShareInfoDto record) {
+        PageHelper.startPage(record.getPageNum(), record.getPageSize());
+        Page<ShareInfoDto> shareInfos = shareInfoMapper.selectShareInfoByPage(record);
+        return  new PageInfo(shareInfos);
     }
 }

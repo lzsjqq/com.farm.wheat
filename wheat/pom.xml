@@ -16,6 +16,7 @@
         <tomcat.version>9.0.10</tomcat.version>
         <log4j.version>1.7.25</log4j.version>
         <lombok.version>1.18.8</lombok.version>
+        <pagehelper-version>1.2.3</pagehelper-version>
     </properties>
     <groupId>com.farm.wheat</groupId>
     <artifactId>wheat</artifactId>

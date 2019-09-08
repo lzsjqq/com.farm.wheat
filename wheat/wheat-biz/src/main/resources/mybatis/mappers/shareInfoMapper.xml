@@ -266,9 +266,16 @@
         where SHARE_CODE = #{shareCode}
     </select>
 
+    <sql id="Select_Base">
+        <if test="shareCode!=null and shareCode!=''">and SHARE_CODE = #{shareCode}</if>
+        <if test="industry!=null and industry!=''">and INDUSTRY = #{industry}</if>
+    </sql>
     <select id="selectShareInfoByPage" parameterType="com.farm.wheat.share.biz.dto.ShareInfoDto" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from share_info
+        <where>
+           <include refid="Select_Base"/>
+        </where>
     </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.farm.wheat.share.biz.mapper.simple;
 
 import com.farm.wheat.share.biz.dto.ShareInfoDto;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -25,5 +26,5 @@ public interface ShareInfoMapper {
 
     ShareInfoDto selectByShareCode(ShareInfoDto shareInfoDto);
 
-    List<ShareInfoDto> selectShareInfoByPage(ShareInfoDto record);
+    Page<ShareInfoDto> selectShareInfoByPage(ShareInfoDto record);
 }

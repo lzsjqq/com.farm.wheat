@@ -1,10 +1,11 @@
 package com.farm.wheat.share.api.search;
 
 import com.farm.wheat.share.api.vo.ShareInfoVO;
+import com.farm.wheat.share.api.vo.request.SharesReq;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import java.util.List;
 
 /**
  * @description:
@@ -15,5 +16,5 @@ import java.util.List;
 public interface SimpleApi {
 
     @ApiOperation(value = "获取股票基本信息", notes = "获取股票基本信息")
-    List<ShareInfoVO> getShares();
+    PageInfo<ShareInfoVO> getShares( SharesReq shareInfoDto);
 }

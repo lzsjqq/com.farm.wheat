@@ -19,4 +19,8 @@ public class EntityDto {
     private String createBy;
 
     private String updateBy;
+
+    private Integer pageSize;
+
+    private Integer pageNum;
 }

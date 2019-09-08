@@ -1,8 +1,7 @@
 package com.farm.wheat.share.biz.service.search;
 
 import com.farm.wheat.share.biz.dto.ShareInfoDto;
-
-import java.util.List;
+import com.github.pagehelper.PageInfo;
 
 /**
  * @description: 股票信息查询
@@ -11,5 +10,5 @@ import java.util.List;
  */
 public interface ISharesSearchService {
 
-    List<ShareInfoDto> getShareInfoByPage(ShareInfoDto record);
+    PageInfo<ShareInfoDto> getShareInfoByPage(ShareInfoDto record);
 }
