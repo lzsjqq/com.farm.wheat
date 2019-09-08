@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @author: xyc
  * @create: 2019-08-25 19:47
  */
-@RestController
-public class ShareController implements SinaApi {
+@RestController("share")
+public class ShareDataController implements SinaApi {
 
     @Autowired
     private ShareNewestByTbProcessor shareNewestByTbProcessor;

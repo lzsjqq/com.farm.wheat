@@ -48,8 +48,6 @@ public class AllSharesBySinaProcessor implements PageProcessor {
 
     public void start() {
         List<Pipeline> list = new ArrayList<>();
-        FilePipeline filePipeline = new FilePipeline();
-        filePipeline.setPath("C:\\Users\\Rzxuser\\Desktop\\hosts");
         list.add(pipeline);
         Spider.create(new AllSharesBySinaProcessor()) // 实例化spider
                 //从"https://github.com/code4craft"开始抓
