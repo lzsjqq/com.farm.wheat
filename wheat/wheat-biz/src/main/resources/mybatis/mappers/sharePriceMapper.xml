@@ -4,9 +4,11 @@
     <resultMap id="BaseResultMap" type="com.farm.wheat.share.biz.dto.SharePriceDto">
         <id column="ID_SHARE_PRICE" property="idSharePrice" jdbcType="INTEGER"/>
         <result column="ID_SHARE_INFO" property="idShareInfo" jdbcType="INTEGER"/>
+        <result column="QUARTER" property="quarter" jdbcType="INTEGER"/>
+        <result column="YEAR" property="year" jdbcType="INTEGER"/>
         <result column="TODAY_OPEN_PRICE" property="todayOpenPrice" jdbcType="DECIMAL"/>
+        <result column="TODAY_END_PRICE" property="todayEndPrice" jdbcType="DECIMAL"/>
         <result column="YESTERDAY_END_PRICE" property="yesterdayEndPrice" jdbcType="DECIMAL"/>
-        <result column="TODAY_PRICE" property="todayPrice" jdbcType="DECIMAL"/>
         <result column="TODAY_MAX_PRICE" property="todayMaxPrice" jdbcType="DECIMAL"/>
         <result column="TODAY_MIN_PRICE" property="todayMinPrice" jdbcType="DECIMAL"/>
         <result column="TRADING_VOLUME" property="tradingVolume" jdbcType="INTEGER"/>
@@ -26,7 +28,7 @@
         <result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
-    ID_SHARE_PRICE, ID_SHARE_INFO, TODAY_OPEN_PRICE, YESTERDAY_END_PRICE, TODAY_PRICE,
+    ID_SHARE_PRICE, ID_SHARE_INFO, TODAY_OPEN_PRICE, TODAY_END_PRICE, YESTERDAY_END_PRICE,QUARTER,YEAR
     TODAY_MAX_PRICE, TODAY_MIN_PRICE, TRADING_VOLUME, THE_OUTER, THE_INNER, TRADING_MONEY,
     TRADING_DATE, PRICE_CHANGE_RATIO, PRICE_CHANGE, TURNOVER_RATE, AMPLITUDE,  PE_RATIO, PB_RATIO,CREATE_TIME,
     UPDATE_TIME, CREATE_BY, UPDATE_BY
@@ -43,14 +45,14 @@
   </delete>
     <insert id="insert" parameterType="com.farm.wheat.share.biz.dto.SharePriceDto">
     insert into share_price (ID_SHARE_PRICE, ID_SHARE_INFO, TODAY_OPEN_PRICE,
-      YESTERDAY_END_PRICE, TODAY_PRICE, TODAY_MAX_PRICE,
+      TODAY_END_PRICE, YESTERDAY_END_PRICE, TODAY_MAX_PRICE,
       TODAY_MIN_PRICE, TRADING_VOLUME, THE_OUTER,
       THE_INNER, TRADING_MONEY, TRADING_DATE,
       PRICE_CHANGE_RATIO, PRICE_CHANGE, TURNOVER_RATE,
       AMPLITUDE, PE_RATIO, PB_RATIO,CREATE_TIME, UPDATE_TIME,
       CREATE_BY, UPDATE_BY)
     values (#{idSharePrice,jdbcType=INTEGER}, #{idShareInfo,jdbcType=INTEGER}, #{todayOpenPrice,jdbcType=DECIMAL},
-      #{yesterdayEndPrice,jdbcType=DECIMAL}, #{todayPrice,jdbcType=DECIMAL}, #{todayMaxPrice,jdbcType=DECIMAL},
+      #{todayEndPrice,jdbcType=DECIMAL}, #{yesterdayEndPrice,jdbcType=DECIMAL}, #{todayMaxPrice,jdbcType=DECIMAL},
       #{todayMinPrice,jdbcType=DECIMAL}, #{tradingVolume,jdbcType=INTEGER}, #{theOuter,jdbcType=INTEGER},
       #{theInner,jdbcType=INTEGER}, #{tradingMoney,jdbcType=DECIMAL}, #{tradingDate,jdbcType=DATE},
       #{priceChangeRatio,jdbcType=DECIMAL}, #{priceChange,jdbcType=DECIMAL}, #{turnoverRate,jdbcType=DECIMAL},
@@ -59,7 +61,7 @@
   </insert>
     <insert id="insertSelective" useGeneratedKeys="true" keyProperty="idShareInfo"
             parameterType="com.farm.wheat.share.biz.dto.SharePriceDto">
-        insert into share_price
+        REPLACE into share_price
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="idSharePrice != null">
                 ID_SHARE_PRICE,
@@ -67,14 +69,20 @@
             <if test="idShareInfo != null">
                 ID_SHARE_INFO,
             </if>
+            <if test="quarter != null">
+                QUARTER,
+            </if>
+            <if test="year != null">
+                YEAR,
+            </if>
             <if test="todayOpenPrice != null">
                 TODAY_OPEN_PRICE,
             </if>
+            <if test="todayEndPrice != null">
+                TODAY_END_PRICE,
+            </if>
             <if test="yesterdayEndPrice != null">
                 YESTERDAY_END_PRICE,
-            </if>
-            <if test="todayPrice != null">
-                TODAY_PRICE,
             </if>
             <if test="todayMaxPrice != null">
                 TODAY_MAX_PRICE,
@@ -135,14 +143,20 @@
             <if test="idShareInfo != null">
                 #{idShareInfo,jdbcType=INTEGER},
             </if>
+            <if test="quarter != null">
+                #{quarter,jdbcType=INTEGER},
+            </if>
+            <if test="year != null">
+                #{year,jdbcType=INTEGER},
+            </if>
             <if test="todayOpenPrice != null">
                 #{todayOpenPrice,jdbcType=DECIMAL},
             </if>
+            <if test="todayEndPrice != null">
+                #{todayEndPrice,jdbcType=DECIMAL},
+            </if>
             <if test="yesterdayEndPrice != null">
                 #{yesterdayEndPrice,jdbcType=DECIMAL},
-            </if>
-            <if test="todayPrice != null">
-                #{todayPrice,jdbcType=DECIMAL},
             </if>
             <if test="todayMaxPrice != null">
                 #{todayMaxPrice,jdbcType=DECIMAL},
@@ -206,11 +220,11 @@
             <if test="todayOpenPrice != null">
                 TODAY_OPEN_PRICE = #{todayOpenPrice,jdbcType=DECIMAL},
             </if>
+            <if test="todayEndPrice != null">
+                TODAY_END_PRICE = #{todayEndPrice,jdbcType=DECIMAL},
+            </if>
             <if test="yesterdayEndPrice != null">
                 YESTERDAY_END_PRICE = #{yesterdayEndPrice,jdbcType=DECIMAL},
-            </if>
-            <if test="todayPrice != null">
-                TODAY_PRICE = #{todayPrice,jdbcType=DECIMAL},
             </if>
             <if test="todayMaxPrice != null">
                 TODAY_MAX_PRICE = #{todayMaxPrice,jdbcType=DECIMAL},
@@ -264,8 +278,8 @@
     update share_price
     set ID_SHARE_INFO = #{idShareInfo,jdbcType=INTEGER},
       TODAY_OPEN_PRICE = #{todayOpenPrice,jdbcType=DECIMAL},
+      TODAY_END_PRICE = #{todayEndPrice,jdbcType=DECIMAL},
       YESTERDAY_END_PRICE = #{yesterdayEndPrice,jdbcType=DECIMAL},
-      TODAY_PRICE = #{todayPrice,jdbcType=DECIMAL},
       TODAY_MAX_PRICE = #{todayMaxPrice,jdbcType=DECIMAL},
       TODAY_MIN_PRICE = #{todayMinPrice,jdbcType=DECIMAL},
       TRADING_VOLUME = #{tradingVolume,jdbcType=INTEGER},

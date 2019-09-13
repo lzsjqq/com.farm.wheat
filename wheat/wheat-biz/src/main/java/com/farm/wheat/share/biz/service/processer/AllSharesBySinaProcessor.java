@@ -1,14 +1,11 @@
 package com.farm.wheat.share.biz.service.processer;
 
 import com.alibaba.fastjson.JSONObject;
-import com.farm.common.utils.DateUtils;
 import com.farm.common.utils.NullCheckUtils;
 import com.farm.wheat.share.biz.constant.ShareConst;
 import com.farm.wheat.share.biz.constant.ShareSource;
 import com.farm.wheat.share.biz.dto.ShareInfoDto;
-import com.farm.wheat.share.biz.dto.SharePriceBaseDTO;
 import com.farm.wheat.share.biz.service.pipeline.AllSharesPipeline;
-import com.farm.wheat.share.biz.service.pipeline.ShareNewestByTbPipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +14,11 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
-import us.codecraft.webmagic.pipeline.FilePipeline;
 import us.codecraft.webmagic.pipeline.Pipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.Selectable;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

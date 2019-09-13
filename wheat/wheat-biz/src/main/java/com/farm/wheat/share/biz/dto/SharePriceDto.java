@@ -4,17 +4,29 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
 @Data
-public class SharePriceDto extends  EntityDto {
+public class SharePriceDto extends EntityDto {
     private Integer idSharePrice;
 
     private Integer idShareInfo;
 
+    private Integer quarter;
+
+    private Integer year;
+
     private BigDecimal todayOpenPrice;
 
+
+    /**
+     * 昨日收盘价
+     */
     private BigDecimal yesterdayEndPrice;
 
-    private BigDecimal todayPrice;
+    /**
+     * 今日收盘价
+     */
+    private BigDecimal todayEndPrice;
 
     private BigDecimal todayMaxPrice;
 

@@ -5,8 +5,10 @@ import com.farm.common.utils.DateUtils;
 import com.farm.common.utils.NullCheckUtils;
 import com.farm.wheat.share.biz.constant.ShareConst;
 import com.farm.wheat.share.biz.constant.ShareSource;
+import com.farm.wheat.share.biz.dto.ShareInfoDto;
 import com.farm.wheat.share.biz.dto.SharePriceBaseDTO;
-import com.farm.wheat.share.biz.service.pipeline.ShareNewestByTbPipeline;
+import com.farm.wheat.share.biz.mapper.simple.ShareInfoMapper;
+import com.farm.wheat.share.biz.service.pipeline.SharePricePipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +17,19 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
-import us.codecraft.webmagic.pipeline.FilePipeline;
 import us.codecraft.webmagic.pipeline.Pipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.Selectable;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
- * 新浪股票最新数据接口
+ * 网易历史数据接口
  *
  * @Author: xyc
  * @Date: 2018/12/29 15:20
@@ -36,26 +39,45 @@ import java.util.List;
 public class ShareNewestByTbProcessor implements PageProcessor {
 
     private Logger logger = LoggerFactory.getLogger(ShareNewestByTbProcessor.class);
+    private static String url = "http://qt.gtimg.cn/q=";
+    @Resource
+    private ShareInfoMapper shareInfoMapper;
 
     private static final String SPLIT = "~";
     @Autowired
-    private ShareNewestByTbPipeline pipeline;
-    private static String url = "http://qt.gtimg.cn/q=";
+    private SharePricePipeline pipeline;
+
     //    private static String testUrl = "https://www.baidu.com/";
     // 部分一：抓取网站的相关配置，包括编码、抓取间隔、重试次数等
     private Site site = Site.me().setRetryTimes(3).setSleepTime(1000);
 
-    public void start(String code) {
+    public void start() {
         List<Pipeline> list = new ArrayList<>();
         list.add(pipeline);
-        Spider.create(new ShareNewestByTbProcessor()) // 实例化spider
-                //从"https://github.com/code4craft"开始抓
-                .addUrl(url + code)
-                .thread(1)
-                .setDownloader(new HttpClientDownloader())
-                .setPipelines(list)
-//                .setDownloader(getProxyDownload("127.0.0.1", "8118"))
-                .run();  //启动爬虫
+        List<ShareInfoDto> shareInfos = shareInfoMapper.selectAll();
+        if (NullCheckUtils.isNotBlank(shareInfos)) {
+            for (ShareInfoDto shareInfo : shareInfos) {
+                String shareCode = shareInfo.getShareCode();
+                Integer source = shareInfo.getSource();
+                Spider.create(new ShareNewestByTbProcessor()) // 实例化spider
+                        .addUrl(url + getCode(shareCode, source))
+                        .thread(1)
+                        .setDownloader(new HttpClientDownloader())
+                        .setPipelines(list)
+                        .run();  //启动爬虫
+            }
+        }
+
+    }
+
+
+    private String getCode(String shareCode, Integer source) {
+        if (source == 100) {
+            return "sh" + shareCode;
+        } else if (source == 200 || source == 201 || source == 202) {
+            return "sz" + shareCode;
+        }
+        return shareCode;
     }
 
 
@@ -66,7 +88,11 @@ public class ShareNewestByTbProcessor implements PageProcessor {
             ///div/div/div
             List<Selectable> nodes = html.xpath("body/text()").nodes();
             List<SharePriceBaseDTO> sharePriceBaseDTOList = new ArrayList<>();
+
             if (NullCheckUtils.isNotBlank(nodes)) {
+                Date date = new Date();
+                int year = DateUtils.getYear(date);
+                int quarter = DateUtils.getQuarter(date);
                 for (Selectable node : nodes) {
                     String sharePrices = node.get();
                     System.out.println(sharePrices);
@@ -74,11 +100,14 @@ public class ShareNewestByTbProcessor implements PageProcessor {
                         String[] prices = sharePrices.split(SPLIT);
                         if (NullCheckUtils.isNotBlank(prices)) {
                             SharePriceBaseDTO sharePriceBaseDTO = new SharePriceBaseDTO();
+                            sharePriceBaseDTO.setYear(year);
+                            sharePriceBaseDTO.setQuarter(quarter);
                             sharePriceBaseDTO.setSource(ShareSource.getSource(prices[0]));
                             sharePriceBaseDTO.setShareName(prices[1].replaceAll(" ", ""));
                             sharePriceBaseDTO.setShareCode(prices[2]);
-                            sharePriceBaseDTO.setTodayPrice(new BigDecimal(prices[3]));
+                            sharePriceBaseDTO.setTodayEndPrice(new BigDecimal(prices[3]));
                             sharePriceBaseDTO.setYesterdayEndPrice(new BigDecimal(prices[4]));
+                            sharePriceBaseDTO.setTodayEndPrice(new BigDecimal(prices[4]));
                             sharePriceBaseDTO.setTodayOpenPrice(new BigDecimal(prices[5]));
                             sharePriceBaseDTO.setTheOuter(Integer.valueOf(prices[7]));
                             sharePriceBaseDTO.setTheInner(Integer.valueOf(prices[8]));
@@ -95,6 +124,8 @@ public class ShareNewestByTbProcessor implements PageProcessor {
                             sharePriceBaseDTO.setCirculationMarketValue(new BigDecimal(prices[44]));
                             sharePriceBaseDTO.setTotalMarketValue(new BigDecimal(prices[45]));
                             sharePriceBaseDTO.setPbRatio(new BigDecimal(prices[46]));
+                            sharePriceBaseDTO.setCreateBy(ShareConst.SOURCE_TX);
+                            sharePriceBaseDTO.setUpdateBy(ShareConst.SOURCE_TX);
                             sharePriceBaseDTOList.add(sharePriceBaseDTO);
                         }
 

@@ -4,6 +4,7 @@ package com.farm.wheat.share.biz.dto;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @description:
@@ -40,4 +41,9 @@ public class ShareBaseInfoDTO {
     private BigDecimal totalMarketValue;
 
     private Integer source;
+
+
+    private String createBy;
+
+    private String updateBy;
 }

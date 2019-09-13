@@ -18,14 +18,15 @@ public class SharePriceBaseDTO extends ShareBaseInfoDTO {
      * 今日开盘价
      */
     private BigDecimal todayOpenPrice;
+
     /**
      * 昨日收盘价
      */
     private BigDecimal yesterdayEndPrice;
     /**
-     * 当前价格
+     * 今日收盘价
      */
-    private BigDecimal todayPrice;
+    private BigDecimal todayEndPrice;
     /**
      * 今日最高价
      */
@@ -74,6 +75,9 @@ public class SharePriceBaseDTO extends ShareBaseInfoDTO {
      */
     private BigDecimal amplitude;
 
+    private Integer quarter;
+
+    private Integer year;
 
 
 }
