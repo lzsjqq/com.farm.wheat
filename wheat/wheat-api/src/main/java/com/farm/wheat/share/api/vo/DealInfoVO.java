@@ -1,11 +1,11 @@
-package com.farm.wheat.share.biz.po;
+package com.farm.wheat.share.api.vo;
 
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
 @Data
-public class DealInfoPO {
+public class DealInfoVO {
     private Integer idDealInfo;
 
     private Date tradingDate;
@@ -15,8 +15,6 @@ public class DealInfoPO {
     private String shareName;
 
     private BigDecimal dealPrice;
-
-    private BigDecimal sellPrice;
 
     private BigDecimal stopLossPrice;
 
@@ -45,5 +43,4 @@ public class DealInfoPO {
     private Date updateTime;
 
     private String reason;
-
 }

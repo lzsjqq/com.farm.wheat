@@ -7,6 +7,7 @@
         <result column="share_code" property="shareCode" jdbcType="VARCHAR"/>
         <result column="share_name" property="shareName" jdbcType="VARCHAR"/>
         <result column="deal_price" property="dealPrice" jdbcType="DECIMAL"/>
+        <result column="sell_price" property="sellPrice" jdbcType="DECIMAL"/>
         <result column="stop_loss_price" property="stopLossPrice" jdbcType="DECIMAL"/>
         <result column="low_price" property="lowPrice" jdbcType="DECIMAL"/>
         <result column="high_price" property="highPrice" jdbcType="DECIMAL"/>
@@ -26,7 +27,7 @@
         <result column="simple_name" property="simpleName" jdbcType="VARBINARY"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id_deal_info, trading_date, share_code, share_name, deal_price, stop_loss_price, 
+    id_deal_info, trading_date, share_code, share_name, deal_price,sell_price, stop_loss_price,
     low_price, high_price, profit, five_low_price, five_high_price, five_profit, ten_low_price, 
     ten_high_price, ten_profit, R_rate, reason,create_time, update_time
   </sql>
@@ -285,4 +286,13 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id_deal_info = #{idDealInfo,jdbcType=INTEGER}
   </update>
+    <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.farm.wheat.share.biz.dto.DealInfoDTO">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from deal_info
+        <where>
+            <if test="tradingDate!=null">and trading_date=#{tradingDate}</if>
+        </where>
+
+    </select>
 </mapper>
