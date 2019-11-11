@@ -20,7 +20,7 @@ public class DealDetailInfoVO {
     private BigDecimal dealPrice;
 
     private Integer volume;
-
+    @ApiModelProperty("1=买入 2=卖出")
     private String target;
 
     private BigDecimal stopLossPrice;
