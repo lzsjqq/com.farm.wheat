@@ -18,6 +18,7 @@
         <result column="ten_low_price" property="tenLowPrice" jdbcType="DECIMAL"/>
         <result column="ten_high_price" property="tenHighPrice" jdbcType="DECIMAL"/>
         <result column="ten_profit" property="tenProfit" jdbcType="DECIMAL"/>
+        <result column="volume" property="volume" />
         <result column="R_rate" property="rRate" jdbcType="DECIMAL"/>
         <result column="reason" property="reason"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
@@ -29,7 +30,7 @@
     <sql id="Base_Column_List">
     id_deal_info, trading_date, share_code, share_name, deal_price,sell_price, stop_loss_price,
     low_price, high_price, profit, five_low_price, five_high_price, five_profit, ten_low_price, 
-    ten_high_price, ten_profit, R_rate, reason,create_time, update_time
+    ten_high_price, ten_profit, R_rate, reason,create_time, update_time,volume
   </sql>
     <sql id="Blob_Column_List">
     simple_name
