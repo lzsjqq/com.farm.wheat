@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="main.java.com.farm.wheat.share.biz.mapper.simple.DealDetailInfoMapper" >
-  <resultMap id="BaseResultMap" type="main.java.com.farm.wheat.share.biz.po.DealDetailInfo" >
+<mapper namespace="com.farm.wheat.share.biz.mapper.simple.DealDetailInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.farm.wheat.share.biz.po.DealDetailInfoPO" >
     <id column="id_deal_detail_info" property="idDealDetailInfo" jdbcType="INTEGER" />
     <result column="trading_date" property="tradingDate" jdbcType="DATE" />
     <result column="share_code" property="shareCode" jdbcType="VARCHAR" />
@@ -23,7 +23,7 @@
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="main.java.com.farm.wheat.share.biz.po.DealDetailInfo" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="com.farm.wheat.share.biz.po.DealDetailInfoPO" extends="BaseResultMap" >
     <result column="reason" property="reason" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -46,7 +46,7 @@
     delete from deal_detail_info
     where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="main.java.com.farm.wheat.share.biz.po.DealDetailInfo" >
+  <insert id="insert" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO" >
     insert into deal_detail_info (id_deal_detail_info, trading_date, share_code, 
       share_name, deal_price, volume, 
       target, stop_loss_price, low_price, 
@@ -64,7 +64,7 @@
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{reason,jdbcType=LONGVARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="main.java.com.farm.wheat.share.biz.po.DealDetailInfo" >
+  <insert id="insertSelective" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO" >
     insert into deal_detail_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="idDealDetailInfo != null" >
@@ -197,7 +197,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="main.java.com.farm.wheat.share.biz.po.DealDetailInfo" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO" >
     update deal_detail_info
     <set >
       <if test="tradingDate != null" >
@@ -263,7 +263,7 @@
     </set>
     where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="main.java.com.farm.wheat.share.biz.po.DealDetailInfo" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO" >
     update deal_detail_info
     set trading_date = #{tradingDate,jdbcType=DATE},
       share_code = #{shareCode,jdbcType=VARCHAR},
@@ -287,7 +287,7 @@
       reason = #{reason,jdbcType=LONGVARCHAR}
     where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="main.java.com.farm.wheat.share.biz.po.DealDetailInfo" >
+  <update id="updateByPrimaryKey" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO" >
     update deal_detail_info
     set trading_date = #{tradingDate,jdbcType=DATE},
       share_code = #{shareCode,jdbcType=VARCHAR},

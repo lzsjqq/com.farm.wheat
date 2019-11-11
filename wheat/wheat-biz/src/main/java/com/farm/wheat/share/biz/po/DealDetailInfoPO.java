@@ -4,9 +4,10 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
 @Data
-public class DealInfoPO {
-    private Integer idDealInfo;
+public class DealDetailInfoPO {
+    private Integer idDealDetailInfo;
 
     private Date tradingDate;
 
@@ -16,7 +17,9 @@ public class DealInfoPO {
 
     private BigDecimal dealPrice;
 
-    private BigDecimal sellPrice;
+    private Integer volume;
+
+    private String target;
 
     private BigDecimal stopLossPrice;
 
@@ -45,7 +48,5 @@ public class DealInfoPO {
     private Date updateTime;
 
     private String reason;
-
-    private Integer volume;
 
 }

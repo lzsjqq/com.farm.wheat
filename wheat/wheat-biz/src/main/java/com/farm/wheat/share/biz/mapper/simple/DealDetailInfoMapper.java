@@ -1,19 +1,21 @@
-package main.java.com.farm.wheat.share.biz.mapper.simple;
+package com.farm.wheat.share.biz.mapper.simple;
 
-import main.java.com.farm.wheat.share.biz.po.DealDetailInfo;
+import com.farm.wheat.share.biz.po.DealDetailInfoPO;
+import org.apache.ibatis.annotations.Mapper;
 
+@Mapper
 public interface DealDetailInfoMapper {
     int deleteByPrimaryKey(Integer idDealDetailInfo);
 
-    int insert(DealDetailInfo record);
+    int insert(DealDetailInfoPO record);
 
-    int insertSelective(DealDetailInfo record);
+    int insertSelective(DealDetailInfoPO record);
 
-    DealDetailInfo selectByPrimaryKey(Integer idDealDetailInfo);
+    DealDetailInfoPO selectByPrimaryKey(Integer idDealDetailInfo);
 
-    int updateByPrimaryKeySelective(DealDetailInfo record);
+    int updateByPrimaryKeySelective(DealDetailInfoPO record);
 
-    int updateByPrimaryKeyWithBLOBs(DealDetailInfo record);
+    int updateByPrimaryKeyWithBLOBs(DealDetailInfoPO record);
 
-    int updateByPrimaryKey(DealDetailInfo record);
+    int updateByPrimaryKey(DealDetailInfoPO record);
 }
