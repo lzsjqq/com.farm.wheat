@@ -1,14 +1,16 @@
-package com.farm.wheat.share.biz.dto;
+package com.farm.wheat.share.api.vo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class DealInfoDTO extends EntityDto {
-
-
+@ApiModel(value = "DealDetailInfoVO", description = "DealDetailInfoVO")
+public class DealDetailInfoVO {
+    @ApiModelProperty("交易日")
     private Date tradingDate;
 
     private String shareCode;
@@ -16,6 +18,10 @@ public class DealInfoDTO extends EntityDto {
     private String shareName;
 
     private BigDecimal dealPrice;
+
+    private Integer volume;
+
+    private String target;
 
     private BigDecimal stopLossPrice;
 
@@ -39,11 +45,7 @@ public class DealInfoDTO extends EntityDto {
 
     private BigDecimal rRate;
 
-    private Date createTime;
-
-    private Date updateTime;
 
     private String reason;
 
-    private Integer volume;
 }

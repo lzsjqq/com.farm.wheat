@@ -20,11 +20,13 @@ public interface DealInfoMapper {
 
     DealInfoPO selectByPrimaryKey(Integer idDealInfo);
 
-    Page<DealInfoPO>  selectBySelective(DealInfoDTO dealInfoDTO);
+    Page<DealInfoPO> selectBySelective(DealInfoDTO dealInfoDTO);
 
     int updateByPrimaryKeySelective(DealInfoPO record);
 
     int updateByPrimaryKeyWithBLOBs(DealInfoPO record);
 
     int updateByPrimaryKey(DealInfoPO record);
+
+    DealInfoPO selectByShareCode(@Param("shareCode") String shareCode);
 }

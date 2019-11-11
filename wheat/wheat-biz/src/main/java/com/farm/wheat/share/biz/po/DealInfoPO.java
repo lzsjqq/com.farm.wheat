@@ -16,8 +16,6 @@ public class DealInfoPO {
 
     private BigDecimal dealPrice;
 
-    private BigDecimal sellPrice;
-
     private BigDecimal stopLossPrice;
 
     private BigDecimal lowPrice;
@@ -37,6 +35,8 @@ public class DealInfoPO {
     private BigDecimal tenHighPrice;
 
     private BigDecimal tenProfit;
+
+    private BigDecimal firstCost;
 
     private BigDecimal rRate;
 

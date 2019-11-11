@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class DealInfoDTO extends EntityDto {
-
+public class DealDetailInfoDTO extends EntityDto {
+    private Integer idDealDetailInfo;
 
     private Date tradingDate;
 
@@ -16,6 +16,10 @@ public class DealInfoDTO extends EntityDto {
     private String shareName;
 
     private BigDecimal dealPrice;
+
+    private Integer volume;
+
+    private String target;
 
     private BigDecimal stopLossPrice;
 
@@ -45,5 +49,4 @@ public class DealInfoDTO extends EntityDto {
 
     private String reason;
 
-    private Integer volume;
 }

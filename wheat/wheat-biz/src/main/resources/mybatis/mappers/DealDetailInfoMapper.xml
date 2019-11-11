@@ -1,52 +1,66 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.farm.wheat.share.biz.mapper.simple.DealDetailInfoMapper" >
-  <resultMap id="BaseResultMap" type="com.farm.wheat.share.biz.po.DealDetailInfoPO" >
-    <id column="id_deal_detail_info" property="idDealDetailInfo" jdbcType="INTEGER" />
-    <result column="trading_date" property="tradingDate" jdbcType="DATE" />
-    <result column="share_code" property="shareCode" jdbcType="VARCHAR" />
-    <result column="share_name" property="shareName" jdbcType="VARCHAR" />
-    <result column="deal_price" property="dealPrice" jdbcType="DECIMAL" />
-    <result column="volume" property="volume" jdbcType="INTEGER" />
-    <result column="target" property="target" jdbcType="VARCHAR" />
-    <result column="stop_loss_price" property="stopLossPrice" jdbcType="DECIMAL" />
-    <result column="low_price" property="lowPrice" jdbcType="DECIMAL" />
-    <result column="high_price" property="highPrice" jdbcType="DECIMAL" />
-    <result column="profit" property="profit" jdbcType="DECIMAL" />
-    <result column="five_low_price" property="fiveLowPrice" jdbcType="DECIMAL" />
-    <result column="five_high_price" property="fiveHighPrice" jdbcType="DECIMAL" />
-    <result column="five_profit" property="fiveProfit" jdbcType="DECIMAL" />
-    <result column="ten_low_price" property="tenLowPrice" jdbcType="DECIMAL" />
-    <result column="ten_high_price" property="tenHighPrice" jdbcType="DECIMAL" />
-    <result column="ten_profit" property="tenProfit" jdbcType="DECIMAL" />
-    <result column="R_rate" property="rRate" jdbcType="DECIMAL" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-  </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.farm.wheat.share.biz.po.DealDetailInfoPO" extends="BaseResultMap" >
-    <result column="reason" property="reason" jdbcType="LONGVARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
+<mapper namespace="com.farm.wheat.share.biz.mapper.simple.DealDetailInfoMapper">
+    <resultMap id="BaseResultMap" type="com.farm.wheat.share.biz.po.DealDetailInfoPO">
+        <id column="id_deal_detail_info" property="idDealDetailInfo" jdbcType="INTEGER"/>
+        <result column="trading_date" property="tradingDate" jdbcType="DATE"/>
+        <result column="share_code" property="shareCode" jdbcType="VARCHAR"/>
+        <result column="share_name" property="shareName" jdbcType="VARCHAR"/>
+        <result column="deal_price" property="dealPrice" jdbcType="DECIMAL"/>
+        <result column="volume" property="volume" jdbcType="INTEGER"/>
+        <result column="target" property="target" jdbcType="VARCHAR"/>
+        <result column="stop_loss_price" property="stopLossPrice" jdbcType="DECIMAL"/>
+        <result column="low_price" property="lowPrice" jdbcType="DECIMAL"/>
+        <result column="high_price" property="highPrice" jdbcType="DECIMAL"/>
+        <result column="profit" property="profit" jdbcType="DECIMAL"/>
+        <result column="five_low_price" property="fiveLowPrice" jdbcType="DECIMAL"/>
+        <result column="five_high_price" property="fiveHighPrice" jdbcType="DECIMAL"/>
+        <result column="five_profit" property="fiveProfit" jdbcType="DECIMAL"/>
+        <result column="ten_low_price" property="tenLowPrice" jdbcType="DECIMAL"/>
+        <result column="ten_high_price" property="tenHighPrice" jdbcType="DECIMAL"/>
+        <result column="ten_profit" property="tenProfit" jdbcType="DECIMAL"/>
+        <result column="R_rate" property="rRate" jdbcType="DECIMAL"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.farm.wheat.share.biz.po.DealDetailInfoPO" extends="BaseResultMap">
+        <result column="reason" property="reason" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     id_deal_detail_info, trading_date, share_code, share_name, deal_price, volume, target, 
     stop_loss_price, low_price, high_price, profit, five_low_price, five_high_price, 
     five_profit, ten_low_price, ten_high_price, ten_profit, R_rate, create_time, update_time
   </sql>
-  <sql id="Blob_Column_List" >
+    <sql id="Blob_Column_List">
     reason
   </sql>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from deal_detail_info
-    where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from deal_detail_info
+        where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectBySelective" parameterType="com.farm.wheat.share.biz.dto.DealDetailInfoDTO"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from deal_detail_info
+        <where>
+            <if test="tradingDate!=null">and trading_date=#{tradingDate}</if>
+        </where>
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from deal_detail_info
     where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO" >
+    <insert id="insert" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO">
     insert into deal_detail_info (id_deal_detail_info, trading_date, share_code, 
       share_name, deal_price, volume, 
       target, stop_loss_price, low_price, 
@@ -64,206 +78,206 @@
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{reason,jdbcType=LONGVARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO" >
-    insert into deal_detail_info
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="idDealDetailInfo != null" >
-        id_deal_detail_info,
-      </if>
-      <if test="tradingDate != null" >
-        trading_date,
-      </if>
-      <if test="shareCode != null" >
-        share_code,
-      </if>
-      <if test="shareName != null" >
-        share_name,
-      </if>
-      <if test="dealPrice != null" >
-        deal_price,
-      </if>
-      <if test="volume != null" >
-        volume,
-      </if>
-      <if test="target != null" >
-        target,
-      </if>
-      <if test="stopLossPrice != null" >
-        stop_loss_price,
-      </if>
-      <if test="lowPrice != null" >
-        low_price,
-      </if>
-      <if test="highPrice != null" >
-        high_price,
-      </if>
-      <if test="profit != null" >
-        profit,
-      </if>
-      <if test="fiveLowPrice != null" >
-        five_low_price,
-      </if>
-      <if test="fiveHighPrice != null" >
-        five_high_price,
-      </if>
-      <if test="fiveProfit != null" >
-        five_profit,
-      </if>
-      <if test="tenLowPrice != null" >
-        ten_low_price,
-      </if>
-      <if test="tenHighPrice != null" >
-        ten_high_price,
-      </if>
-      <if test="tenProfit != null" >
-        ten_profit,
-      </if>
-      <if test="rRate != null" >
-        R_rate,
-      </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
-      <if test="updateTime != null" >
-        update_time,
-      </if>
-      <if test="reason != null" >
-        reason,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="idDealDetailInfo != null" >
-        #{idDealDetailInfo,jdbcType=INTEGER},
-      </if>
-      <if test="tradingDate != null" >
-        #{tradingDate,jdbcType=DATE},
-      </if>
-      <if test="shareCode != null" >
-        #{shareCode,jdbcType=VARCHAR},
-      </if>
-      <if test="shareName != null" >
-        #{shareName,jdbcType=VARCHAR},
-      </if>
-      <if test="dealPrice != null" >
-        #{dealPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="volume != null" >
-        #{volume,jdbcType=INTEGER},
-      </if>
-      <if test="target != null" >
-        #{target,jdbcType=VARCHAR},
-      </if>
-      <if test="stopLossPrice != null" >
-        #{stopLossPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="lowPrice != null" >
-        #{lowPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="highPrice != null" >
-        #{highPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="profit != null" >
-        #{profit,jdbcType=DECIMAL},
-      </if>
-      <if test="fiveLowPrice != null" >
-        #{fiveLowPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="fiveHighPrice != null" >
-        #{fiveHighPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="fiveProfit != null" >
-        #{fiveProfit,jdbcType=DECIMAL},
-      </if>
-      <if test="tenLowPrice != null" >
-        #{tenLowPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="tenHighPrice != null" >
-        #{tenHighPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="tenProfit != null" >
-        #{tenProfit,jdbcType=DECIMAL},
-      </if>
-      <if test="rRate != null" >
-        #{rRate,jdbcType=DECIMAL},
-      </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="reason != null" >
-        #{reason,jdbcType=LONGVARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO" >
-    update deal_detail_info
-    <set >
-      <if test="tradingDate != null" >
-        trading_date = #{tradingDate,jdbcType=DATE},
-      </if>
-      <if test="shareCode != null" >
-        share_code = #{shareCode,jdbcType=VARCHAR},
-      </if>
-      <if test="shareName != null" >
-        share_name = #{shareName,jdbcType=VARCHAR},
-      </if>
-      <if test="dealPrice != null" >
-        deal_price = #{dealPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="volume != null" >
-        volume = #{volume,jdbcType=INTEGER},
-      </if>
-      <if test="target != null" >
-        target = #{target,jdbcType=VARCHAR},
-      </if>
-      <if test="stopLossPrice != null" >
-        stop_loss_price = #{stopLossPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="lowPrice != null" >
-        low_price = #{lowPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="highPrice != null" >
-        high_price = #{highPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="profit != null" >
-        profit = #{profit,jdbcType=DECIMAL},
-      </if>
-      <if test="fiveLowPrice != null" >
-        five_low_price = #{fiveLowPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="fiveHighPrice != null" >
-        five_high_price = #{fiveHighPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="fiveProfit != null" >
-        five_profit = #{fiveProfit,jdbcType=DECIMAL},
-      </if>
-      <if test="tenLowPrice != null" >
-        ten_low_price = #{tenLowPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="tenHighPrice != null" >
-        ten_high_price = #{tenHighPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="tenProfit != null" >
-        ten_profit = #{tenProfit,jdbcType=DECIMAL},
-      </if>
-      <if test="rRate != null" >
-        R_rate = #{rRate,jdbcType=DECIMAL},
-      </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="reason != null" >
-        reason = #{reason,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO" >
+    <insert id="insertSelective" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO">
+        insert into deal_detail_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="idDealDetailInfo != null">
+                id_deal_detail_info,
+            </if>
+            <if test="tradingDate != null">
+                trading_date,
+            </if>
+            <if test="shareCode != null">
+                share_code,
+            </if>
+            <if test="shareName != null">
+                share_name,
+            </if>
+            <if test="dealPrice != null">
+                deal_price,
+            </if>
+            <if test="volume != null">
+                volume,
+            </if>
+            <if test="target != null">
+                target,
+            </if>
+            <if test="stopLossPrice != null">
+                stop_loss_price,
+            </if>
+            <if test="lowPrice != null">
+                low_price,
+            </if>
+            <if test="highPrice != null">
+                high_price,
+            </if>
+            <if test="profit != null">
+                profit,
+            </if>
+            <if test="fiveLowPrice != null">
+                five_low_price,
+            </if>
+            <if test="fiveHighPrice != null">
+                five_high_price,
+            </if>
+            <if test="fiveProfit != null">
+                five_profit,
+            </if>
+            <if test="tenLowPrice != null">
+                ten_low_price,
+            </if>
+            <if test="tenHighPrice != null">
+                ten_high_price,
+            </if>
+            <if test="tenProfit != null">
+                ten_profit,
+            </if>
+            <if test="rRate != null">
+                R_rate,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="reason != null">
+                reason,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="idDealDetailInfo != null">
+                #{idDealDetailInfo,jdbcType=INTEGER},
+            </if>
+            <if test="tradingDate != null">
+                #{tradingDate,jdbcType=DATE},
+            </if>
+            <if test="shareCode != null">
+                #{shareCode,jdbcType=VARCHAR},
+            </if>
+            <if test="shareName != null">
+                #{shareName,jdbcType=VARCHAR},
+            </if>
+            <if test="dealPrice != null">
+                #{dealPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="volume != null">
+                #{volume,jdbcType=INTEGER},
+            </if>
+            <if test="target != null">
+                #{target,jdbcType=VARCHAR},
+            </if>
+            <if test="stopLossPrice != null">
+                #{stopLossPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="lowPrice != null">
+                #{lowPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="highPrice != null">
+                #{highPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="profit != null">
+                #{profit,jdbcType=DECIMAL},
+            </if>
+            <if test="fiveLowPrice != null">
+                #{fiveLowPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="fiveHighPrice != null">
+                #{fiveHighPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="fiveProfit != null">
+                #{fiveProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="tenLowPrice != null">
+                #{tenLowPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="tenHighPrice != null">
+                #{tenHighPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="tenProfit != null">
+                #{tenProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="rRate != null">
+                #{rRate,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reason != null">
+                #{reason,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO">
+        update deal_detail_info
+        <set>
+            <if test="tradingDate != null">
+                trading_date = #{tradingDate,jdbcType=DATE},
+            </if>
+            <if test="shareCode != null">
+                share_code = #{shareCode,jdbcType=VARCHAR},
+            </if>
+            <if test="shareName != null">
+                share_name = #{shareName,jdbcType=VARCHAR},
+            </if>
+            <if test="dealPrice != null">
+                deal_price = #{dealPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="volume != null">
+                volume = #{volume,jdbcType=INTEGER},
+            </if>
+            <if test="target != null">
+                target = #{target,jdbcType=VARCHAR},
+            </if>
+            <if test="stopLossPrice != null">
+                stop_loss_price = #{stopLossPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="lowPrice != null">
+                low_price = #{lowPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="highPrice != null">
+                high_price = #{highPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="profit != null">
+                profit = #{profit,jdbcType=DECIMAL},
+            </if>
+            <if test="fiveLowPrice != null">
+                five_low_price = #{fiveLowPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="fiveHighPrice != null">
+                five_high_price = #{fiveHighPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="fiveProfit != null">
+                five_profit = #{fiveProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="tenLowPrice != null">
+                ten_low_price = #{tenLowPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="tenHighPrice != null">
+                ten_high_price = #{tenHighPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="tenProfit != null">
+                ten_profit = #{tenProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="rRate != null">
+                R_rate = #{rRate,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reason != null">
+                reason = #{reason,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO">
     update deal_detail_info
     set trading_date = #{tradingDate,jdbcType=DATE},
       share_code = #{shareCode,jdbcType=VARCHAR},
@@ -287,7 +301,7 @@
       reason = #{reason,jdbcType=LONGVARCHAR}
     where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO" >
+    <update id="updateByPrimaryKey" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO">
     update deal_detail_info
     set trading_date = #{tradingDate,jdbcType=DATE},
       share_code = #{shareCode,jdbcType=VARCHAR},
