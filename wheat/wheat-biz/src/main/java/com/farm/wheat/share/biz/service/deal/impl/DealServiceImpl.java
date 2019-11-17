@@ -1,10 +1,7 @@
 package com.farm.wheat.share.biz.service.deal.impl;
 
 import com.farm.common.utils.DateUtils;
-import com.farm.common.utils.NullCheckUtils;
-import com.farm.wheat.share.biz.dto.DealDetailInfoDTO;
-import com.farm.wheat.share.biz.dto.DealInfoDTO;
-import com.farm.wheat.share.biz.dto.ShareInfoDto;
+import com.farm.wheat.share.biz.dto.*;
 import com.farm.wheat.share.biz.mapper.simple.DealDetailInfoMapper;
 import com.farm.wheat.share.biz.mapper.simple.DealInfoMapper;
 import com.farm.wheat.share.biz.po.DealDetailInfoPO;
@@ -13,12 +10,10 @@ import com.farm.wheat.share.biz.service.deal.DealService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.xml.ws.soap.Addressing;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -48,42 +43,41 @@ public class DealServiceImpl implements DealService {
 
     @Transactional
     @Override
-    public int insertDetail(DealDetailInfoPO dealDetailInfoPO) throws Exception {
-        Date tradingDate = dealDetailInfoPO.getTradingDate();
+    public int insertDetail(DealDetailInfoDTO dealDetailInfoDTO) throws Exception {
+        Date tradingDate = dealDetailInfoDTO.getTradingDate();
         if (null == tradingDate) {
-            dealDetailInfoPO.setTradingDate(DateUtils.dateToDate(new Date(), DateUtils.YYYY_MM_DD));
+            dealDetailInfoDTO.setTradingDate(DateUtils.dateToDate(new Date(), DateUtils.YYYY_MM_DD));
         }
-        String reason = dealDetailInfoPO.getReason();
-        StringBuilder sb=new StringBuilder();
+        String reason = dealDetailInfoDTO.getReason();
+        StringBuilder sb = new StringBuilder();
         String[] split = reason.split(";");
         for (int i = 0; i < split.length; i++) {
-            if(i!=split.length-1){
-                sb.append(split[i]+"\n");
+            if (i != split.length - 1) {
+                sb.append(split[i] + "\r\n");
+                continue;
             }
             sb.append(split[i]);
         }
-        dealDetailInfoPO.setReason(sb.toString());
-        int insert = dealDetailInfoMapper.insert(dealDetailInfoPO);
-        String shareCode = dealDetailInfoPO.getShareCode();
+        dealDetailInfoDTO.setReason(sb.toString());
 
-
-
-        DealInfoPO dealInfoPO = dealInfoMapper.selectByShareCode(shareCode);
+        String shareCode = dealDetailInfoDTO.getShareCode();
+        // 查询未完成的
+        DealInfoPO dealInfoPO = dealInfoMapper.selectByShareCode(shareCode, DealInfoStatusEnum.CC.getValue());
         if (dealInfoPO == null) {
             DealInfoPO record = new DealInfoPO();
             record.setShareCode(shareCode);
-            record.setShareName(dealDetailInfoPO.getShareName());
-            record.setVolume(dealDetailInfoPO.getVolume());
-            record.setFirstCost(dealDetailInfoPO.getDealPrice());
+            record.setShareName(dealDetailInfoDTO.getShareName());
+            record.setVolume(dealDetailInfoDTO.getVolume());
+            record.setFirstCost(dealDetailInfoDTO.getDealPrice());
             dealInfoMapper.insertSelective(record);
         } else {
-            String target = dealDetailInfoPO.getTarget();
-            if ("1".equals(target)) {
+            String target = dealDetailInfoDTO.getTarget();
+            if (DealTargetEnum.MR.equals(target)) {
                 Integer volume = dealInfoPO.getVolume();
                 BigDecimal firstCost = dealInfoPO.getFirstCost();
                 BigDecimal multiply = firstCost.multiply(new BigDecimal(volume));
-                Integer volumeNow = dealDetailInfoPO.getVolume();
-                BigDecimal dealPrice = dealDetailInfoPO.getDealPrice();
+                Integer volumeNow = dealDetailInfoDTO.getVolume();
+                BigDecimal dealPrice = dealDetailInfoDTO.getDealPrice();
                 BigDecimal multiplyNow = dealPrice.multiply(new BigDecimal(volumeNow));
                 Integer now = volume + volumeNow;
                 BigDecimal costNow = multiplyNow.add(multiply).divide(new BigDecimal(now)).setScale(3, BigDecimal.ROUND_HALF_UP);
@@ -94,18 +88,21 @@ public class DealServiceImpl implements DealService {
                 Integer volume = dealInfoPO.getVolume();
                 BigDecimal firstCost = dealInfoPO.getFirstCost();
                 BigDecimal multiply = firstCost.multiply(new BigDecimal(volume));
-                Integer volumeNow = dealDetailInfoPO.getVolume();
-                BigDecimal dealPrice = dealDetailInfoPO.getDealPrice();
+                Integer volumeNow = dealDetailInfoDTO.getVolume();
+                BigDecimal dealPrice = dealDetailInfoDTO.getDealPrice();
                 BigDecimal multiplyNow = dealPrice.multiply(new BigDecimal(volumeNow));
                 Integer now = volume - volumeNow;
                 BigDecimal costNow = multiply.subtract(multiplyNow).divide(new BigDecimal(now)).setScale(3, BigDecimal.ROUND_HALF_UP);
+                if (now < 0) {
+                    throw new Exception("小于零了哦！");
+                }
                 dealInfoPO.setFirstCost(costNow);
                 dealInfoPO.setVolume(now);
                 dealInfoMapper.updateByPrimaryKey(dealInfoPO);
             }
 
         }
-
-        return insert;
+        dealDetailInfoDTO.setIdDealInfo(dealInfoPO.getIdDealInfo());
+        return dealDetailInfoMapper.insert(dealDetailInfoDTO);
     }
 }

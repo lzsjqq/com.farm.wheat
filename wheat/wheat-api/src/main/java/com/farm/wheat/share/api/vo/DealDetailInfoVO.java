@@ -45,7 +45,9 @@ public class DealDetailInfoVO {
 
     private BigDecimal rRate;
 
-
     private String reason;
+
+    @ApiModelProperty("1=继续持仓 2=完成交易")
+    private Integer status;
 
 }

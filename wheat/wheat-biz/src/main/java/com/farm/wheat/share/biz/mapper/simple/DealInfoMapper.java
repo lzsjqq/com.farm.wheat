@@ -28,5 +28,5 @@ public interface DealInfoMapper {
 
     int updateByPrimaryKey(DealInfoPO record);
 
-    DealInfoPO selectByShareCode(@Param("shareCode") String shareCode);
+    DealInfoPO selectByShareCode(@Param("shareCode") String shareCode, @Param("status") Integer status);
 }

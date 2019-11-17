@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface DealDetailInfoMapper {
     int deleteByPrimaryKey(Integer idDealDetailInfo);
 
-    int insert(DealDetailInfoPO record);
+    int insert(DealDetailInfoDTO record);
 
     int insertSelective(DealDetailInfoPO record);
 

@@ -18,10 +18,10 @@ public interface DealService {
     /**
      * 插入交易明细
      *
-     * @param dealDetailInfoPO
+     * @param dealDetailInfoDTO
      * @return
      */
-    int insertDetail(DealDetailInfoPO dealDetailInfoPO) throws Exception;
+    int insertDetail(DealDetailInfoDTO dealDetailInfoDTO) throws Exception;
 
     /**
      * 明细

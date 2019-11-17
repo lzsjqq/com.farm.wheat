@@ -3,6 +3,7 @@
 <mapper namespace="com.farm.wheat.share.biz.mapper.simple.DealDetailInfoMapper">
     <resultMap id="BaseResultMap" type="com.farm.wheat.share.biz.po.DealDetailInfoPO">
         <id column="id_deal_detail_info" property="idDealDetailInfo" jdbcType="INTEGER"/>
+        <id column="id_deal_info" property="idDealInfo" jdbcType="INTEGER"/>
         <result column="trading_date" property="tradingDate" jdbcType="DATE"/>
         <result column="share_code" property="shareCode" jdbcType="VARCHAR"/>
         <result column="share_name" property="shareName" jdbcType="VARCHAR"/>
@@ -27,7 +28,7 @@
         <result column="reason" property="reason" jdbcType="LONGVARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id_deal_detail_info, trading_date, share_code, share_name, deal_price, volume, target, 
+    id_deal_detail_info,idDealInfo, trading_date, share_code, share_name, deal_price, volume, target,
     stop_loss_price, low_price, high_price, profit, five_low_price, five_high_price, 
     five_profit, ten_low_price, ten_high_price, ten_profit, R_rate, create_time, update_time
   </sql>
@@ -60,8 +61,8 @@
     delete from deal_detail_info
     where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
   </delete>
-    <insert id="insert" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO">
-    insert into deal_detail_info (id_deal_detail_info, trading_date, share_code, 
+    <insert id="insert" parameterType="com.farm.wheat.share.biz.dto.DealDetailInfoDTO">
+    insert into deal_detail_info (id_deal_detail_info,id_deal_info, trading_date, share_code,
       share_name, deal_price, volume, 
       target, stop_loss_price, low_price, 
       high_price, profit, five_low_price, 
@@ -69,7 +70,7 @@
       ten_high_price, ten_profit, R_rate, 
       create_time, update_time, reason
       )
-    values (#{idDealDetailInfo,jdbcType=INTEGER}, #{tradingDate,jdbcType=DATE}, #{shareCode,jdbcType=VARCHAR}, 
+    values (#{idDealDetailInfo,jdbcType=INTEGER},#{idDealInfo}, #{tradingDate,jdbcType=DATE}, #{shareCode,jdbcType=VARCHAR},
       #{shareName,jdbcType=VARCHAR}, #{dealPrice,jdbcType=DECIMAL}, #{volume,jdbcType=INTEGER}, 
       #{target,jdbcType=VARCHAR}, #{stopLossPrice,jdbcType=DECIMAL}, #{lowPrice,jdbcType=DECIMAL}, 
       #{highPrice,jdbcType=DECIMAL}, #{profit,jdbcType=DECIMAL}, #{fiveLowPrice,jdbcType=DECIMAL}, 

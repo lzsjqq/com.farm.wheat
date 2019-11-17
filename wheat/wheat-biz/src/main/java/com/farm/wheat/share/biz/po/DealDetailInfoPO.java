@@ -9,6 +9,8 @@ import java.util.Date;
 public class DealDetailInfoPO {
     private Integer idDealDetailInfo;
 
+    private Integer idDealInfo;
+
     private Date tradingDate;
 
     private String shareCode;

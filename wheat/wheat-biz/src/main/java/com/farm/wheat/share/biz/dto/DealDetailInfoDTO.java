@@ -9,6 +9,8 @@ import java.util.Date;
 public class DealDetailInfoDTO extends EntityDto {
     private Integer idDealDetailInfo;
 
+    private Integer idDealInfo;
+
     private Date tradingDate;
 
     private String shareCode;
@@ -48,5 +50,7 @@ public class DealDetailInfoDTO extends EntityDto {
     private Date updateTime;
 
     private String reason;
+
+    private Integer status;
 
 }

@@ -21,13 +21,14 @@
         <result column="volume" property="volume"/>
         <result column="R_rate" property="rRate" jdbcType="DECIMAL"/>
         <result column="reason" property="reason"/>
+        <result column="status" property="status"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
     <sql id="Base_Column_List">
     id_deal_info, trading_date, share_code, share_name, deal_price,first_cost, stop_loss_price,
     low_price, high_price, profit, five_low_price, five_high_price, five_profit, ten_low_price, 
-    ten_high_price, ten_profit, R_rate, reason,create_time, update_time,volume
+    ten_high_price, ten_profit, R_rate, reason,create_time, update_time,volume,status
   </sql>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
@@ -41,7 +42,8 @@
         select
         <include refid="Base_Column_List"/>
         from deal_info
-        where share_code = #{shareCode}
+        where share_code = #{shareCode},
+        and status=#{status}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from deal_info
@@ -195,6 +197,9 @@
         <set>
             <if test="tradingDate != null">
                 trading_date = #{tradingDate,jdbcType=DATE},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=DATE},
             </if>
             <if test="shareCode != null">
                 share_code = #{shareCode,jdbcType=VARCHAR},

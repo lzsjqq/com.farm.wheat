@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
 @Data
 public class DealInfoPO {
     private Integer idDealInfo;
@@ -47,5 +48,7 @@ public class DealInfoPO {
     private String reason;
 
     private Integer volume;
+
+    private Integer status;
 
 }

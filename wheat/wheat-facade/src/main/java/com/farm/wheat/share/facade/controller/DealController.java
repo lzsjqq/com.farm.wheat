@@ -4,15 +4,10 @@ import com.farm.common.utils.ConvertUtil;
 import com.farm.wheat.share.api.deal.DealApi;
 import com.farm.wheat.share.api.vo.DealDetailInfoVO;
 import com.farm.wheat.share.api.vo.DealInfoVO;
-import com.farm.wheat.share.api.vo.ShareInfoVO;
-import com.farm.wheat.share.api.vo.request.SharesReq;
 import com.farm.wheat.share.biz.dto.DealDetailInfoDTO;
 import com.farm.wheat.share.biz.dto.DealInfoDTO;
-import com.farm.wheat.share.biz.dto.ShareInfoDto;
 import com.farm.wheat.share.biz.po.DealDetailInfoPO;
-import com.farm.wheat.share.biz.po.DealInfoPO;
 import com.farm.wheat.share.biz.service.deal.DealService;
-import com.farm.wheat.share.biz.service.processer.ShareNewestByTbProcessor;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +36,7 @@ public class DealController implements DealApi {
     @RequestMapping(value = "/insertDetail", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @Override
     public int insertDetail(DealDetailInfoVO dealDetailInfoVO) throws Exception {
-        return dealService.insertDetail(ConvertUtil.convert(dealDetailInfoVO, DealDetailInfoPO.class));
+        return dealService.insertDetail(ConvertUtil.convert(dealDetailInfoVO, DealDetailInfoDTO.class));
     }
 
 
