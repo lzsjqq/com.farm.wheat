@@ -4,8 +4,10 @@ import com.farm.common.utils.DateUtils;
 import com.farm.wheat.share.biz.dto.*;
 import com.farm.wheat.share.biz.mapper.simple.DealDetailInfoMapper;
 import com.farm.wheat.share.biz.mapper.simple.DealInfoMapper;
+import com.farm.wheat.share.biz.mapper.simple.EventMapper;
 import com.farm.wheat.share.biz.po.DealDetailInfoPO;
 import com.farm.wheat.share.biz.po.DealInfoPO;
+import com.farm.wheat.share.biz.po.EventPO;
 import com.farm.wheat.share.biz.service.deal.DealService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -26,6 +28,8 @@ public class DealServiceImpl implements DealService {
     private DealInfoMapper dealInfoMapper;
     @Resource
     private DealDetailInfoMapper dealDetailInfoMapper;
+    @Resource
+    private EventMapper eventMapper;
 
     @Override
     public PageInfo<DealInfoPO> dealInfo(DealInfoDTO record) {
@@ -48,6 +52,11 @@ public class DealServiceImpl implements DealService {
             throw new Exception("尚未清空股票，不能完成的哟!");
         }
         dealInfoMapper.completeDeal(shareCode);
+    }
+
+    @Override
+    public void insertEvent(EventPO convert) {
+        eventMapper.insert(convert);
     }
 
     @Transactional

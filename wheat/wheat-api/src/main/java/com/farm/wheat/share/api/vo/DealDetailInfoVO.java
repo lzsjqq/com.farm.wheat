@@ -12,39 +12,21 @@ import java.util.Date;
 public class DealDetailInfoVO {
     @ApiModelProperty("交易日, 不填默认为当天")
     private Date tradingDate;
-
+    @ApiModelProperty("股票代码")
     private String shareCode;
-
+    @ApiModelProperty("股票名")
     private String shareName;
 
+    @ApiModelProperty("成交价")
     private BigDecimal dealPrice;
-
+    @ApiModelProperty("成交量")
     private Integer volume;
     @ApiModelProperty("1=买入 2=卖出")
     private String target;
 
+    @ApiModelProperty("止损价，不能超过10%")
     private BigDecimal stopLossPrice;
-
-    private BigDecimal lowPrice;
-
-    private BigDecimal highPrice;
-
-    private BigDecimal profit;
-
-    private BigDecimal fiveLowPrice;
-
-    private BigDecimal fiveHighPrice;
-
-    private BigDecimal fiveProfit;
-
-    private BigDecimal tenLowPrice;
-
-    private BigDecimal tenHighPrice;
-
-    private BigDecimal tenProfit;
-
-    private BigDecimal rRate;
-
+    @ApiModelProperty("买卖原因")
     private String reason;
 
     @ApiModelProperty("1=继续持仓 2=完成交易")

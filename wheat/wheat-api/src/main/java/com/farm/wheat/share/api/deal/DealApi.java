@@ -3,6 +3,7 @@ package com.farm.wheat.share.api.deal;
 import com.farm.wheat.share.api.vo.CompleteDealVO;
 import com.farm.wheat.share.api.vo.DealDetailInfoVO;
 import com.farm.wheat.share.api.vo.DealInfoVO;
+import com.farm.wheat.share.api.vo.EventVO;
 import com.farm.wheat.share.biz.dto.DealDetailInfoDTO;
 import com.farm.wheat.share.biz.dto.DealInfoDTO;
 import com.farm.wheat.share.biz.po.DealDetailInfoPO;
@@ -22,7 +23,12 @@ public interface DealApi {
     @ApiOperation(value = "插入交易明细", notes = "插入交易明细")
     int insertDetail(DealDetailInfoVO dealDetailInfoVO) throws Exception;
 
+    @ApiOperation(value = "插入事件", notes = "插入事件")
+    void insertEvent(EventVO eventVO) throws Exception;
+
     @ApiOperation(value = "完成交易", notes = "完成交易")
     void completeDeal(CompleteDealVO completeDealVO) throws Exception;
+
+
 
 }

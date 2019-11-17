@@ -4,6 +4,7 @@ import com.farm.wheat.share.biz.dto.DealDetailInfoDTO;
 import com.farm.wheat.share.biz.dto.DealInfoDTO;
 import com.farm.wheat.share.biz.po.DealDetailInfoPO;
 import com.farm.wheat.share.biz.po.DealInfoPO;
+import com.farm.wheat.share.biz.po.EventPO;
 import com.github.pagehelper.PageInfo;
 
 /**
@@ -36,4 +37,11 @@ public interface DealService {
      * @param shareCode
      */
     void completeDeal(String shareCode) throws Exception;
+
+    /**
+     * 插入事件
+     *
+     * @param convert
+     */
+    void insertEvent(EventPO convert);
 }

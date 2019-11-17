@@ -5,9 +5,11 @@ import com.farm.wheat.share.api.deal.DealApi;
 import com.farm.wheat.share.api.vo.CompleteDealVO;
 import com.farm.wheat.share.api.vo.DealDetailInfoVO;
 import com.farm.wheat.share.api.vo.DealInfoVO;
+import com.farm.wheat.share.api.vo.EventVO;
 import com.farm.wheat.share.biz.dto.DealDetailInfoDTO;
 import com.farm.wheat.share.biz.dto.DealInfoDTO;
 import com.farm.wheat.share.biz.po.DealDetailInfoPO;
+import com.farm.wheat.share.biz.po.EventPO;
 import com.farm.wheat.share.biz.service.deal.DealService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +43,14 @@ public class DealController implements DealApi {
         return dealService.insertDetail(ConvertUtil.convert(dealDetailInfoVO, DealDetailInfoDTO.class));
     }
 
-    @Transactional
     @Override
+    @RequestMapping(value = "/insertEvent", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    public void insertEvent(EventVO eventVO) throws Exception {
+        dealService.insertEvent(ConvertUtil.convert(eventVO, EventPO.class));
+    }
+
+    @Override
+    @RequestMapping(value = "/completeDeal", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     public void completeDeal(CompleteDealVO completeDealVO) throws Exception {
         dealService.completeDeal(completeDealVO.getShareCode());
     }
