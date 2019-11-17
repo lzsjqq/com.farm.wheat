@@ -11,7 +11,7 @@ public class DealDetailInfoDTO extends EntityDto {
 
     private Integer idDealInfo;
 
-    private Date tradingDate;
+    private String tradingDate;
 
     private String shareCode;
 
@@ -49,7 +49,7 @@ public class DealDetailInfoDTO extends EntityDto {
 
     private Date updateTime;
 
-    private String reason;
+    private String plan;
 
     private Integer status;
 

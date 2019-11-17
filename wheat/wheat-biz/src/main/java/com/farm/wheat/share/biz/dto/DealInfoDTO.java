@@ -43,7 +43,7 @@ public class DealInfoDTO extends EntityDto {
 
     private Date updateTime;
 
-    private String reason;
+    private String plan;
 
     private Integer volume;
 }

@@ -42,5 +42,5 @@ public class DealInfoVO {
 
     private Date updateTime;
 
-    private String reason;
+    private String plan;
 }

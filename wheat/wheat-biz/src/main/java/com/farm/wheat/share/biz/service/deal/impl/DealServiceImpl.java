@@ -1,6 +1,7 @@
 package com.farm.wheat.share.biz.service.deal.impl;
 
 import com.farm.common.utils.DateUtils;
+import com.farm.common.utils.NullCheckUtils;
 import com.farm.wheat.share.biz.dto.*;
 import com.farm.wheat.share.biz.mapper.simple.DealDetailInfoMapper;
 import com.farm.wheat.share.biz.mapper.simple.DealInfoMapper;
@@ -62,13 +63,14 @@ public class DealServiceImpl implements DealService {
     @Transactional
     @Override
     public int insertDetail(DealDetailInfoDTO dealDetailInfoDTO) throws Exception {
-        Date tradingDate = dealDetailInfoDTO.getTradingDate();
-        if (null == tradingDate) {
-            dealDetailInfoDTO.setTradingDate(DateUtils.dateToDate(new Date(), DateUtils.YYYY_MM_DD));
+        String tradingDate = dealDetailInfoDTO.getTradingDate();
+        if (NullCheckUtils.isBlank(tradingDate)) {
+            tradingDate = DateUtils.dateToString(new Date(), DateUtils.YYYY_MM_DD);
         }
-        String reason = dealDetailInfoDTO.getReason();
+        dealDetailInfoDTO.setTradingDate(tradingDate);
+        String plan = dealDetailInfoDTO.getPlan();
         StringBuilder sb = new StringBuilder();
-        String[] split = reason.split(";");
+        String[] split = plan.split(";");
         for (int i = 0; i < split.length; i++) {
             if (i != split.length - 1) {
                 sb.append(split[i] + "\r\n");
@@ -76,7 +78,7 @@ public class DealServiceImpl implements DealService {
             }
             sb.append(split[i]);
         }
-        dealDetailInfoDTO.setReason(sb.toString());
+        dealDetailInfoDTO.setPlan(sb.toString());
 
         String shareCode = dealDetailInfoDTO.getShareCode();
         // 查询未完成的

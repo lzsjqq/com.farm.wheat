@@ -45,7 +45,7 @@ public class DealInfoPO {
 
     private Date updateTime;
 
-    private String reason;
+    private String plan;
 
     private Integer volume;
 

@@ -25,21 +25,17 @@
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
     <resultMap id="ResultMapWithBLOBs" type="com.farm.wheat.share.biz.po.DealDetailInfoPO" extends="BaseResultMap">
-        <result column="reason" property="reason" jdbcType="LONGVARCHAR"/>
+        <result column="plan" property="plan" jdbcType="LONGVARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
     id_deal_detail_info,idDealInfo, trading_date, share_code, share_name, deal_price, volume, target,
-    stop_loss_price, low_price, high_price, profit, five_low_price, five_high_price, 
+    stop_loss_price, low_price, high_price, profit, five_low_price, five_high_price, plan
     five_profit, ten_low_price, ten_high_price, ten_profit, R_rate, create_time, update_time
-  </sql>
-    <sql id="Blob_Column_List">
-    reason
   </sql>
     <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
+
         from deal_detail_info
         where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
     </select>
@@ -48,8 +44,6 @@
             resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
         from deal_detail_info
         <where>
             <if test="tradingDate!=null">and trading_date=#{tradingDate}</if>
@@ -68,7 +62,7 @@
       high_price, profit, five_low_price, 
       five_high_price, five_profit, ten_low_price, 
       ten_high_price, ten_profit, R_rate, 
-      create_time, update_time, reason
+      create_time, update_time, plan
       )
     values (#{idDealDetailInfo,jdbcType=INTEGER},#{idDealInfo}, #{tradingDate,jdbcType=DATE}, #{shareCode,jdbcType=VARCHAR},
       #{shareName,jdbcType=VARCHAR}, #{dealPrice,jdbcType=DECIMAL}, #{volume,jdbcType=INTEGER}, 
@@ -76,7 +70,7 @@
       #{highPrice,jdbcType=DECIMAL}, #{profit,jdbcType=DECIMAL}, #{fiveLowPrice,jdbcType=DECIMAL}, 
       #{fiveHighPrice,jdbcType=DECIMAL}, #{fiveProfit,jdbcType=DECIMAL}, #{tenLowPrice,jdbcType=DECIMAL}, 
       #{tenHighPrice,jdbcType=DECIMAL}, #{tenProfit,jdbcType=DECIMAL}, #{rRate,jdbcType=DECIMAL}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{reason,jdbcType=LONGVARCHAR}
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{plan,jdbcType=LONGVARCHAR}
       )
   </insert>
     <insert id="insertSelective" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO">
@@ -142,8 +136,8 @@
             <if test="updateTime != null">
                 update_time,
             </if>
-            <if test="reason != null">
-                reason,
+            <if test="plan != null">
+                plan,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -207,8 +201,8 @@
             <if test="updateTime != null">
                 #{updateTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="reason != null">
-                #{reason,jdbcType=LONGVARCHAR},
+            <if test="plan != null">
+                #{plan,jdbcType=LONGVARCHAR},
             </if>
         </trim>
     </insert>
@@ -272,8 +266,8 @@
             <if test="updateTime != null">
                 update_time = #{updateTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="reason != null">
-                reason = #{reason,jdbcType=LONGVARCHAR},
+            <if test="plan != null">
+                plan = #{plan,jdbcType=LONGVARCHAR},
             </if>
         </set>
         where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
@@ -299,7 +293,7 @@
       R_rate = #{rRate,jdbcType=DECIMAL},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      reason = #{reason,jdbcType=LONGVARCHAR}
+      plan = #{plan,jdbcType=LONGVARCHAR}
     where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
   </update>
     <update id="updateByPrimaryKey" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO">

@@ -11,7 +11,7 @@ import java.util.Date;
 @ApiModel(value = "DealDetailInfoVO", description = "DealDetailInfoVO")
 public class DealDetailInfoVO {
     @ApiModelProperty("交易日, 不填默认为当天")
-    private Date tradingDate;
+    private String tradingDate;
     @ApiModelProperty("股票代码")
     private String shareCode;
     @ApiModelProperty("股票名")
@@ -26,8 +26,8 @@ public class DealDetailInfoVO {
 
     @ApiModelProperty("止损价，不能超过10%")
     private BigDecimal stopLossPrice;
-    @ApiModelProperty("买卖原因")
-    private String reason;
+    @ApiModelProperty("买卖计划")
+    private String plan;
 
     @ApiModelProperty("1=继续持仓 2=完成交易")
     private Integer status;
