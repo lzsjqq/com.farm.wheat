@@ -72,14 +72,17 @@ public class DealServiceImpl implements DealService {
         String shareCode = dealDetailInfoDTO.getShareCode();
         // 查询未完成的
         DealInfoPO dealInfoPO = dealInfoMapper.selectByShareCode(shareCode, DealInfoStatusEnum.CC.getValue());
+        Integer idDealInfo;
         if (dealInfoPO == null) {
             DealInfoPO record = new DealInfoPO();
             record.setShareCode(shareCode);
             record.setShareName(dealDetailInfoDTO.getShareName());
             record.setVolume(dealDetailInfoDTO.getVolume());
             record.setFirstCost(dealDetailInfoDTO.getDealPrice());
+            idDealInfo = record.getIdDealInfo();
             dealInfoMapper.insertSelective(record);
         } else {
+            idDealInfo = dealInfoPO.getIdDealInfo();
             String target = dealDetailInfoDTO.getTarget();
             if (DealTargetEnum.MR.equals(target)) {
                 Integer volume = dealInfoPO.getVolume();
@@ -111,7 +114,8 @@ public class DealServiceImpl implements DealService {
             }
 
         }
-        dealDetailInfoDTO.setIdDealInfo(dealInfoPO.getIdDealInfo());
+
+        dealDetailInfoDTO.setIdDealInfo(idDealInfo);
         return dealDetailInfoMapper.insert(dealDetailInfoDTO);
     }
 }

@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 @ApiModel(value = "DealDetailInfoVO", description = "DealDetailInfoVO")
 public class DealDetailInfoVO {
-    @ApiModelProperty("交易日")
+    @ApiModelProperty("交易日, 不填默认为当天")
     private Date tradingDate;
 
     private String shareCode;

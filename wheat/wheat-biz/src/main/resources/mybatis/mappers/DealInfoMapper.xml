@@ -63,7 +63,7 @@
       #{tenLowPrice,jdbcType=DECIMAL}, #{tenHighPrice,jdbcType=DECIMAL}, #{tenProfit,jdbcType=DECIMAL}, 
       #{rRate,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-    <insert id="insertSelective" parameterType="com.farm.wheat.share.biz.po.DealInfoPO">
+    <insert id="insertSelective" parameterType="com.farm.wheat.share.biz.po.DealInfoPO" useGeneratedKeys="true" keyProperty="idDealInfo">
         insert into deal_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="idDealInfo != null">
