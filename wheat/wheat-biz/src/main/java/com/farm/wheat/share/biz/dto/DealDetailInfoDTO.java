@@ -25,26 +25,6 @@ public class DealDetailInfoDTO extends EntityDto {
 
     private BigDecimal stopLossPrice;
 
-    private BigDecimal lowPrice;
-
-    private BigDecimal highPrice;
-
-    private BigDecimal profit;
-
-    private BigDecimal fiveLowPrice;
-
-    private BigDecimal fiveHighPrice;
-
-    private BigDecimal fiveProfit;
-
-    private BigDecimal tenLowPrice;
-
-    private BigDecimal tenHighPrice;
-
-    private BigDecimal tenProfit;
-
-    private BigDecimal rRate;
-
     private Date createTime;
 
     private Date updateTime;

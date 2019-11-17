@@ -39,7 +39,7 @@ public class DealController implements DealApi {
 
     @RequestMapping(value = "/insertDetail", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @Override
-    public int insertDetail(DealDetailInfoVO dealDetailInfoVO) throws Exception {
+    public int insertDetail(@RequestBody DealDetailInfoVO dealDetailInfoVO) throws Exception {
         return dealService.insertDetail(ConvertUtil.convert(dealDetailInfoVO, DealDetailInfoDTO.class));
     }
 

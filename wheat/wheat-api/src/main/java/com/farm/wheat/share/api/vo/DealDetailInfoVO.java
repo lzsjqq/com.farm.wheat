@@ -29,7 +29,4 @@ public class DealDetailInfoVO {
     @ApiModelProperty("买卖计划")
     private String plan;
 
-    @ApiModelProperty("1=继续持仓 2=完成交易")
-    private Integer status;
-
 }
