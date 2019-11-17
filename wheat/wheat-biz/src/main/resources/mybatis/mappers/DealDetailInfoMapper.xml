@@ -28,7 +28,7 @@
         <result column="plan" property="plan" jdbcType="LONGVARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id_deal_detail_info,idDealInfo, trading_date, share_code, share_name, deal_price, volume, target,
+    id_deal_detail_info,id_deal_info, trading_date, share_code, share_name, deal_price, volume, target,
     stop_loss_price, low_price, high_price, profit, five_low_price, five_high_price, plan
     five_profit, ten_low_price, ten_high_price, ten_profit, R_rate, create_time, update_time
   </sql>

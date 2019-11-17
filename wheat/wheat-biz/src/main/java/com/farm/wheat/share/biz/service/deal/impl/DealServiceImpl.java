@@ -90,8 +90,8 @@ public class DealServiceImpl implements DealService {
             record.setShareName(dealDetailInfoDTO.getShareName());
             record.setVolume(dealDetailInfoDTO.getVolume());
             record.setFirstCost(dealDetailInfoDTO.getDealPrice());
-            idDealInfo = record.getIdDealInfo();
             dealInfoMapper.insertSelective(record);
+            idDealInfo = record.getIdDealInfo();
         } else {
             idDealInfo = dealInfoPO.getIdDealInfo();
             String target = dealDetailInfoDTO.getTarget();

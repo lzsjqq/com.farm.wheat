@@ -42,8 +42,8 @@
         select
         <include refid="Base_Column_List"/>
         from deal_info
-        where share_code = #{shareCode},
-        and status=#{status}
+        where share_code = #{shareCode}
+        and `status`=#{status}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from deal_info
