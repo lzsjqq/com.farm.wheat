@@ -41,6 +41,15 @@ public class DealServiceImpl implements DealService {
         return new PageInfo(shareInfos);
     }
 
+    @Override
+    public void completeDeal(String shareCode) throws Exception {
+        DealInfoPO dealInfoPO = dealInfoMapper.selectByShareCode(shareCode, DealInfoStatusEnum.WC.getValue());
+        if (0 < dealInfoPO.getVolume()) {
+            throw new Exception("尚未清空股票，不能完成的哟!");
+        }
+        dealInfoMapper.completeDeal(shareCode);
+    }
+
     @Transactional
     @Override
     public int insertDetail(DealDetailInfoDTO dealDetailInfoDTO) throws Exception {

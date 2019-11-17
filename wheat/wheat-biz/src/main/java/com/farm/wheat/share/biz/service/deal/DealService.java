@@ -2,7 +2,6 @@ package com.farm.wheat.share.biz.service.deal;
 
 import com.farm.wheat.share.biz.dto.DealDetailInfoDTO;
 import com.farm.wheat.share.biz.dto.DealInfoDTO;
-import com.farm.wheat.share.biz.mapper.simple.DealInfoMapper;
 import com.farm.wheat.share.biz.po.DealDetailInfoPO;
 import com.farm.wheat.share.biz.po.DealInfoPO;
 import com.github.pagehelper.PageInfo;
@@ -30,4 +29,11 @@ public interface DealService {
      * @return
      */
     PageInfo<DealDetailInfoPO> dealDetailInfo(DealDetailInfoDTO record);
+
+    /**
+     * 完成交易了
+     *
+     * @param shareCode
+     */
+    void completeDeal(String shareCode) throws Exception;
 }

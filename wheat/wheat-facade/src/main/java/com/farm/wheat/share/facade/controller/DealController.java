@@ -2,6 +2,7 @@ package com.farm.wheat.share.facade.controller;
 
 import com.farm.common.utils.ConvertUtil;
 import com.farm.wheat.share.api.deal.DealApi;
+import com.farm.wheat.share.api.vo.CompleteDealVO;
 import com.farm.wheat.share.api.vo.DealDetailInfoVO;
 import com.farm.wheat.share.api.vo.DealInfoVO;
 import com.farm.wheat.share.biz.dto.DealDetailInfoDTO;
@@ -10,6 +11,7 @@ import com.farm.wheat.share.biz.po.DealDetailInfoPO;
 import com.farm.wheat.share.biz.service.deal.DealService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
@@ -37,6 +39,12 @@ public class DealController implements DealApi {
     @Override
     public int insertDetail(DealDetailInfoVO dealDetailInfoVO) throws Exception {
         return dealService.insertDetail(ConvertUtil.convert(dealDetailInfoVO, DealDetailInfoDTO.class));
+    }
+
+    @Transactional
+    @Override
+    public void completeDeal(CompleteDealVO completeDealVO) throws Exception {
+        dealService.completeDeal(completeDealVO.getShareCode());
     }
 
 

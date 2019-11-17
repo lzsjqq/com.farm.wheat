@@ -304,4 +304,12 @@
         </where>
 
     </select>
+
+    <update id="completeDeal">
+        update deal_info
+        set  status=2
+        where status=1
+        and share_code=#{stareCode
+        }
+    </update>
 </mapper>
