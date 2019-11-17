@@ -44,4 +44,11 @@ public interface DealService {
      * @param convert
      */
     void insertEvent(EventPO convert);
+
+    /**
+     * 更新
+     *
+     * @param dealInfoDTO
+     */
+    void updateDealInfo(DealInfoDTO dealInfoDTO) throws Exception;
 }

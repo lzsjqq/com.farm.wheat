@@ -8,6 +8,7 @@ import java.util.Date;
 @Data
 public class DealInfoDTO extends EntityDto {
 
+    private Integer idDealInfo;
 
     private Date tradingDate;
 
@@ -44,6 +45,10 @@ public class DealInfoDTO extends EntityDto {
     private Date updateTime;
 
     private String plan;
+
+    private String analyse;
+
+    private String analyseOne;
 
     private Integer volume;
 }

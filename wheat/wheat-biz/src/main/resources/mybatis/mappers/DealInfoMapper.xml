@@ -4,6 +4,7 @@
     <resultMap id="BaseResultMap" type="com.farm.wheat.share.biz.po.DealInfoPO">
         <id column="id_deal_info" property="idDealInfo" jdbcType="INTEGER"/>
         <result column="trading_date" property="tradingDate" jdbcType="DATE"/>
+        <result column="analyse" property="analyse" jdbcType="DATE"/>
         <result column="share_code" property="shareCode" jdbcType="VARCHAR"/>
         <result column="share_name" property="shareName" jdbcType="VARCHAR"/>
         <result column="deal_price" property="dealPrice" jdbcType="DECIMAL"/>
@@ -28,7 +29,7 @@
     <sql id="Base_Column_List">
     id_deal_info, trading_date, share_code, share_name, deal_price,first_cost, stop_loss_price,
     low_price, high_price, profit, five_low_price, five_high_price, five_profit, ten_low_price, 
-    ten_high_price, ten_profit, R_rate, plan,create_time, update_time,volume,status
+    ten_high_price, ten_profit, R_rate, plan,create_time, update_time,volume,status,analyse
   </sql>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
@@ -63,7 +64,8 @@
       #{tenLowPrice,jdbcType=DECIMAL}, #{tenHighPrice,jdbcType=DECIMAL}, #{tenProfit,jdbcType=DECIMAL}, 
       #{rRate,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-    <insert id="insertSelective" parameterType="com.farm.wheat.share.biz.po.DealInfoPO" useGeneratedKeys="true" keyProperty="idDealInfo">
+    <insert id="insertSelective" parameterType="com.farm.wheat.share.biz.po.DealInfoPO" useGeneratedKeys="true"
+            keyProperty="idDealInfo">
         insert into deal_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="idDealInfo != null">
@@ -195,61 +197,49 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.farm.wheat.share.biz.po.DealInfoPO">
         update deal_info
         <set>
-            <if test="tradingDate != null">
+            <if test="tradingDate != null and tradingDate !=''">
                 trading_date = #{tradingDate,jdbcType=DATE},
             </if>
-            <if test="status != null">
+            <if test="plan != null and plan !=''">
+                plan = #{plan},
+            </if>
+            <if test="analyse != null and analyse !=''">
+                analyse = #{analyse},
+            </if>
+            <if test="status != null  and status!=''">
                 status = #{status,jdbcType=DATE},
             </if>
-            <if test="shareCode != null">
+            <if test="shareCode != null  and shareCode!=''">
                 share_code = #{shareCode,jdbcType=VARCHAR},
             </if>
-            <if test="shareName != null">
+            <if test="shareName != null  and shareName!=''">
                 share_name = #{shareName,jdbcType=VARCHAR},
             </if>
-            <if test="dealPrice != null">
+            <if test="dealPrice != null  and dealPrice!=''">
                 deal_price = #{dealPrice,jdbcType=DECIMAL},
             </if>
-            <if test="stopLossPrice != null">
+            <if test="stopLossPrice != null  and stopLossPrice!=''">
                 stop_loss_price = #{stopLossPrice,jdbcType=DECIMAL},
             </if>
-            <if test="lowPrice != null">
+            <if test="lowPrice != null  and lowPrice!=''">
                 low_price = #{lowPrice,jdbcType=DECIMAL},
             </if>
-            <if test="highPrice != null">
+            <if test="highPrice != null  and highPrice!=''">
                 high_price = #{highPrice,jdbcType=DECIMAL},
             </if>
-            <if test="profit != null">
-                profit = #{profit,jdbcType=DECIMAL},
-            </if>
-            <if test="fiveLowPrice != null">
+
+            <if test="fiveLowPrice != null  and fiveLowPrice!=''">
                 five_low_price = #{fiveLowPrice,jdbcType=DECIMAL},
             </if>
-            <if test="fiveHighPrice != null">
+            <if test="fiveHighPrice != null  and fiveHighPrice !=''">
                 five_high_price = #{fiveHighPrice,jdbcType=DECIMAL},
             </if>
-            <if test="fiveProfit != null">
-                five_profit = #{fiveProfit,jdbcType=DECIMAL},
-            </if>
-            <if test="tenLowPrice != null">
+            <if test="tenLowPrice != null and tenLowPrice!=''">
                 ten_low_price = #{tenLowPrice,jdbcType=DECIMAL},
             </if>
-            <if test="tenHighPrice != null">
+            <if test="tenHighPrice != null  and tenHighPrice!=''">
                 ten_high_price = #{tenHighPrice,jdbcType=DECIMAL},
             </if>
-            <if test="tenProfit != null">
-                ten_profit = #{tenProfit,jdbcType=DECIMAL},
-            </if>
-            <if test="rRate != null">
-                R_rate = #{rRate,jdbcType=DECIMAL},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
-            </if>
-
         </set>
         where id_deal_info = #{idDealInfo,jdbcType=INTEGER}
     </update>

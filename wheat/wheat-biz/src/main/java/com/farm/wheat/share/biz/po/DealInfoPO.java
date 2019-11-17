@@ -47,6 +47,8 @@ public class DealInfoPO {
 
     private String plan;
 
+    private String analyse;
+
     private Integer volume;
 
     private Integer status;

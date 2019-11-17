@@ -12,10 +12,11 @@ public class CommonController implements CommonApi {
 
     @Autowired
     private CommonService commonService;
+
     @RequestMapping(value = "/dicOne", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
     @Override
-    public SysDicPO dicOne(String dicCode) {
+    public SysDicPO dicOne(@RequestParam String dicCode) {
         return commonService.dicOne(dicCode);
 
     }

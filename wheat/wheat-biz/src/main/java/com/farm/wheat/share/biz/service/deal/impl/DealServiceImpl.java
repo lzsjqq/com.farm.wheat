@@ -1,5 +1,6 @@
 package com.farm.wheat.share.biz.service.deal.impl;
 
+import com.farm.common.utils.ConvertUtil;
 import com.farm.common.utils.DateUtils;
 import com.farm.common.utils.NullCheckUtils;
 import com.farm.wheat.share.biz.dto.*;
@@ -58,6 +59,35 @@ public class DealServiceImpl implements DealService {
     @Override
     public void insertEvent(EventPO convert) {
         eventMapper.insert(convert);
+    }
+
+    @Override
+    public void updateDealInfo(DealInfoDTO dealInfoDTO) throws Exception {
+        DealInfoPO dealInfoPO = dealInfoMapper.selectByPrimaryKey(dealInfoDTO.getIdDealInfo());
+        String analyse = dealInfoPO.getAnalyse();
+        String analyseOne = dealInfoDTO.getAnalyseOne();
+        dealInfoDTO.setAnalyse(getAnalyse(analyse, analyseOne));
+        dealInfoMapper.updateByPrimaryKeySelective(ConvertUtil.convert(dealInfoDTO, DealInfoPO.class));
+    }
+
+    private String getAnalyse(String analyse, String analyseOne) throws Exception {
+        StringBuilder rel = new StringBuilder();
+        if (NullCheckUtils.isBlank(analyseOne)) {
+            return analyse;
+        }
+        String data = DateUtils.dateToString(new Date(), DateUtils.YYYY_MM_DD);
+        if (NullCheckUtils.isBlank(analyse)) {
+            rel.append(data);
+            rel.append(":");
+            rel.append(analyseOne);
+        } else {
+            rel.append(analyse);
+            rel.append("</br>");
+            rel.append(data);
+            rel.append(":");
+            rel.append(analyseOne);
+        }
+        return rel.toString();
     }
 
     @Transactional

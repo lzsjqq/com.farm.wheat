@@ -29,6 +29,7 @@ public interface DealApi {
     @ApiOperation(value = "完成交易", notes = "完成交易")
     void completeDeal(CompleteDealVO completeDealVO) throws Exception;
 
-
+    @ApiOperation(value = "更新", notes = "更新")
+     void updateDealInfo(DealInfoDTO dealInfoDTO) throws Exception;
 
 }

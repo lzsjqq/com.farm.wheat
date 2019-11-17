@@ -13,7 +13,6 @@ import com.farm.wheat.share.biz.po.EventPO;
 import com.farm.wheat.share.biz.service.deal.DealService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
@@ -28,6 +27,12 @@ public class DealController implements DealApi {
     @Override
     public PageInfo<DealInfoVO> dealInfo(@RequestBody DealInfoDTO dealInfoDTO) {
         return ConvertUtil.convert(dealService.dealInfo(dealInfoDTO), PageInfo.class);
+    }
+    @RequestMapping(value = "/updateDealInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    @Override
+    public void updateDealInfo(@RequestBody DealInfoDTO dealInfoDTO) throws Exception {
+        dealService.updateDealInfo(dealInfoDTO);
     }
 
     @RequestMapping(value = "/dealDetailInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
