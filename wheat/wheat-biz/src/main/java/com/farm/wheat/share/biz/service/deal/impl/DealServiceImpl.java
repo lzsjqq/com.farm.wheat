@@ -77,14 +77,12 @@ public class DealServiceImpl implements DealService {
         }
         String data = DateUtils.dateToString(new Date(), DateUtils.YYYY_MM_DD);
         if (NullCheckUtils.isBlank(analyse)) {
-            rel.append(data);
-            rel.append(":");
+            rel.append("<b>"+data+"：</b>");
             rel.append(analyseOne);
         } else {
             rel.append(analyse);
             rel.append("</br>");
-            rel.append(data);
-            rel.append(":");
+            rel.append("<b>"+data+"：</b>");
             rel.append(analyseOne);
         }
         return rel.toString();
