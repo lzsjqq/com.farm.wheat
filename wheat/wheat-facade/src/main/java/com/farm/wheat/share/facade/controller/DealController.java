@@ -15,7 +15,9 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@RestController()
+import java.util.List;
+
+@RestController
 @RequestMapping("deal")
 public class DealController implements DealApi {
 
@@ -50,8 +52,14 @@ public class DealController implements DealApi {
 
     @Override
     @RequestMapping(value = "/insertEvent", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-    public void insertEvent(EventVO eventVO) throws Exception {
+    public void insertEvent(@RequestBody EventVO eventVO) throws Exception {
         dealService.insertEvent(ConvertUtil.convert(eventVO, EventPO.class));
+    }
+
+    @Override
+    @RequestMapping(value = "/listEvents", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    public List<EventPO> listEvents() throws Exception {
+        return dealService.listEvents();
     }
 
     @Override

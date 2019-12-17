@@ -7,6 +7,8 @@ import com.farm.wheat.share.biz.po.DealInfoPO;
 import com.farm.wheat.share.biz.po.EventPO;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 /**
  * 交易记录相关
  */
@@ -51,4 +53,6 @@ public interface DealService {
      * @param dealInfoDTO
      */
     void updateDealInfo(DealInfoDTO dealInfoDTO) throws Exception;
+
+    List<EventPO> listEvents();
 }

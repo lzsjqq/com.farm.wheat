@@ -37,6 +37,7 @@
             <if test="shareCode!=null and shareCode!=''">and share_code=#{shareCode}</if>
             <if test="shareName!=null and shareName!=''">and share_name=#{shareName}</if>
         </where>
+        order by trading_date desc
     </select>
 
 

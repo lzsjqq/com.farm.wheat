@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 交易记录相关
@@ -70,6 +71,13 @@ public class DealServiceImpl implements DealService {
         dealInfoMapper.updateByPrimaryKeySelective(ConvertUtil.convert(dealInfoDTO, DealInfoPO.class));
     }
 
+    @Override
+    public List<EventPO> listEvents() {
+
+
+        return eventMapper.selectAll();
+    }
+
     private String getAnalyse(String analyse, String analyseOne) throws Exception {
         StringBuilder rel = new StringBuilder();
         if (NullCheckUtils.isBlank(analyseOne)) {
@@ -77,12 +85,12 @@ public class DealServiceImpl implements DealService {
         }
         String data = DateUtils.dateToString(new Date(), DateUtils.YYYY_MM_DD);
         if (NullCheckUtils.isBlank(analyse)) {
-            rel.append("<b>"+data+"：</b>");
+            rel.append("<b>" + data + "：</b>");
             rel.append(analyseOne);
         } else {
             rel.append(analyse);
             rel.append("</br>");
-            rel.append("<b>"+data+"：</b>");
+            rel.append("<b>" + data + "：</b>");
             rel.append(analyseOne);
         }
         return rel.toString();
@@ -95,19 +103,15 @@ public class DealServiceImpl implements DealService {
         if (NullCheckUtils.isBlank(tradingDate)) {
             tradingDate = DateUtils.dateToString(new Date(), DateUtils.YYYY_MM_DD);
         }
+        BigDecimal stopLossPrice = dealDetailInfoDTO.getStopLossPrice();
+        String target = dealDetailInfoDTO.getTarget();
+        if (DealTargetEnum.MR.equals(target) && null == stopLossPrice) {
+            throw new Exception("止损价格不能为空哦！");
+        }
         dealDetailInfoDTO.setTradingDate(tradingDate);
         String plan = dealDetailInfoDTO.getPlan();
-        StringBuilder sb = new StringBuilder();
-        String[] split = plan.split(";");
-        for (int i = 0; i < split.length; i++) {
-            if (i != split.length - 1) {
-                sb.append(split[i] + "\r\n");
-                continue;
-            }
-            sb.append(split[i]);
-        }
-        dealDetailInfoDTO.setPlan(sb.toString());
-
+        plan = getPlan(plan);
+        dealDetailInfoDTO.setPlan(plan);
         String shareCode = dealDetailInfoDTO.getShareCode();
         // 查询未完成的
         DealInfoPO dealInfoPO = dealInfoMapper.selectByShareCode(shareCode, DealInfoStatusEnum.CC.getValue());
@@ -122,7 +126,6 @@ public class DealServiceImpl implements DealService {
             idDealInfo = record.getIdDealInfo();
         } else {
             idDealInfo = dealInfoPO.getIdDealInfo();
-            String target = dealDetailInfoDTO.getTarget();
             if (DealTargetEnum.MR.equals(target)) {
                 Integer volume = dealInfoPO.getVolume();
                 BigDecimal firstCost = dealInfoPO.getFirstCost();
@@ -156,5 +159,18 @@ public class DealServiceImpl implements DealService {
 
         dealDetailInfoDTO.setIdDealInfo(idDealInfo);
         return dealDetailInfoMapper.insert(dealDetailInfoDTO);
+    }
+
+    private String getPlan(String plan) {
+        StringBuilder sb = new StringBuilder();
+        String[] split = plan.split(";");
+        for (int i = 0; i < split.length; i++) {
+            if (i != split.length - 1) {
+                sb.append(split[i] + "\r\n");
+                continue;
+            }
+            sb.append(split[i]);
+        }
+        return sb.toString();
     }
 }

@@ -3,6 +3,8 @@ package com.farm.wheat.share.biz.mapper.simple;
 import com.farm.wheat.share.biz.po.EventPO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface EventMapper {
     int deleteByPrimaryKey(Integer idEvent);
@@ -18,4 +20,6 @@ public interface EventMapper {
     int updateByPrimaryKeyWithBLOBs(EventPO record);
 
     int updateByPrimaryKey(EventPO record);
+
+    List<EventPO> selectAll();
 }
