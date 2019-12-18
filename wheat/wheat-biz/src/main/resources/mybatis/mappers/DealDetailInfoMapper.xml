@@ -11,6 +11,8 @@
         <result column="volume" property="volume" jdbcType="INTEGER"/>
         <result column="target" property="target" jdbcType="VARCHAR"/>
         <result column="stop_loss_price" property="stopLossPrice" jdbcType="DECIMAL"/>
+        <result column="change_money" property="changeMoney" jdbcType="DECIMAL"/>
+        <result column="stamp_duty" property="stampDuty" jdbcType="DECIMAL"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -19,7 +21,7 @@
     </resultMap>
     <sql id="Base_Column_List">
     id_deal_detail_info,id_deal_info, trading_date, share_code, share_name, deal_price, volume, target,
-    stop_loss_price, plan, create_time, update_time
+    stop_loss_price, plan,change_money,stamp_duty, create_time, update_time
   </sql>
     <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
         select
@@ -28,7 +30,8 @@
         where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
     </select>
 
-    <select id="selectBySelective" parameterType="com.farm.wheat.share.biz.dto.DealDetailInfoDTO" resultMap="BaseResultMap">
+    <select id="selectBySelective" parameterType="com.farm.wheat.share.biz.dto.DealDetailInfoDTO"
+            resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from deal_detail_info
@@ -49,12 +52,13 @@
     insert into deal_detail_info (id_deal_detail_info,id_deal_info, trading_date, share_code,
       share_name, deal_price, volume, 
       target, stop_loss_price,
-      create_time, update_time, plan
+      create_time, update_time, plan,stamp_duty,change_money
       )
     values (#{idDealDetailInfo,jdbcType=INTEGER},#{idDealInfo}, #{tradingDate,jdbcType=DATE}, #{shareCode,jdbcType=VARCHAR},
       #{shareName,jdbcType=VARCHAR}, #{dealPrice,jdbcType=DECIMAL}, #{volume,jdbcType=INTEGER}, 
       #{target,jdbcType=VARCHAR}, #{stopLossPrice,jdbcType=DECIMAL},
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{plan,jdbcType=LONGVARCHAR}
+      ,#{stampDuty},#{changeMoney}
       )
   </insert>
     <insert id="insertSelective" parameterType="com.farm.wheat.share.biz.po.DealDetailInfoPO">

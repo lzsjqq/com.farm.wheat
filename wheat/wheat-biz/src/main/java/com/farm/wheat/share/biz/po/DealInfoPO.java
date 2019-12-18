@@ -53,4 +53,7 @@ public class DealInfoPO {
 
     private Integer status;
 
+    private BigDecimal stampDuty;
+
+    private BigDecimal changeMoney;
 }

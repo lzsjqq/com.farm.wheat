@@ -19,6 +19,10 @@ public class DealDetailInfoPO {
 
     private BigDecimal dealPrice;
 
+    private BigDecimal stampDuty;
+
+    private BigDecimal changeMoney;
+
     private Integer volume;
 
     private String target;

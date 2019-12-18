@@ -92,7 +92,8 @@ export default {
                 }
             }
         },
-        { title: '成本价', key: 'firstCost', width: 100 },
+        { title: '成本价', key: 'firstCost', width: 100 }, { title: '手续费', key: 'changeMoney', width: 100 },
+        { title: '印花税', key: 'stampDuty', width: 100 },
         { title: '卖出价格', key: 'sellPrice', width: 100 },
         { title: '收益', key: 'profit', width: 100 },
         { title: '计划',

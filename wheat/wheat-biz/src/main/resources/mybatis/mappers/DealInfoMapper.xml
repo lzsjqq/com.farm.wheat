@@ -23,13 +23,15 @@
         <result column="R_rate" property="rRate" jdbcType="DECIMAL"/>
         <result column="plan" property="plan"/>
         <result column="status" property="status"/>
+        <result column="change_money" property="changeMoney" jdbcType="DECIMAL"/>
+        <result column="stamp_duty" property="stampDuty" jdbcType="DECIMAL"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
     <sql id="Base_Column_List">
     id_deal_info, trading_date, share_code, share_name, deal_price,first_cost, stop_loss_price,
     low_price, high_price, profit, five_low_price, five_high_price, five_profit, ten_low_price, 
-    ten_high_price, ten_profit, R_rate, plan,create_time, update_time,volume,status,analyse
+    ten_high_price, ten_profit, R_rate, plan,create_time, update_time,volume,status,analyse,change_money,stamp_duty
   </sql>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">

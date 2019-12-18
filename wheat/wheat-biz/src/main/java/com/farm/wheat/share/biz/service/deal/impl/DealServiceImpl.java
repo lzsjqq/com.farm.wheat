@@ -116,49 +116,74 @@ public class DealServiceImpl implements DealService {
         // 查询未完成的
         DealInfoPO dealInfoPO = dealInfoMapper.selectByShareCode(shareCode, DealInfoStatusEnum.CC.getValue());
         Integer idDealInfo;
+        Integer volumeNow = dealDetailInfoDTO.getVolume();
+        BigDecimal dealPrice = dealDetailInfoDTO.getDealPrice();
+        BigDecimal multiplyNow = dealPrice.multiply(new BigDecimal(volumeNow));
+        BigDecimal changeMoney = getChangeMoney(multiplyNow);
+        BigDecimal stampDuty = getStampDuty(multiplyNow);
         if (dealInfoPO == null) {
             DealInfoPO record = new DealInfoPO();
             record.setShareCode(shareCode);
             record.setShareName(dealDetailInfoDTO.getShareName());
             record.setVolume(dealDetailInfoDTO.getVolume());
             record.setFirstCost(dealDetailInfoDTO.getDealPrice());
+            record.setChangeMoney(changeMoney);
+            if (!DealTargetEnum.MR.equals(target)) {
+                record.setStampDuty(stampDuty);
+            }
             dealInfoMapper.insertSelective(record);
             idDealInfo = record.getIdDealInfo();
         } else {
             idDealInfo = dealInfoPO.getIdDealInfo();
+            dealInfoPO.setChangeMoney(changeMoney.add(dealInfoPO.getChangeMoney() == null ? BigDecimal.ZERO : dealInfoPO.getChangeMoney()));
             if (DealTargetEnum.MR.equals(target)) {
                 Integer volume = dealInfoPO.getVolume();
                 BigDecimal firstCost = dealInfoPO.getFirstCost();
                 BigDecimal multiply = firstCost.multiply(new BigDecimal(volume));
-                Integer volumeNow = dealDetailInfoDTO.getVolume();
-                BigDecimal dealPrice = dealDetailInfoDTO.getDealPrice();
-                BigDecimal multiplyNow = dealPrice.multiply(new BigDecimal(volumeNow));
                 Integer now = volume + volumeNow;
-                BigDecimal costNow = multiplyNow.add(multiply).divide(new BigDecimal(now)).setScale(3, BigDecimal.ROUND_HALF_UP);
+                BigDecimal costNow = multiplyNow.add(multiply).divide(new BigDecimal(now)).setScale(2, BigDecimal.ROUND_HALF_UP);
                 dealInfoPO.setFirstCost(costNow);
                 dealInfoPO.setVolume(now);
+                dealDetailInfoDTO.setChangeMoney(changeMoney);
                 dealInfoMapper.updateByPrimaryKey(dealInfoPO);
             } else {
                 Integer volume = dealInfoPO.getVolume();
                 BigDecimal firstCost = dealInfoPO.getFirstCost();
                 BigDecimal multiply = firstCost.multiply(new BigDecimal(volume));
-                Integer volumeNow = dealDetailInfoDTO.getVolume();
-                BigDecimal dealPrice = dealDetailInfoDTO.getDealPrice();
-                BigDecimal multiplyNow = dealPrice.multiply(new BigDecimal(volumeNow));
                 Integer now = volume - volumeNow;
-                BigDecimal costNow = multiply.subtract(multiplyNow).divide(new BigDecimal(now)).setScale(3, BigDecimal.ROUND_HALF_UP);
+
                 if (now < 0) {
                     throw new Exception("小于零了哦！");
                 }
-                dealInfoPO.setFirstCost(costNow);
+                dealDetailInfoDTO.setStampDuty(stampDuty);
+                dealDetailInfoDTO.setChangeMoney(changeMoney);
+//                BigDecimal costNow = multiply.subtract(multiplyNow).divide(new BigDecimal(now)).setScale(3, BigDecimal.ROUND_HALF_UP);
+//                dealInfoPO.setFirstCost(costNow);
                 dealInfoPO.setVolume(now);
+                dealInfoPO.setStampDuty(stampDuty.add(dealInfoPO.getStampDuty() == null ? BigDecimal.ZERO : dealInfoPO.getStampDuty()));
+                dealDetailInfoDTO.setChangeMoney(changeMoney);
                 dealInfoMapper.updateByPrimaryKey(dealInfoPO);
             }
 
         }
-
         dealDetailInfoDTO.setIdDealInfo(idDealInfo);
         return dealDetailInfoMapper.insert(dealDetailInfoDTO);
+    }
+
+    private BigDecimal getChangeMoney(BigDecimal multiplyNow) {
+        BigDecimal stampDuty;
+        BigDecimal changeMoney;
+        if (multiplyNow.doubleValue() <= 10000) {
+            changeMoney = new BigDecimal(5);
+        } else {
+            changeMoney = multiplyNow.multiply(new BigDecimal(2.5)).divide(new BigDecimal(10000)).setScale(2, BigDecimal.ROUND_HALF_UP);
+        }
+        return changeMoney;
+    }
+
+    private BigDecimal getStampDuty(BigDecimal multiplyNow) {
+        BigDecimal stampDuty = multiplyNow.multiply(new BigDecimal(1)).divide(new BigDecimal(1000)).setScale(2, BigDecimal.ROUND_HALF_UP);
+        return stampDuty;
     }
 
     private String getPlan(String plan) {

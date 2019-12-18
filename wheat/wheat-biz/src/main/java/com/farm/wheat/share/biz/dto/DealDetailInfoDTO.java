@@ -33,4 +33,7 @@ public class DealDetailInfoDTO extends EntityDto {
 
     private Integer status;
 
+    private BigDecimal stampDuty;
+
+    private BigDecimal changeMoney;
 }

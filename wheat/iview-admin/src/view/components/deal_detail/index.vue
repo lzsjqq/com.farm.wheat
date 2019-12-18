@@ -108,6 +108,8 @@ export default {
         { title: '股票代码', key: 'shareCode', width: 100 },
         { title: '止损价', key: 'stopLossPrice', width: 100 },
         { title: '成交价', key: 'dealPrice', width: 100 },
+        { title: '手续费', key: 'changeMoney', width: 100 },
+        { title: '印花税', key: 'stampDuty', width: 100 },
         { title: '买卖方向',
           key: 'target',
           width: 100,

@@ -1,6 +1,5 @@
 import axios from 'axios'
 import store from '@/store'
-import { Message } from 'iview'
 // import { Spin } from 'iview'
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
@@ -61,7 +60,6 @@ class HttpRequest {
           request: { responseURL: config.url }
         }
       }
-      Message.error(error.response)
       addErrorLog(errorInfo)
       return Promise.reject(error)
     })
