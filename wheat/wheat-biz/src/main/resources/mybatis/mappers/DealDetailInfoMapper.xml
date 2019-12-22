@@ -30,8 +30,7 @@
         where id_deal_detail_info = #{idDealDetailInfo,jdbcType=INTEGER}
     </select>
 
-    <select id="selectBySelective" parameterType="com.farm.wheat.share.biz.dto.DealDetailInfoDTO"
-            resultMap="BaseResultMap">
+    <select id="selectBySelective" parameterType="com.farm.wheat.share.biz.dto.DealDetailInfoDTO" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from deal_detail_info

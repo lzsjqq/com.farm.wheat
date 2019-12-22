@@ -124,6 +124,12 @@
             <if test="rRate != null">
                 R_rate,
             </if>
+            <if test="changeMoney != null">
+                change_money,
+            </if>
+            <if test="stampDuty != null">
+                stamp_duty,
+            </if>
             <if test="createTime != null">
                 create_time,
             </if>
@@ -186,6 +192,12 @@
             </if>
             <if test="rRate != null">
                 #{rRate,jdbcType=DECIMAL},
+            </if>
+             <if test="changeMoney != null">
+                #{changeMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="stampDuty != null">
+                #{stampDuty,jdbcType=DECIMAL},
             </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=TIMESTAMP},
@@ -265,6 +277,8 @@
       ten_high_price = #{tenHighPrice,jdbcType=DECIMAL},
       ten_profit = #{tenProfit,jdbcType=DECIMAL},
       R_rate = #{rRate,jdbcType=DECIMAL},
+      change_money = #{changeMoney,jdbcType=DECIMAL},
+      stamp_duty = #{stampDuty,jdbcType=DECIMAL},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id_deal_info = #{idDealInfo,jdbcType=INTEGER}

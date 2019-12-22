@@ -122,6 +122,7 @@ public class DealServiceImpl implements DealService {
         BigDecimal changeMoney = getChangeMoney(multiplyNow);
         BigDecimal stampDuty = getStampDuty(multiplyNow);
         if (dealInfoPO == null) {
+            dealDetailInfoDTO.setChangeMoney(changeMoney);
             DealInfoPO record = new DealInfoPO();
             record.setShareCode(shareCode);
             record.setShareName(dealDetailInfoDTO.getShareName());
@@ -144,8 +145,6 @@ public class DealServiceImpl implements DealService {
                 BigDecimal costNow = multiplyNow.add(multiply).divide(new BigDecimal(now)).setScale(2, BigDecimal.ROUND_HALF_UP);
                 dealInfoPO.setFirstCost(costNow);
                 dealInfoPO.setVolume(now);
-                dealDetailInfoDTO.setChangeMoney(changeMoney);
-                dealInfoMapper.updateByPrimaryKey(dealInfoPO);
             } else {
                 Integer volume = dealInfoPO.getVolume();
                 BigDecimal firstCost = dealInfoPO.getFirstCost();
@@ -162,9 +161,8 @@ public class DealServiceImpl implements DealService {
                 dealInfoPO.setVolume(now);
                 dealInfoPO.setStampDuty(stampDuty.add(dealInfoPO.getStampDuty() == null ? BigDecimal.ZERO : dealInfoPO.getStampDuty()));
                 dealDetailInfoDTO.setChangeMoney(changeMoney);
-                dealInfoMapper.updateByPrimaryKey(dealInfoPO);
             }
-
+            dealInfoMapper.updateByPrimaryKey(dealInfoPO);
         }
         dealDetailInfoDTO.setIdDealInfo(idDealInfo);
         return dealDetailInfoMapper.insert(dealDetailInfoDTO);

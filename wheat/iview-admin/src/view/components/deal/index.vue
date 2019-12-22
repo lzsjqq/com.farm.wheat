@@ -9,7 +9,7 @@
   }
   .ivu-table td.demo-table-info-column{
     background-color: #2db7f5;
-    color: #fff;
+
   }
   .ivu-table .demo-table-info-cell-name {
     background-color: #2db7f5;
@@ -17,7 +17,6 @@
   }
   .ivu-table .demo-table-info-cell-age {
     background-color: #ff6600;
-    color: #fff;
   }
   .ivu-table .demo-table-info-cell-address {
     background-color: #187;
@@ -92,7 +91,8 @@ export default {
                 }
             }
         },
-        { title: '成本价', key: 'firstCost', width: 100 }, { title: '手续费', key: 'changeMoney', width: 100 },
+        { title: '成本价', key: 'firstCost', width: 100 },
+        { title: '手续费', key: 'changeMoney', width: 100 },
         { title: '印花税', key: 'stampDuty', width: 100 },
         { title: '卖出价格', key: 'sellPrice', width: 100 },
         { title: '收益', key: 'profit', width: 100 },

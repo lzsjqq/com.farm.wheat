@@ -43,4 +43,8 @@ public class DealInfoVO {
     private Date updateTime;
 
     private String plan;
+    
+    private BigDecimal stampDuty;
+
+    private BigDecimal changeMoney;
 }
