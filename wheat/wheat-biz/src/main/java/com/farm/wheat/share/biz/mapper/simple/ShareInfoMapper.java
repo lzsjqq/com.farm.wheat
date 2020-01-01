@@ -27,9 +27,16 @@ public interface ShareInfoMapper {
 
     int updateByPrimaryKey(ShareInfoDto record);
 
-    ShareInfoDto selectByShareCode(@Param("shareCode") String  shareCode);
+    ShareInfoDto selectByShareCode(@Param("shareCode") String shareCode);
 
     Page<ShareInfoDto> selectShareInfoByPage(ShareInfoDto record);
 
     List<ShareInfoDto> selectAll();
+
+    /**
+     * 查询当前股票的数量
+     *
+     * @return
+     */
+    int countShareInfo();
 }

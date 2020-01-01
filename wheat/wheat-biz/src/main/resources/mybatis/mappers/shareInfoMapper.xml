@@ -284,4 +284,7 @@
         <include refid="Base_Column_List"/>
         from share_info
     </select>
+    <select id="countShareInfo" resultType="int">
+        SELECT count(*) FROM `share_info`
+    </select>
 </mapper>

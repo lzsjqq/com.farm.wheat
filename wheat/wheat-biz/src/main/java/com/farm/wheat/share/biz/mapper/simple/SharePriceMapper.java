@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @description:
@@ -33,4 +34,6 @@ public interface SharePriceMapper {
      * @return
      */
     SharePriceDto selectByIdShareInfoAndTradingDate(@Param("idShareInfo") Integer idShareInfo,@Param("tradingDate")  Date tradingDate);
+
+    List<SharePriceDto> selectByIdShareInfo(@Param("idShareInfo")Integer idShareInfo, @Param("limit") int limit);
 }

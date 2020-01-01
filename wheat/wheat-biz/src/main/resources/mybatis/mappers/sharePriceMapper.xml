@@ -306,4 +306,13 @@
         where ID_SHARE_INFO = #{idShareInfo}
         and TRADING_DATE=#{tradingDate}
     </select>
+
+    <select id="selectByIdShareInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from share_price
+        where ID_SHARE_INFO = #{idShareInfo}
+        order by trading_date desc
+        limit #{limit}
+    </select>
 </mapper>
