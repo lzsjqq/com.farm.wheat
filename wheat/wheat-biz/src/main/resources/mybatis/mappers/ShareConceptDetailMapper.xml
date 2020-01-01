@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.farm.wheat.share.biz.mapper.simple.ShareConceptDetailMapper">
+
+    <resultMap id="BaseResultMap" type="com.farm.wheat.share.biz.dto.ShareConceptDetailDTO">
+        <id column="id__concept_detail" property="idConceptDetail"/>
+        <result column="simple_name" property="simpleName"/>
+        <result column="share_code" property="shareCode"/>
+        <result column="share_name" property="shareName"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id_concept_detail, simple_name, share_code, share_name, create_time, update_time
+    </sql>
+
+    <delete id="deleteBySimpleName">
+        delete  from share_concept_detail  where simple_name=#{simpleName}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from share_concept_detail
+        where id__concept_detail = #{idConceptDetail,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from share_concept_detail
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from share_concept_detail
+    where id__concept_detail = #{idConceptDetail,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.farm.wheat.share.biz.dto.ShareConceptDetailDTO">
+    insert into share_concept_detail (id__concept_detail, simple_name, share_code,
+      share_name, create_time, update_time
+      )
+    values (#{idConceptDetail,jdbcType=INTEGER}, #{simpleName,jdbcType=INTEGER}, #{shareCode,jdbcType=VARCHAR},
+      #{shareName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.farm.wheat.share.biz.dto.ShareConceptDetailDTO">
+        insert into share_concept_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="idConceptDetail != null">
+                id__concept_detail,
+            </if>
+            <if test="simpleName != null">
+                simple_name,
+            </if>
+            <if test="shareCode != null">
+                share_code,
+            </if>
+            <if test="shareName != null">
+                share_name,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="idConceptDetail != null">
+                #{idConceptDetail,jdbcType=INTEGER},
+            </if>
+            <if test="simpleName != null">
+                #{simpleName,jdbcType=INTEGER},
+            </if>
+            <if test="shareCode != null">
+                #{shareCode,jdbcType=VARCHAR},
+            </if>
+            <if test="shareName != null">
+                #{shareName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertList" parameterType="com.farm.wheat.share.biz.dto.ShareConceptDetailDTO">
+        insert into share_concept_detail(
+        simple_name,
+        share_code,
+        share_name
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.simpleName},
+            #{item.shareCode},
+            #{item.shareName}
+            )
+        </foreach>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.farm.wheat.share.biz.dto.ShareConceptDetailDTO">
+        update share_concept_detail
+        <set>
+            <if test="simpleName != null">
+                simple_name = #{simpleName,jdbcType=INTEGER},
+            </if>
+            <if test="shareCode != null">
+                share_code = #{shareCode,jdbcType=VARCHAR},
+            </if>
+            <if test="shareName != null">
+                share_name = #{shareName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id__concept_detail = #{idConceptDetail,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.farm.wheat.share.biz.dto.ShareConceptDetailDTO">
+    update share_concept_detail
+    set simple_name = #{simpleName,jdbcType=INTEGER},
+      share_code = #{shareCode,jdbcType=VARCHAR},
+      share_name = #{shareName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id__concept_detail = #{idConceptDetail,jdbcType=INTEGER}
+  </update>
+</mapper>

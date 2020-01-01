@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.farm.wheat.share.biz.mapper.simple.ShareIndustryDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.farm.wheat.share.biz.vo.ShareIndustryDetailVO" >
+    <id column="id_industry_detail" property="idIndustryDetail" jdbcType="INTEGER" />
+    <result column="id_share_info" property="idShareInfo" jdbcType="INTEGER" />
+    <result column="share_code" property="shareCode" jdbcType="VARCHAR" />
+    <result column="share_name" property="shareName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id_industry_detail, id_share_info, share_code, share_name, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from share_industry_detail
+    where id_industry_detail = #{idIndustryDetail,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from share_industry_detail
+    where id_industry_detail = #{idIndustryDetail,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.farm.wheat.share.biz.vo.ShareIndustryDetailVO" >
+    insert into share_industry_detail (id_industry_detail, id_share_info, share_code,
+      share_name, create_time, update_time
+      )
+    values (#{idIndustryDetail,jdbcType=INTEGER}, #{idShareInfo,jdbcType=INTEGER}, #{shareCode,jdbcType=VARCHAR},
+      #{shareName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.farm.wheat.share.biz.vo.ShareIndustryDetailVO" >
+    insert into share_industry_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="idIndustryDetail != null" >
+        id_industry_detail,
+      </if>
+      <if test="idShareInfo != null" >
+        id_share_info,
+      </if>
+      <if test="shareCode != null" >
+        share_code,
+      </if>
+      <if test="shareName != null" >
+        share_name,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="idIndustryDetail != null" >
+        #{idIndustryDetail,jdbcType=INTEGER},
+      </if>
+      <if test="idShareInfo != null" >
+        #{idShareInfo,jdbcType=INTEGER},
+      </if>
+      <if test="shareCode != null" >
+        #{shareCode,jdbcType=VARCHAR},
+      </if>
+      <if test="shareName != null" >
+        #{shareName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.farm.wheat.share.biz.vo.ShareIndustryDetailVO" >
+    update share_industry_detail
+    <set >
+      <if test="idShareInfo != null" >
+        id_share_info = #{idShareInfo,jdbcType=INTEGER},
+      </if>
+      <if test="shareCode != null" >
+        share_code = #{shareCode,jdbcType=VARCHAR},
+      </if>
+      <if test="shareName != null" >
+        share_name = #{shareName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id_industry_detail = #{idIndustryDetail,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.farm.wheat.share.biz.vo.ShareIndustryDetailVO" >
+    update share_industry_detail
+    set id_share_info = #{idShareInfo,jdbcType=INTEGER},
+      share_code = #{shareCode,jdbcType=VARCHAR},
+      share_name = #{shareName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id_industry_detail = #{idIndustryDetail,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.farm.wheat.share.biz.mapper.max.ConceptStsMapper">
+
+    <insert id="stsTopRatio">
+        replace INTO `share`.`share_concept_sts_top` (
+          `simple_name`,
+          `concept_name`,
+          `trading_date`,
+          `count`,
+          `type`
+        )
+        SELECT
+          sci.simple_name,
+          sci.`concept_name`,
+          price.TRADING_DATE,
+          COUNT(1),
+          #{type}
+        FROM
+          `share_concept_detail` scd
+          INNER JOIN `share_concept_info` sci
+            ON sci.`simple_name` = scd.`simple_name`
+          INNER JOIN
+            (SELECT
+              si.`SHARE_CODE`,
+              si.`SHARE_NAME`,
+              sp.`PRICE_CHANGE_RATIO`,
+              sp.TRADING_DATE
+            FROM
+              `share_price` sp
+              INNER JOIN `share_info` si
+                ON sp.`ID_SHARE_INFO` = si.`ID_SHARE_INFO`
+            WHERE sp.`TRADING_DATE` = #{date}
+            ORDER BY PRICE_CHANGE_RATIO DESC
+            LIMIT  #{limit}) AS price
+            ON price.SHARE_CODE = scd.`share_code`
+        GROUP BY sci.simple_name
+
+    </insert>
+
+</mapper>

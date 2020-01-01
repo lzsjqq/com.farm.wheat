@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.farm.wheat.share.biz.mapper.simple.ShareConceptInfoMapper">
+    <resultMap id="BaseResultMap" type="com.farm.wheat.share.biz.dto.ShareConceptInfoDTO">
+        <id column="simple_name" property="simpleName"/>
+        <result column="concept_name" property="conceptName" jdbcType="VARCHAR"/>
+        <result column="number" property="number"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.farm.wheat.share.biz.dto.ShareConceptInfoDTO" extends="BaseResultMap">
+        <result column="desc" property="desc" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        simple_name, concept_name, `number`, create_time, update_time,`desc`
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        from share_concept_info
+        where simple_name = #{simpleName,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectAll" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        from share_concept_info
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from share_concept_info
+    where simple_name = #{simpleName,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.farm.wheat.share.biz.dto.ShareConceptInfoDTO">
+    insert into share_concept_info (simple_name, concept_name, number,
+      create_time, update_time, desc
+      )
+    values (#{simpleName,jdbcType=INTEGER}, #{conceptName,jdbcType=VARCHAR}, #{number,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{desc,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.farm.wheat.share.biz.dto.ShareConceptInfoDTO">
+        insert into share_concept_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="simple_name != null">
+                simple_name,
+            </if>
+            <if test="conceptName != null">
+                concept_name,
+            </if>
+            <if test="number != null">
+                number,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="desc != null">
+                desc,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="simpleName != null">
+                #{simpleName,jdbcType=INTEGER},
+            </if>
+            <if test="conceptName != null">
+                #{conceptName,jdbcType=VARCHAR},
+            </if>
+            <if test="number != null">
+                #{number,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="desc != null">
+                #{desc,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertList">
+        insert into share_concept_info(
+        simple_name,
+        concept_name,
+        `number`,
+        `desc`
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.simpleName},
+            #{item.conceptName},
+            #{item.number},
+            #{item.desc}
+            )
+        </foreach>
+    </insert>
+    <insert id="replaceList">
+        replace into share_concept_info(
+        simple_name,
+        concept_name,
+        `number`,
+        `desc`
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.simpleName},
+            #{item.conceptName},
+            #{item.number},
+            #{item.desc}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="replaceSelective" parameterType="com.farm.wheat.share.biz.dto.ShareConceptInfoDTO">
+        replace into share_concept_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="simpleName != null">
+                simple_name,
+            </if>
+            <if test="conceptName != null">
+                concept_name,
+            </if>
+            <if test="number != null">
+                number,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="desc != null">
+                desc,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="simpleName != null">
+                #{simpleName,jdbcType=INTEGER},
+            </if>
+            <if test="conceptName != null">
+                #{conceptName,jdbcType=VARCHAR},
+            </if>
+            <if test="number != null">
+                #{number,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="desc != null">
+                #{desc,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.farm.wheat.share.biz.dto.ShareConceptInfoDTO">
+        update share_concept_info
+        <set>
+            <if test="conceptName != null">
+                concept_name = #{conceptName,jdbcType=VARCHAR},
+            </if>
+            <if test="number != null">
+                number = #{number,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="desc != null">
+                desc = #{desc,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where simple_name = #{simpleName,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.farm.wheat.share.biz.dto.ShareConceptInfoDTO">
+    update share_concept_info
+    set concept_name = #{conceptName,jdbcType=VARCHAR},
+      number = #{number,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      desc = #{desc,jdbcType=LONGVARCHAR}
+    where simple_name = #{simpleName,jdbcType=INTEGER}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.farm.wheat.share.biz.dto.ShareConceptInfoDTO">
+    update share_concept_info
+    set concept_name = #{conceptName,jdbcType=VARCHAR},
+      number = #{number,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where simple_name = #{simpleName,jdbcType=INTEGER}
+  </update>
+</mapper>
