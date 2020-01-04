@@ -30,6 +30,18 @@
         <include refid="Base_Column_List"/>
         from share_concept_detail
     </select>
+    <select id="selectBySimpleName" resultType="com.farm.wheat.share.biz.dto.ConceptPriceDTO">
+       SELECT
+       p.`PRICE_CHANGE_RATIO` priceChangeRatio ,
+       i.`SHARE_CODE` shareCode
+       FROM
+        share_concept_detail d
+        INNER JOIN share_info i
+         ON i.`SHARE_CODE` = d.`share_code`
+        INNER JOIN share_price p ON p.`ID_SHARE_INFO` = i.`ID_SHARE_INFO`
+         where p.`TRADING_DATE`=#{target}
+         and d.`simple_name`=#{simpleName}
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from share_concept_detail

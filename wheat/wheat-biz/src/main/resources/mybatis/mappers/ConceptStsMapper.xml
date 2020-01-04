@@ -35,7 +35,5 @@
             LIMIT  #{limit}) AS price
             ON price.SHARE_CODE = scd.`share_code`
         GROUP BY sci.simple_name
-
     </insert>
-
 </mapper>

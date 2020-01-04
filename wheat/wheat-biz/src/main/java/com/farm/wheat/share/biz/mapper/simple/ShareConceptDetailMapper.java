@@ -1,10 +1,12 @@
 package com.farm.wheat.share.biz.mapper.simple;
 
 
+import com.farm.wheat.share.biz.dto.ConceptPriceDTO;
 import com.farm.wheat.share.biz.dto.ShareConceptDetailDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -37,4 +39,6 @@ public interface ShareConceptDetailMapper {
      * @return
      */
     List<ShareConceptDetailDTO> selectAll();
+
+    List<ConceptPriceDTO> selectBySimpleName(@Param("simpleName")String simpleName, @Param("target") Date target);
 }

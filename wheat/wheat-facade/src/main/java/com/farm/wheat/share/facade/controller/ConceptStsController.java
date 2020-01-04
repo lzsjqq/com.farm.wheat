@@ -25,9 +25,9 @@ public class ConceptStsController implements ConceptStsApi {
 
     @RequestMapping(value = "/top", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public void stsTop(@RequestParam String data, @RequestParam int type) {
+    public void stsTop(@RequestParam String data) {
         try {
-            conceptSts.stsTopRatio(data, type);
+            conceptSts.stsTopRatio(data);
         } catch (Exception e) {
             e.printStackTrace();
         }

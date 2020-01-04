@@ -12,5 +12,5 @@ import io.swagger.annotations.ApiOperation;
 @Api(description = "概念统计")
 public interface ConceptStsApi {
     @ApiOperation(value = "概念统计前type数量", notes = "概念统计前type数量")
-    void stsTop(String data, int type);
+    void stsTop(String data);
 }

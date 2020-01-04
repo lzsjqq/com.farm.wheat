@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.farm.wheat.share.biz.mapper.simple.ShareConceptStsCountMapper" >
+  <resultMap id="BaseResultMap" type="com.farm.wheat.share.biz.dto.ShareConceptStsCountDTO" >
+    <result column="simple_name" property="simpleName" jdbcType="VARCHAR" />
+    <result column="concept_name" property="conceptName" jdbcType="VARCHAR" />
+    <result column="trading_date" property="tradingDate" jdbcType="DATE" />
+    <result column="count" property="count" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.farm.wheat.share.biz.dto.ShareConceptStsCountDTO" extends="BaseResultMap" >
+    <result column="detail" property="detail" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Blob_Column_List" >
+    detail
+  </sql>
+  <insert id="insert" parameterType="com.farm.wheat.share.biz.dto.ShareConceptStsCountDTO" >
+    REPLACE into share_concept_sts_count (simple_name, concept_name, trading_date,
+      count, create_time, update_time, 
+      detail)
+    values (#{simpleName,jdbcType=VARCHAR}, #{conceptName,jdbcType=VARCHAR}, #{tradingDate,jdbcType=DATE}, 
+      #{count,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{detail,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.farm.wheat.share.biz.dto.ShareConceptStsCountDTO" >
+    insert into share_concept_sts_count
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="simpleName != null" >
+        simple_name,
+      </if>
+      <if test="conceptName != null" >
+        concept_name,
+      </if>
+      <if test="tradingDate != null" >
+        trading_date,
+      </if>
+      <if test="count != null" >
+        count,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="detail != null" >
+        detail,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="simpleName != null" >
+        #{simpleName,jdbcType=VARCHAR},
+      </if>
+      <if test="conceptName != null" >
+        #{conceptName,jdbcType=VARCHAR},
+      </if>
+      <if test="tradingDate != null" >
+        #{tradingDate,jdbcType=DATE},
+      </if>
+      <if test="count != null" >
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="detail != null" >
+        #{detail,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

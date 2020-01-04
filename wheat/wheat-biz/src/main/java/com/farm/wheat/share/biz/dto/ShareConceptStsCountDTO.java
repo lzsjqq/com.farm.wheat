@@ -3,19 +3,21 @@ package com.farm.wheat.share.biz.dto;
 import lombok.Data;
 
 import java.util.Date;
-
 @Data
-public class ShareConceptInfoDTO  {
+public class ShareConceptStsCountDTO {
     private String simpleName;
 
     private String conceptName;
 
-    private Integer number;
+    private Date tradingDate;
+
+    private Integer count;
 
     private Date createTime;
 
     private Date updateTime;
 
-    private String desc;
+    private String detail;
+
 
 }

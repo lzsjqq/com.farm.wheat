@@ -22,4 +22,5 @@ public interface ConceptStsMapper {
      * @param type
      */
     void stsTopRatio(@Param("date") Date data, @Param("limit") int limit, @Param("type") String type);
+
 }
