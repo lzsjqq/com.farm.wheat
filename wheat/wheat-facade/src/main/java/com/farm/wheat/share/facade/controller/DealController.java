@@ -8,6 +8,7 @@ import com.farm.wheat.share.api.vo.DealInfoVO;
 import com.farm.wheat.share.api.vo.EventVO;
 import com.farm.wheat.share.biz.dto.DealDetailInfoDTO;
 import com.farm.wheat.share.biz.dto.DealInfoDTO;
+import com.farm.wheat.share.biz.dto.EntityDto;
 import com.farm.wheat.share.biz.po.DealDetailInfoPO;
 import com.farm.wheat.share.biz.po.EventPO;
 import com.farm.wheat.share.biz.service.deal.DealService;
@@ -30,6 +31,7 @@ public class DealController implements DealApi {
     public PageInfo<DealInfoVO> dealInfo(@RequestBody DealInfoDTO dealInfoDTO) {
         return ConvertUtil.convert(dealService.dealInfo(dealInfoDTO), PageInfo.class);
     }
+
     @RequestMapping(value = "/updateDealInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     @Override
@@ -58,8 +60,8 @@ public class DealController implements DealApi {
 
     @Override
     @RequestMapping(value = "/listEvents", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-    public List<EventPO> listEvents() throws Exception {
-        return dealService.listEvents();
+    public PageInfo<EventPO> listEvents(@RequestBody EntityDto record) throws Exception {
+        return dealService.listEvents(record);
     }
 
     @Override

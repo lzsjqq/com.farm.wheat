@@ -72,10 +72,9 @@ public class DealServiceImpl implements DealService {
     }
 
     @Override
-    public List<EventPO> listEvents() {
-
-
-        return eventMapper.selectAll();
+    public PageInfo<EventPO> listEvents(EntityDto record) {
+        PageHelper.startPage(record.getPageNum(), record.getPageSize());
+        return new PageInfo<>(eventMapper.selectAll());
     }
 
     private String getAnalyse(String analyse, String analyseOne) throws Exception {

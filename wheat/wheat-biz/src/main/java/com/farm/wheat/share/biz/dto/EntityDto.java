@@ -10,7 +10,7 @@ import java.util.Date;
  * @create: 2019-08-25 23:18
  */
 @Data
-public class EntityDto {
+public class EntityDto extends PageBase {
 
     private Date createTime;
 
@@ -20,7 +20,4 @@ public class EntityDto {
 
     private String updateBy;
 
-    private Integer pageSize;
-
-    private Integer pageNum;
 }

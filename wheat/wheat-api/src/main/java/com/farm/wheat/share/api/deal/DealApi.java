@@ -6,6 +6,7 @@ import com.farm.wheat.share.api.vo.DealInfoVO;
 import com.farm.wheat.share.api.vo.EventVO;
 import com.farm.wheat.share.biz.dto.DealDetailInfoDTO;
 import com.farm.wheat.share.biz.dto.DealInfoDTO;
+import com.farm.wheat.share.biz.dto.EntityDto;
 import com.farm.wheat.share.biz.po.DealDetailInfoPO;
 import com.farm.wheat.share.biz.po.EventPO;
 import com.github.pagehelper.PageInfo;
@@ -30,7 +31,7 @@ public interface DealApi {
     void insertEvent(EventVO eventVO) throws Exception;
 
     @ApiOperation(value = "列出事件", notes = "列出事件")
-    List<EventPO> listEvents() throws Exception;
+    PageInfo<EventPO>  listEvents(EntityDto record) throws Exception;
 
     @ApiOperation(value = "完成交易", notes = "完成交易")
     void completeDeal(CompleteDealVO completeDealVO) throws Exception;

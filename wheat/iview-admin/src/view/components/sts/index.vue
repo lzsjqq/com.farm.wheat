@@ -180,7 +180,6 @@ export default {
       this.$Message.info('Clicked cancel')
     }
   },
-
   mounted: function () {
     this.search()
     get('common/dicOne?dicCode=plan').then(res => {

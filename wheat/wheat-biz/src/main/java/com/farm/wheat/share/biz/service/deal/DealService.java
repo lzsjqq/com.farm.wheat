@@ -2,6 +2,7 @@ package com.farm.wheat.share.biz.service.deal;
 
 import com.farm.wheat.share.biz.dto.DealDetailInfoDTO;
 import com.farm.wheat.share.biz.dto.DealInfoDTO;
+import com.farm.wheat.share.biz.dto.EntityDto;
 import com.farm.wheat.share.biz.po.DealDetailInfoPO;
 import com.farm.wheat.share.biz.po.DealInfoPO;
 import com.farm.wheat.share.biz.po.EventPO;
@@ -54,5 +55,5 @@ public interface DealService {
      */
     void updateDealInfo(DealInfoDTO dealInfoDTO) throws Exception;
 
-    List<EventPO> listEvents();
+    PageInfo<EventPO> listEvents(EntityDto record);
 }

@@ -1,32 +1,43 @@
 
 <template>
   <Timeline>
-    <TimelineItem>
-      <p class="time">1976年</p>
-      <p class="content">Apple I 问世</p>
+    <TimelineItem v-for="item in timelineItems">
+      <p class="time">{{getDateStr(item.eventDate, 'simple')}}</p>
+      <p class="content"><span class="fontWeight">事件：</span>{{item.event}}</p>
+      <p class="content"><span class="fontWeight">影响：</span>{{item.affect}}</p>
     </TimelineItem>
+    <TimelineItem v-if="show"><a href="#">查看更多</a></TimelineItem>
   </Timeline>
 </template>
-import { post, get } from '@/libs/http'
+
 <script>
+  import { post, get } from '@/libs/http'
+  import { getDateStr } from '@/api/date'
   export default {
+    components: {
+      getDateStr
+    },
     data () {
       return {
         pageNum : 1,
-        timelineItems: []
+        timelineItems: [],
+        show: false
+      }
+    },
+    methods: {
+      search () {
+        post({pageNum:this.pageNum,pageSize:5 }, 'deal/listEvents').then(res => {
+          let page = res.data
+          this.timelineItems = page.list
+          this.show = page.lastPage !== page.firstPage
+        })
+      },
+      getDateStr (timeStamp, startType) {
+        return getDateStr(timeStamp, startType)
       }
     },
     mounted: function () {
       this.search()
-    },
-    methods: {
-      search () {
-        post(null,'deal/listEvents').then(res => {
-          let page = res.data
-          this.timelineItems = page.list
-          this.total = page.total
-        })
-      },
     }
   }
 </script>
@@ -37,5 +48,8 @@ import { post, get } from '@/libs/http'
   }
   .content{
     padding-left: 5px;
+  }
+  .fontWeight{
+    font-weight: bold;
   }
 </style>
