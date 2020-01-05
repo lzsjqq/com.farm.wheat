@@ -233,7 +233,7 @@ export default [
           icon: 'md-git-branch',
           title: '树状表格'
         },
-        component: () => import('@/view/components/deal/event.vue')
+        component: () => import('@/view/components/event/index.vue')
       },
       {
         path: 'deal',
