@@ -114,7 +114,7 @@ export default [
           icon: 'md-git-branch',
           title: '树状表格'
         },
-        component: () => import('@/view/components/event/index.vue')
+        component: () => import('@/view/components/share/event/index.vue')
       },
       {
         path: 'deal',
@@ -123,7 +123,7 @@ export default [
           icon: 'md-git-branch',
           title: '树状表格'
         },
-        component: () => import('@/view/components/deal/index.vue')
+        component: () => import('@/view/components/share/deal/index.vue')
       },
       {
         path: 'deal_detail',
@@ -132,7 +132,7 @@ export default [
           icon: 'md-git-branch',
           title: '树状表格'
         },
-        component: () => import('@/view/components/deal_detail/index.vue')
+        component: () => import('@/view/components/share/deal_detail/index.vue')
       },
       {
         path: 'share',
@@ -150,7 +150,7 @@ export default [
         icon: 'md-git-branch',
           title: 'sts'
       },
-        component: () => import('@/view/components/sts/index.vue')
+        component: () => import('@/view/components/share/sts/index.vue')
       }
     ]
   },

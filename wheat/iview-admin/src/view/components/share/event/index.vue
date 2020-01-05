@@ -1,4 +1,3 @@
-
 <template>
   <Timeline>
     <TimelineItem v-for="item in timelineItems">
@@ -6,7 +5,7 @@
       <p class="content"><span class="fontWeight">事件：</span>{{item.event}}</p>
       <p class="content"><span class="fontWeight">影响：</span>{{item.affect}}</p>
     </TimelineItem>
-    <TimelineItem v-if="show"><a href="#">查看更多</a></TimelineItem>
+    <TimelineItem v-if="show"><a href="#" @click="search(++this.pageNum)" >查看更多</a></TimelineItem>
   </Timeline>
 </template>
 
@@ -25,8 +24,8 @@
       }
     },
     methods: {
-      search () {
-        post({pageNum:this.pageNum,pageSize:5 }, 'deal/listEvents').then(res => {
+      search (pageNum) {
+        post({pageNum:pageNum,pageSize:5 }, 'deal/listEvents').then(res => {
           let page = res.data
           this.timelineItems = page.list
           this.show = page.lastPage !== page.firstPage
@@ -37,7 +36,7 @@
       }
     },
     mounted: function () {
-      this.search()
+      this.search(this.pageNum)
     }
   }
 </script>
