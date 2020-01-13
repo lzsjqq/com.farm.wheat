@@ -59,6 +59,10 @@ public class DealServiceImpl implements DealService {
 
     @Override
     public void insertEvent(EventPO convert) {
+        Date eventDate = convert.getEventDate();
+        if(null== eventDate){
+            convert.setEventDate(new Date());
+        }
         eventMapper.insert(convert);
     }
 
