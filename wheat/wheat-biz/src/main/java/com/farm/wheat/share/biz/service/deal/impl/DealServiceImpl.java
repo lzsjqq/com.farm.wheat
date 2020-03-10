@@ -60,7 +60,7 @@ public class DealServiceImpl implements DealService {
     @Override
     public void insertEvent(EventPO convert) {
         Date eventDate = convert.getEventDate();
-        if(null== eventDate){
+        if (null == eventDate) {
             convert.setEventDate(new Date());
         }
         eventMapper.insert(convert);
@@ -96,7 +96,7 @@ public class DealServiceImpl implements DealService {
             rel.append("<b>" + data + "：</b>");
             rel.append(analyseOne);
         }
-        return rel.toString();
+        return rel.toString().replace("\n", "</br>");
     }
 
     @Transactional
