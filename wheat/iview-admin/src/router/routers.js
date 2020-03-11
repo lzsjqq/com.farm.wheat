@@ -109,6 +109,15 @@ export default [
     children: [
       {
         path: 'event',
+        name: 'K线图',
+        meta: {
+          icon: 'md-git-branch',
+          title: '树状表格'
+        },
+        component: () => import('@/view/components/share/kLine/index.vue')
+      },
+      {
+        path: 'event',
         name: '事件',
         meta: {
           icon: 'md-git-branch',
