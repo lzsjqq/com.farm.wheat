@@ -10,6 +10,6 @@ export const post = (formItem, url) => {
 export const get = (url) => {
   return axios.request({
     url: url,
-    method: 'get',
+    method: 'get'
   })
 }
