@@ -315,4 +315,13 @@
         order by trading_date desc
         limit #{limit}
     </select>
+    <select id="selectSharePrices" resultMap="BaseResultMap">
+        SELECT
+        p.*
+        FROM
+        `share_price` P
+        INNER JOIN `share_info` i USING (ID_SHARE_INFO)
+        WHERE i.`SHARE_CODE` = #{shareCode}
+        order by P.trading_date asc
+    </select>
 </mapper>

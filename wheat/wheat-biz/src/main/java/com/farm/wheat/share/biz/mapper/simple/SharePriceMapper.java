@@ -28,12 +28,19 @@ public interface SharePriceMapper {
     int updateByPrimaryKey(SharePriceDto record);
 
     /**
-     *
      * @param idShareInfo
      * @param tradingDate
      * @return
      */
-    SharePriceDto selectByIdShareInfoAndTradingDate(@Param("idShareInfo") Integer idShareInfo,@Param("tradingDate")  Date tradingDate);
+    SharePriceDto selectByIdShareInfoAndTradingDate(@Param("idShareInfo") Integer idShareInfo, @Param("tradingDate") Date tradingDate);
 
-    List<SharePriceDto> selectByIdShareInfo(@Param("idShareInfo")Integer idShareInfo, @Param("limit") int limit);
+    List<SharePriceDto> selectByIdShareInfo(@Param("idShareInfo") Integer idShareInfo, @Param("limit") int limit);
+
+    /**
+     * 查询历史数据
+     *
+     * @param shareCode
+     * @return
+     */
+    List<SharePriceDto> selectSharePrices(@Param("shareCode") String shareCode);
 }
