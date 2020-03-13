@@ -29,6 +29,7 @@
         <module>wheat-common</module>
         <module>wheat-api</module>
         <module>wheat-bootstrap</module>
+        <module>wheat-chan</module>
     </modules>
 
     <dependencies>
