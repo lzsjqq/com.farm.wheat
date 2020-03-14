@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Price {
 
+    private String tradingDate;
+
     private double todayOpenPrice;
     /**
      * 今日收盘价
@@ -22,8 +24,6 @@ public class Price {
     private double todayMaxPrice;
 
     private double todayMinPrice;
-
-    private String tradingDate;
 
     private PriceRunTypeEnum priceRunType;
     private PriceTypeEnum priceType;

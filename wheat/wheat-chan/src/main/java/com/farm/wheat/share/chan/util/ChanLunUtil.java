@@ -3,6 +3,7 @@ package com.farm.wheat.share.chan.util;
 import com.farm.common.utils.DateUtils;
 import com.farm.common.utils.NullCheckUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,8 +12,8 @@ import java.util.List;
  * @author: xyc
  * @create: 2020-03-13 21:49
  */
-public class LinkedUtil {
-    private LinkedUtil() {
+public class ChanLunUtil {
+    private ChanLunUtil() {
     }
 
     /**
@@ -74,11 +75,58 @@ public class LinkedUtil {
             double firstPrePriceTodayMaxPrice = firstPreContainPrice != null ? firstPreContainPrice.getTodayMaxPrice() : firstPrePrice.getTodayMaxPrice();
             double priceTodayMaxPrice = priceContainPrice != null ? priceContainPrice.getTodayMaxPrice() : price.getTodayMaxPrice();
             if (firstPrePriceTodayMaxPrice > priceTodayMaxPrice) {
-                firstPrePrice.setPriceType(PriceTypeEnum.TOP);
+                topPrice(firstPre).setPriceType(PriceTypeEnum.TOP);
             } else {
-                firstPrePrice.setPriceType(PriceTypeEnum.BOTTOM);
+                bottomPrice(firstPre).setPriceType(PriceTypeEnum.BOTTOM);
             }
         }
+    }
+
+    /**
+     * 得到所有的包含K线
+     *
+     * @param node
+     * @param list
+     */
+    private static void getAllContainPrice(Node<Price> node, List<Price> list) {
+        if (null == node) {
+            return;
+        }
+        Price data = node.getData();
+        Price containPrice = data.getContainPrice();
+        list.add(data);
+        if (containPrice == null) {
+            return;
+        }
+        getAllContainPrice(node.getPre(), list);
+    }
+
+    private static Price topPrice(Node<Price> node) {
+        List<Price> list = new ArrayList<>(4);
+        getAllContainPrice(node, list);
+        Price max = list.get(0);
+        Price price;
+        for (int i = 0; i < list.size(); i++) {
+            price = list.get(i);
+            if (price.getTodayMaxPrice() > max.getTodayMaxPrice()) {
+                max = price;
+            }
+        }
+        return max;
+    }
+
+    private static Price bottomPrice(Node<Price> node) {
+        List<Price> list = new ArrayList<>(4);
+        getAllContainPrice(node, list);
+        Price min = list.get(0);
+        Price price;
+        for (int i = 0; i < list.size(); i++) {
+            price = list.get(i);
+            if (price.getTodayMinPrice() < min.getTodayMinPrice()) {
+                min = price;
+            }
+        }
+        return min;
     }
 
 
@@ -157,19 +205,33 @@ public class LinkedUtil {
                 // 计算k线包含数量
                 containPrice.setContainSize(getContainSize(node, 2));
                 PriceRunTypeEnum priceType = prePrice.getPriceRunType();
-                // 向上 包含
                 if (priceType == PriceRunTypeEnum.UP) {
-                    containPrice.setTodayMaxPrice(max > 0 ? priceMaxPrice : prePriceMaxPrice);
-                    containPrice.setTodayMinPrice(min > 0 ? priceMinPrice : prePriceMinPrice);
-                }
-                // 向下 包含
-                if (priceType == PriceRunTypeEnum.DOWN) {
-                    containPrice.setTodayMaxPrice(max < 0 ? priceMaxPrice : prePriceMaxPrice);
-                    containPrice.setTodayMinPrice(min < 0 ? priceMinPrice : prePriceMinPrice);
+                    // 向上 包含
+                    contain(priceMaxPrice, priceMinPrice, prePriceMaxPrice, prePriceMinPrice, containPrice, max > 0, min > 0, PriceRunTypeEnum.UP);
+                } else if (priceType == PriceRunTypeEnum.DOWN) {
+                    // 向下 包含
+                    contain(priceMaxPrice, priceMinPrice, prePriceMaxPrice, prePriceMinPrice, containPrice, max < 0, min < 0, PriceRunTypeEnum.DOWN);
+                } else if (priceType == PriceRunTypeEnum.CONTAIN) {
+                    // 包含 同包含方向处理
+                    PriceRunTypeEnum priceRunType = preContainPrice.getPriceRunType();
+                    if (priceRunType == PriceRunTypeEnum.UP) {
+                        // 向上 包含
+                        contain(priceMaxPrice, priceMinPrice, prePriceMaxPrice, prePriceMinPrice, containPrice, max > 0, min > 0, PriceRunTypeEnum.UP);
+                    } else if (priceRunType == PriceRunTypeEnum.DOWN) {
+                        // 向下 包含
+                        contain(priceMaxPrice, priceMinPrice, prePriceMaxPrice, prePriceMinPrice, containPrice, max < 0, min < 0, PriceRunTypeEnum.DOWN);
+                    }
+                    containPrice.setPriceRunType(priceRunType);
                 }
                 price.setContainPrice(containPrice);
             }
         }
+    }
+
+    private static void contain(double priceMaxPrice, double priceMinPrice, double prePriceMaxPrice, double prePriceMinPrice, Price containPrice, boolean b, boolean b2, PriceRunTypeEnum up) {
+        containPrice.setTodayMaxPrice(b ? priceMaxPrice : prePriceMaxPrice);
+        containPrice.setTodayMinPrice(b2 ? priceMinPrice : prePriceMinPrice);
+        containPrice.setPriceRunType(up);
     }
 
     /**

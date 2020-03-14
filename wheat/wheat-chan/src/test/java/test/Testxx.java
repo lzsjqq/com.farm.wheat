@@ -2,7 +2,7 @@ package test;
 
 import com.alibaba.fastjson.JSONObject;
 import com.farm.wheat.share.chan.util.Linked;
-import com.farm.wheat.share.chan.util.LinkedUtil;
+import com.farm.wheat.share.chan.util.ChanLunUtil;
 import com.farm.wheat.share.chan.util.Price;
 import com.farm.wheat.share.chan.util.SharePriceDto;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class Testxx {
     @Test
     public void xx() throws Exception {
         List<SharePriceDto> sharePrices = JSONObject.parseArray(xx, SharePriceDto.class);
-        Linked<Price> linked = LinkedUtil.buildLined(sharePrices);
+        Linked<Price> linked = ChanLunUtil.buildLined(sharePrices);
         // 处理包含关系
         int size = linked.getSize();
         for (int i = 0; i < size; i++) {
