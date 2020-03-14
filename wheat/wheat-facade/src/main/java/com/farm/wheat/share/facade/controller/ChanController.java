@@ -1,7 +1,7 @@
 package com.farm.wheat.share.facade.controller;
 
 import com.farm.wheat.share.api.chan.ChanApi;
-import com.farm.wheat.share.biz.service.chan.IChanService;
+import com.farm.wheat.share.biz.service.chan.IChanLunService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class ChanController implements ChanApi {
 
     @Autowired
-    private IChanService chanService;
+    private IChanLunService chanService;
 
     @RequestMapping(value = "/build", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @Override

@@ -3,7 +3,7 @@ package com.farm.wheat.share.biz.service.chan.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.farm.wheat.share.biz.dto.SharePriceDto;
 import com.farm.wheat.share.biz.mapper.simple.SharePriceMapper;
-import com.farm.wheat.share.biz.service.chan.IChanService;
+import com.farm.wheat.share.biz.service.chan.IChanLunService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -16,7 +16,7 @@ import java.util.List;
  * @create: 2020-03-13 21:59
  */
 @Service
-public class ChanServiceImpl implements IChanService {
+public class ChanLunServiceImpl implements IChanLunService {
 
     @Resource
     private SharePriceMapper sharePriceMapper;

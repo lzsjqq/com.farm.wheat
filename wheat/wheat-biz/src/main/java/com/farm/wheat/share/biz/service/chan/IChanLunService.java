@@ -6,7 +6,7 @@ package com.farm.wheat.share.biz.service.chan;
  * @author: xyc
  * @create: 2020-03-13 21:58
  */
-public interface IChanService {
+public interface IChanLunService {
 
     void build(String shareCode);
 }
