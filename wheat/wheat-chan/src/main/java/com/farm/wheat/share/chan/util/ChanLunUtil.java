@@ -36,9 +36,10 @@ public class ChanLunUtil {
         }
         // 处理包含关系包含关系
         handleContain(linked);
-        // 处理分型
-        topBottomType(linked);
         // 处理顶底分型
+        topBottomType(linked);
+        // 画笔
+        
         return linked;
     }
 
