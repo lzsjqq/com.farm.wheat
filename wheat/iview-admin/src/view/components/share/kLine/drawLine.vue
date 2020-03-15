@@ -34,7 +34,7 @@ export default {
       await this.getBasePrice(shareCode)
       this.$nextTick(() => {
         this.dom = echarts.init(this.$refs.dom)
-        this.dom.setOption(option(this.rawData))
+        this.dom.setOption(option(this.rawData,echarts))
         on(window, 'resize', this.resize)
       })
     }

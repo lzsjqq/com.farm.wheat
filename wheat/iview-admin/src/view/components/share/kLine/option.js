@@ -1,5 +1,5 @@
 
-function optionFunction(rawData) {
+function optionFunction(rawData,echarts) {
   let data= splitData(rawData)
   return {
     backgroundColor: '#eee',
@@ -7,7 +7,7 @@ function optionFunction(rawData) {
     legend: {
       bottom: 10,
       left: 'center',
-      data: ['Dow-Jones index', 'MA5', 'MA10', 'MA20', 'MA30']
+      data: ['K线', 'MA5', 'MA10', 'MA20', 'MA30']
     },
     tooltip: {
       trigger: 'axis',
@@ -96,11 +96,7 @@ function optionFunction(rawData) {
           label: {
             formatter: function (params) {
               let seriesValue = (params.seriesData[0] || {}).value;
-              return params.value
-                + (seriesValue != null
-                    ? '\n' + echarts.format.addCommas(seriesValue)
-                    : ''
-                );
+              return params.value + (seriesValue != null? '\n' + echarts.format.addCommas(seriesValue): '');
             }
           }
         }
@@ -141,7 +137,7 @@ function optionFunction(rawData) {
     ],
     series: [
       {
-        name: 'Dow-Jones index',
+        name: 'K线',
         type: 'candlestick',
         data: data.values,
         itemStyle: {

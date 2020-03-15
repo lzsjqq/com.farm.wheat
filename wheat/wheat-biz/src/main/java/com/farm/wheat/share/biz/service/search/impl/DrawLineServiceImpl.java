@@ -41,13 +41,13 @@ public class DrawLineServiceImpl implements IDrawLineService {
         if (NullCheckUtils.isNotBlank(sharePrices)) {
             Object[] arr;
             for (SharePriceDto sharePrice : sharePrices) {
-                arr = new Object[5];
+                arr = new Object[6];
                 arr[0] = DateUtils.dateToString(sharePrice.getTradingDate(), "yyyy/M/dd");
                 arr[1] = sharePrice.getTodayOpenPrice().doubleValue();
                 arr[2] = sharePrice.getTodayEndPrice().doubleValue();
                 arr[3] = sharePrice.getTodayMinPrice().doubleValue();
                 arr[4] = sharePrice.getTodayMaxPrice().doubleValue();
-                arr[5] = sharePrice.getTradingVolume();
+                arr[5] = sharePrice.getTradingVolume().intValue() * 100;
                 result.add(arr);
             }
         }
