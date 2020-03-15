@@ -47,6 +47,7 @@ public class DrawLineServiceImpl implements IDrawLineService {
                 arr[2] = sharePrice.getTodayEndPrice().doubleValue();
                 arr[3] = sharePrice.getTodayMinPrice().doubleValue();
                 arr[4] = sharePrice.getTodayMaxPrice().doubleValue();
+                arr[5] = sharePrice.getTradingVolume();
                 result.add(arr);
             }
         }
