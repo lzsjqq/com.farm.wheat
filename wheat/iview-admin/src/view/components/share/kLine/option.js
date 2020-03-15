@@ -123,7 +123,7 @@ function optionFunction(rawData,echarts) {
       {
         type: 'inside',
         xAxisIndex: [0, 1],
-        start: 98,
+        start: data.categoryData.length/2,
         end: 100
       },
       {
