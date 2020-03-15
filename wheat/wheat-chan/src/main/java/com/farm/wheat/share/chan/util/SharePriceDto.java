@@ -7,6 +7,7 @@ import java.util.Date;
 
 @Data
 public class SharePriceDto {
+
     private Integer idSharePrice;
 
     private Integer idShareInfo;

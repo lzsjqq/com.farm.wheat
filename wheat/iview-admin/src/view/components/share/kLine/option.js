@@ -7,7 +7,7 @@ function optionFunction(rawData,echarts) {
     legend: {
       bottom: 10,
       left: 'center',
-      data: ['K线', 'MA5', 'MA10', 'MA20', 'MA30']
+      data: ['K线', '笔','MA5', 'MA10', 'MA20', 'MA30']
     },
     tooltip: {
       trigger: 'axis',
@@ -162,6 +162,16 @@ function optionFunction(rawData,echarts) {
         }
       },
       {
+        name: '笔',
+        type: 'line',
+        data: calculateBi(rawData.priceType),
+        connectNulls: true,
+        smooth: false,
+        lineStyle: {
+          normal: {opacity: 0.5}
+        }
+      },
+      {
         name: 'MA5',
         type: 'line',
         data: calculateMA(5, data),
@@ -202,12 +212,25 @@ function optionFunction(rawData,echarts) {
         type: 'bar',
         xAxisIndex: 1,
         yAxisIndex: 1,
-        data: data.volumns
+        data: data.volumes
       }
     ]
   }
 }
-
+function calculateBi(data) {
+  let result = [];
+  let tmp
+  for (let i = 0, len = data.length; i < len; i++) {
+    tmp= data[i]
+    if ( '-' == tmp) {
+      result.push('-');
+    } else {
+      result.push(tmp.split('-')[1]);
+    }
+  }
+  debugger
+  return result;
+}
 function calculateMA(dayCount, data) {
   let result = [];
   for (let i = 0, len = data.values.length; i < len; i++) {
@@ -225,18 +248,19 @@ function calculateMA(dayCount, data) {
 }
 
 function splitData(rawData) {
+  rawData=rawData.baseData
   let categoryData = [];
   let values = [];
-  let volumns = [];
+  let volumes = [];
   for (let i = 0; i < rawData.length; i++) {
     categoryData.push(rawData[i].splice(0, 1)[0]);
     values.push(rawData[i]);
-    volumns.push(rawData[i][4]);
+    volumes.push(rawData[i][4]);
   }
   return {
     categoryData: categoryData,
     values: values,
-    volumns: volumns
+    volumes: volumes
   };
 }
 

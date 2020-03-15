@@ -1,6 +1,7 @@
 package com.farm.wheat.share.biz.service.search;
 
 import com.farm.wheat.share.biz.dto.DrawLineDTO;
+import com.farm.wheat.share.biz.vo.DrawLineData;
 
 import java.util.List;
 
@@ -9,5 +10,5 @@ import java.util.List;
  */
 public interface IDrawLineService {
 
-    List<Object[]> sharePrices(DrawLineDTO drawLine) throws Exception;
+    DrawLineData sharePrices(DrawLineDTO drawLine) throws Exception;
 }

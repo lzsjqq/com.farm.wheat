@@ -1,12 +1,14 @@
 package test;
 
 import com.alibaba.fastjson.JSONObject;
+import com.farm.common.utils.DateUtils;
 import com.farm.wheat.share.chan.util.Linked;
 import com.farm.wheat.share.chan.util.ChanLunUtil;
 import com.farm.wheat.share.chan.util.Price;
 import com.farm.wheat.share.chan.util.SharePriceDto;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +23,18 @@ public class Testxx {
     @Test
     public void xx() throws Exception {
         List<SharePriceDto> sharePrices = JSONObject.parseArray(xx, SharePriceDto.class);
-        Linked<Price> linked = ChanLunUtil.buildLined(sharePrices);
+        List<Price> list = new ArrayList<>();
+        Price price;
+        for (SharePriceDto sharePrice : sharePrices) {
+            price = new Price();
+            price.setTodayMinPrice(sharePrice.getTodayMinPrice().doubleValue());
+            price.setTodayMaxPrice(sharePrice.getTodayMaxPrice().doubleValue());
+            price.setTodayEndPrice(sharePrice.getTodayEndPrice().doubleValue());
+            price.setTodayOpenPrice(sharePrice.getTodayOpenPrice().doubleValue());
+            price.setTradingDate(DateUtils.dateToString(sharePrice.getTradingDate(), DateUtils.YYYY_MM_DD));
+            list.add(price);
+        }
+        Linked<Price> linked = ChanLunUtil.buildLined(list);
         // 处理包含关系
         int size = linked.getSize();
         for (int i = 0; i < size; i++) {

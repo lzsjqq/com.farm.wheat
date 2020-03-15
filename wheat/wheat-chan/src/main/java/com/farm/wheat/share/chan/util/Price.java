@@ -1,5 +1,6 @@
 package com.farm.wheat.share.chan.util;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Price {
-
+    @JSONField(format = "yyyy-MM-dd")
     private String tradingDate;
 
     private double todayOpenPrice;
@@ -26,7 +27,7 @@ public class Price {
     private double todayMinPrice;
 
     private PriceRunTypeEnum priceRunType;
-    private PriceTypeEnum priceType;
+    private PriceTypeEnum priceType = PriceTypeEnum.NONE;
     /**
      * 包含之后的K线
      */

@@ -21,27 +21,56 @@ public class ChanLunUtil {
      *
      * @return
      */
-    public static Linked<Price> buildLined(List<SharePriceDto> list) throws Exception {
+    public static Linked<Price> buildLined(List<Price> list) throws Exception {
         Linked<Price> linked = new Linked<>();
-        if (NullCheckUtils.isNotBlank(list)) {
-            for (SharePriceDto sharePrice : list) {
-                Price price = new Price();
-                price.setTodayMinPrice(sharePrice.getTodayMinPrice().doubleValue());
-                price.setTodayMaxPrice(sharePrice.getTodayMaxPrice().doubleValue());
-                price.setTodayEndPrice(sharePrice.getTodayEndPrice().doubleValue());
-                price.setTodayOpenPrice(sharePrice.getTodayOpenPrice().doubleValue());
-                price.setTradingDate(DateUtils.dateToString(sharePrice.getTradingDate(), DateUtils.YYYY_MM_DD));
-                linked.add(price);
-            }
+        if (NullCheckUtils.isBlank(list)) {
+            return linked;
+        }
+        for (Price price : list) {
+            linked.add(price);
         }
         // 处理包含关系包含关系
         handleContain(linked);
         // 处理顶底分型
         topBottomType(linked);
-        // 画笔
-        
+        // 画笔     -：表示空点  "1-"+ MaxPrice：顶分型    "0-"+ MinPrice：低分型
+//        List<String>
         return linked;
     }
+
+    /**
+     * 分型 -：表示空点  "1-"+ MaxPrice：顶分型  "0-"+ MinPrice：低分型
+     *
+     * @param linked
+     * @return
+     */
+    public static List<String> priceType(Linked<Price> linked) {
+        List<String> bi = new ArrayList<>();
+        int size = 0;
+        if (null == linked || (size = linked.getSize()) == 0) {
+            return bi;
+        }
+        PriceTypeEnum priceType;
+        Price price;
+        for (int i = 0; i < size; i++) {
+            price = linked.get(i);
+            priceType = price.getPriceType();
+            switch (priceType) {
+                case TOP:
+                    bi.add("1-" + price.getTodayMaxPrice());
+                    break;
+                case BOTTOM:
+                    bi.add("0-" + price.getTodayMinPrice());
+                    break;
+                default:
+                    bi.add("-");
+                    break;
+            }
+        }
+
+        return bi;
+    }
+
 
     /**
      * 得到顶底分型
@@ -50,6 +79,7 @@ public class ChanLunUtil {
      * @return
      */
     public static void topBottomType(Linked<Price> linked) {
+        // 画笔
         if (linked == null || linked.getSize() == 0) {
             return;
         }
@@ -61,6 +91,7 @@ public class ChanLunUtil {
             Node<Price> firstPre = nodePair.getFirst();
             Node<Price> secondPre = nodePair.getSecond();
             if (null == secondPre || null == firstPre) {
+                // - 表示空点
                 continue;
             }
             Price price = node.data;

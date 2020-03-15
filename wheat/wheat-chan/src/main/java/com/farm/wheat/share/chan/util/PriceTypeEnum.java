@@ -11,5 +11,9 @@ public enum PriceTypeEnum {
     /**
      * 底分型
      */
-    BOTTOM
+    BOTTOM,
+    /**
+     * 不是顶底分型
+     */
+    NONE
 }

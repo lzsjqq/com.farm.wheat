@@ -7,6 +7,10 @@ import com.farm.wheat.share.biz.dto.DrawLineDTO;
 import com.farm.wheat.share.biz.dto.SharePriceDto;
 import com.farm.wheat.share.biz.mapper.simple.SharePriceMapper;
 import com.farm.wheat.share.biz.service.search.IDrawLineService;
+import com.farm.wheat.share.biz.vo.DrawLineData;
+import com.farm.wheat.share.chan.util.ChanLunUtil;
+import com.farm.wheat.share.chan.util.Linked;
+import com.farm.wheat.share.chan.util.Price;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -22,15 +26,37 @@ public class DrawLineServiceImpl implements IDrawLineService {
 
 
     @Override
-    public List<Object[]> sharePrices(DrawLineDTO drawLine) throws Exception {
+    public DrawLineData sharePrices(DrawLineDTO drawLine) throws Exception {
 
 //        List<SharePriceDto> sharePrices = sharePriceMapper.selectSharePrices(drawLine.getShareCode());
         List<SharePriceDto> sharePrices = JSONObject.parseArray(xx, SharePriceDto.class);
-        return convert(sharePrices);
+        DrawLineData data = new DrawLineData();
+        data.setBaseData(convert(sharePrices));
+        Linked<Price> priceLinked = ChanLunUtil.buildLined(convertToPrice(sharePrices));
+        // 得到顶底分型
+        List<String> priceType = ChanLunUtil.priceType(priceLinked);
+        data.setPriceType(priceType);
+        return data;
+    }
+
+
+    private static List<Price> convertToPrice(List<SharePriceDto> sharePrices) throws Exception {
+        List<Price> list = new ArrayList<>();
+        Price price;
+        for (SharePriceDto sharePrice : sharePrices) {
+            price = new Price();
+            price.setTodayMinPrice(sharePrice.getTodayMinPrice().doubleValue());
+            price.setTodayMaxPrice(sharePrice.getTodayMaxPrice().doubleValue());
+            price.setTodayEndPrice(sharePrice.getTodayEndPrice().doubleValue());
+            price.setTodayOpenPrice(sharePrice.getTodayOpenPrice().doubleValue());
+            price.setTradingDate(DateUtils.dateToString(sharePrice.getTradingDate(), DateUtils.YYYY_MM_DD));
+            list.add(price);
+        }
+        return list;
     }
 
     /**
-     * 数据意义：2013/1/24 ,开盘(open)，收盘(close)，最低(lowest)，最高(highest)
+     * 数据意义：2013/1/24 ,开盘(open)，收盘(close)，最低(lowest)，最高(highest),成交量
      *
      * @param sharePrices
      * @return
