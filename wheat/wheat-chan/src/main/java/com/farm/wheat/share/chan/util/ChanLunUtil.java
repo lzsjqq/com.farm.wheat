@@ -72,30 +72,49 @@ public class ChanLunUtil {
     }
 
     /**
+     * 判断是否是包含K线
+     *
+     * @param price
+     * @return
+     */
+    private static boolean checkIsContain(Price price) {
+        return price.getContainPrice() != null;
+    }
+
+    /**
      * 得到顶底分型
      *
      * @param prices
      * @return
      */
     public static void topBottomType(List<Price> prices) {
-        if (NullCheckUtils.isBlank(prices)) {
+        int size;
+        if (NullCheckUtils.isBlank(prices) || (size = prices.size()) < 3) {
             return;
         }
-        int size = prices.size();
-        for (int i = 0; i < size; i++) {
-            Price price = prices.get(i);
-            Pair<Integer, Integer> nodePair = twoPrePrice(prices, i);
+        for (int index = 2; index < size; index++) {
+            Price price = prices.get(index);
+            String tradingDate = price.getTradingDate();
+            if ("2019-03-06".equals(tradingDate)) {
+                System.out.println();
+            }
+            PriceRunTypeEnum priceType = price.getPriceRunType();
+            Price containPrice = price.getContainPrice();
+            // 判断是否是包含K线
+            if (containPrice != null && containPrice == prices.get(index - 1).getContainPrice()) {
+                continue;
+            }
+            Pair<Integer, Integer> nodePair = twoPrePrice(prices, index);
             // 和前两根进行比较
             Integer firstPre = nodePair.getFirst();
             Integer secondPre = nodePair.getSecond();
-            if (null == secondPre || null == firstPre) {
+            if (null == secondPre || null == firstPre || priceType == prices.get(firstPre).getPriceRunType()) {
                 // - 表示空点
                 continue;
             }
-            PriceRunTypeEnum priceType = price.getPriceRunType();
             Price firstPrePrice = prices.get(firstPre);
             // 判断当前节点是否是包含K线或和上个方向一致
-            if (PriceRunTypeEnum.CONTAIN == priceType || priceType == firstPrePrice.getPriceRunType()) {
+            if (priceType == firstPrePrice.getPriceRunType()) {
                 continue;
             }
             // 至此方向不在一致，确认分型
@@ -104,9 +123,9 @@ public class ChanLunUtil {
             double firstPrePriceTodayMaxPrice = firstPreContainPrice != null ? firstPreContainPrice.getTodayMaxPrice() : firstPrePrice.getTodayMaxPrice();
             double priceTodayMaxPrice = priceContainPrice != null ? priceContainPrice.getTodayMaxPrice() : price.getTodayMaxPrice();
             if (firstPrePriceTodayMaxPrice > priceTodayMaxPrice) {
-                topPrice(prices, firstPre, i).setPriceType(PriceTypeEnum.TOP);
+                topPrice(prices, firstPre, index).setPriceType(PriceTypeEnum.TOP);
             } else {
-                bottomPrice(prices, firstPre, i).setPriceType(PriceTypeEnum.BOTTOM);
+                bottomPrice(prices, firstPre, index).setPriceType(PriceTypeEnum.BOTTOM);
             }
         }
     }
@@ -164,24 +183,21 @@ public class ChanLunUtil {
      */
     private static Pair<Integer, Integer> twoPrePrice(List<Price> prices, int index) {
         Pair<Integer, Integer> pair = new Pair<>(null, null);
-        if (0 == index) {
+        // 判断前一个是否是包含节点,如果是包含节点获取到包含节点的第一根K线
+        int pre = index - 1;
+        Price prePrice = prices.get(pre);
+        if (checkIsContain(prePrice)) {
+            pre = pre - prePrice.getContainPrice().getContainSize() + 1;
+        }
+        // pre == 0 说明此时只有两个节点
+        if (pre == 0) {
             return pair;
         }
-        // 判断前一个是否是包含节点,如果是包含节点获取到包含节点的第一根K线
-        Price price = prices.get(index);
-        int pre;
-        if (PriceRunTypeEnum.CONTAIN == price.getPriceRunType()) {
-            pre = index - price.getContainSize();
-        } else {
-            pre = index - 1;
-        }
         // 获取第二个节点
-        int secondPre = 1;
-        Price firstNodeData = prices.get(pre);
-        if (PriceRunTypeEnum.CONTAIN == firstNodeData.getPriceRunType()) {
-            secondPre = pre - firstNodeData.getContainSize();
-        } else {
-            secondPre = pre - 1;
+        int secondPre = pre - 1;
+        Price secondPrice = prices.get(secondPre);
+        if (checkIsContain(secondPrice)) {
+            secondPre = secondPre - secondPrice.getContainPrice().getContainSize() + 1;
         }
         pair.setFirst(pre);
         pair.setSecond(secondPre);
@@ -207,18 +223,18 @@ public class ChanLunUtil {
      */
     private static void handleContain(List<Price> prices) {
         int size = prices.size();
-        for (int i = 0; i < size; i++) {
-            Price price = prices.get(i);
+        for (int index = 0; index < size; index++) {
+            Price price = prices.get(index);
             /**
              * 前一个
              */
-            double priceMaxPrice = price.getTodayMaxPrice();
-            double priceMinPrice = price.getTodayMinPrice();
-            Price prePrice = getPre(prices, i);
+            Price prePrice = getPre(prices, index);
             if (prePrice == null) {
                 price.setPriceRunType(PriceRunTypeEnum.NONE);
                 continue;
             }
+            double priceMaxPrice = price.getTodayMaxPrice();
+            double priceMinPrice = price.getTodayMinPrice();
             // 判断是否是包含K线
             Price preContainPrice = prePrice.getContainPrice();
             double prePriceMaxPrice = preContainPrice != null ? preContainPrice.getTodayMaxPrice() : prePrice.getTodayMaxPrice();
@@ -235,31 +251,21 @@ public class ChanLunUtil {
 //                price.setBiSize(price.getBiSize() + 1);
             } else {
                 // 类型为包含
-                price.setPriceRunType(PriceRunTypeEnum.CONTAIN);
-                // 包含类
-                Price containPrice = new Price();
-                // 计算k线包含数量
-                containPrice.setContainSize(getContainSize(prices, 2));
                 PriceRunTypeEnum priceType = prePrice.getPriceRunType();
+                price.setPriceRunType(priceType);
+                // 包含类
+                Price containPrice = preContainPrice != null ? preContainPrice : new Price();
+                // 计算k线包含数量
+                containPrice.setContainSize(getContainSize(preContainPrice));
                 if (priceType == PriceRunTypeEnum.UP) {
                     // 向上 包含
                     contain(priceMaxPrice, priceMinPrice, prePriceMaxPrice, prePriceMinPrice, containPrice, max > 0, min > 0, PriceRunTypeEnum.UP);
                 } else if (priceType == PriceRunTypeEnum.DOWN) {
                     // 向下 包含
                     contain(priceMaxPrice, priceMinPrice, prePriceMaxPrice, prePriceMinPrice, containPrice, max < 0, min < 0, PriceRunTypeEnum.DOWN);
-                } else if (priceType == PriceRunTypeEnum.CONTAIN) {
-                    // 包含 同包含方向处理
-                    PriceRunTypeEnum priceRunType = preContainPrice.getPriceRunType();
-                    if (priceRunType == PriceRunTypeEnum.UP) {
-                        // 向上 包含
-                        contain(priceMaxPrice, priceMinPrice, prePriceMaxPrice, prePriceMinPrice, containPrice, max > 0, min > 0, PriceRunTypeEnum.UP);
-                    } else if (priceRunType == PriceRunTypeEnum.DOWN) {
-                        // 向下 包含
-                        contain(priceMaxPrice, priceMinPrice, prePriceMaxPrice, prePriceMinPrice, containPrice, max < 0, min < 0, PriceRunTypeEnum.DOWN);
-                    }
-                    containPrice.setPriceRunType(priceRunType);
                 }
                 price.setContainPrice(containPrice);
+                prePrice.setContainPrice(containPrice);
             }
         }
     }
@@ -273,20 +279,10 @@ public class ChanLunUtil {
     /**
      * 从当前确定和前面包含的K线算确定当前一共包含了几根K线
      *
-     * @param prices
-     * @param index
+     * @param preContainPrice
      * @return
      */
-    private static int getContainSize(List<Price> prices, int index) {
-        int size = 2;
-        Price price;
-        for (int i = index - 1; i >= 0; i--) {
-            price = prices.get(i);
-            if (PriceRunTypeEnum.CONTAIN != price.getPriceRunType()) {
-                break;
-            }
-            size += 1;
-        }
-        return size;
+    private static int getContainSize(Price preContainPrice) {
+        return preContainPrice == null ? 2 : preContainPrice.getContainSize() + 1;
     }
 }

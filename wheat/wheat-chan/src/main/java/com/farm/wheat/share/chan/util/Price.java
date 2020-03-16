@@ -16,6 +16,11 @@ public class Price {
     @JSONField(format = "yyyy-MM-dd")
     private String tradingDate;
 
+    /**
+     * 包含之后的K线
+     */
+    private Price containPrice;
+
     private double todayOpenPrice;
     /**
      * 今日收盘价
@@ -27,11 +32,9 @@ public class Price {
     private double todayMinPrice;
 
     private PriceRunTypeEnum priceRunType;
+
     private PriceTypeEnum priceType = PriceTypeEnum.NONE;
-    /**
-     * 包含之后的K线
-     */
-    private Price containPrice;
+
     /**
      * 一笔中的数量
      */

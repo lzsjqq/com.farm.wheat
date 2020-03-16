@@ -15,7 +15,7 @@ public enum PriceRunTypeEnum {
     /**
      * 包含
      */
-    CONTAIN,
+//    CONTAIN,
     /**
      * 无
      */
