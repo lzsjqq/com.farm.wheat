@@ -12,6 +12,8 @@ public class Node<T> {
     public Node<T> next;
     public Node<T> pre;
     public T data;
+    // 在链表中的位置
+    public int index = 0;
 
     Node(Node<T> next, Node<T> pre, T data) {
         super();
@@ -19,6 +21,7 @@ public class Node<T> {
         this.pre = pre;
         this.data = data;
     }
+
     public T getNode() {
         return data;
     }

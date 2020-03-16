@@ -32,9 +32,9 @@ public class DrawLineServiceImpl implements IDrawLineService {
         List<SharePriceDto> sharePrices = JSONObject.parseArray(xx, SharePriceDto.class);
         DrawLineData data = new DrawLineData();
         data.setBaseData(convert(sharePrices));
-        Linked<Price> priceLinked = ChanLunUtil.buildLined(convertToPrice(sharePrices));
+        List<Price> prices = ChanLunUtil.buildLined(convertToPrice(sharePrices));
         // 得到顶底分型
-        List<String> priceType = ChanLunUtil.priceType(priceLinked);
+        List<String> priceType = ChanLunUtil.priceType(prices);
         data.setPriceType(priceType);
         return data;
     }

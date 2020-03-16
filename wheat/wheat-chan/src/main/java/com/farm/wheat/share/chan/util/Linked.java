@@ -18,6 +18,7 @@ public class Linked<T> {
             last = node;
         } else {
             Node<T> node = new Node(null, last, data);
+            node.index = ++last.index;
             last.next = node;
             last = node;
         }

@@ -34,9 +34,9 @@ public class Testxx {
             price.setTradingDate(DateUtils.dateToString(sharePrice.getTradingDate(), DateUtils.YYYY_MM_DD));
             list.add(price);
         }
-        Linked<Price> linked = ChanLunUtil.buildLined(list);
+        List<Price> linked = ChanLunUtil.buildLined(list);
         // 处理包含关系
-        int size = linked.getSize();
+        int size = linked.size();
         for (int i = 0; i < size; i++) {
             System.out.println(linked.get(i));
         }
