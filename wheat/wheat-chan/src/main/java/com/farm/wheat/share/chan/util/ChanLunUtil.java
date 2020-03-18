@@ -24,10 +24,11 @@ public class ChanLunUtil {
     public static List<Price> buildLined(List<Price> prices) throws Exception {
         // 处理包含关系包含关系
         handleContain(prices);
-        // 处理顶底分型
+        // 处理顶底分型,过滤掉连续的同类型分型只保留最后的
         List<Pair<Integer, Price>> pairs = topBottomType(prices);
         // 画笔     -：表示空点  "1-"+ MaxPrice：顶分型    "0-"+ MinPrice：低分型
-//        List<String>
+//        bi(pairs, prices);
+        chanBi(pairs, prices);
         return prices;
     }
 
@@ -69,6 +70,31 @@ public class ChanLunUtil {
      */
     private static final int BI_MIN_SIZE = 5;
 
+
+    /**
+     * 画笔
+     *
+     * @param topBottoms
+     * @param prices
+     */
+    public static void chanBi(List<Pair<Integer, Price>> topBottoms, List<Price> prices) {
+
+        List<Pair<Integer, Price>> oneTopBottoms = new ArrayList<>();
+        for (int i = 0; i < topBottoms.size(); i += 2) {
+            oneTopBottoms.add(topBottoms.get(i));
+            System.out.println(i);
+        }
+        List<Pair<Integer, Price>> twoTopBottoms = new ArrayList<>();
+        for (int i = 1; i < topBottoms.size(); i += 2) {
+            oneTopBottoms.add(topBottoms.get(i));
+            System.out.println(i);
+        }
+
+
+
+
+    }
+
     /**
      * 得到笔
      */
@@ -76,21 +102,10 @@ public class ChanLunUtil {
         if (NullCheckUtils.isBlank(prices) || NullCheckUtils.isBlank(topBottoms)) {
             return;
         }
-        Price price;
-        BiRunTypeEnum biRunType = null;
-        // 第一个笔
-        int firstOneIndex = 0;
-        int firstTwoIndex = 0;
-
-        PriceTypeEnum firstOnePriceType = null;
-        PriceTypeEnum firstTwoPriceType = null;
-
-        // 第二个笔
-        Price secondOnePrice = null;
-        Price secondTwoPrice = null;
-        PriceTypeEnum secondOnePriceType = null;
-        PriceTypeEnum secondTwoPriceType = null;
-
+        // 潜在笔
+        List<Pair<Integer, Price>> biPairs = new ArrayList<>();
+        // 确定笔
+        List<Pair<Integer, Price>> surePairs = new ArrayList<>();
         int topBottomsSize = topBottoms.size();
         for (int index = 0; index < topBottomsSize; index++) {
             Pair<Integer, Price> pair1 = topBottoms.get(index);
@@ -101,61 +116,36 @@ public class ChanLunUtil {
             if (index + 1 == topBottomsSize) {
                 continue;
             }
-            Pair<Integer, Pair<Integer, Price>> nextType = getNextType(firstPriceType1, topBottoms, index + 1);
-            if (nextType == null) {
-                break;
-            }
-            Pair<Integer, Price> pair2 = nextType.getSecond();
+            // 现在已经是一顶一底了
+//          Pair<Integer, Pair<Integer, Price>> nextType = getNextType(firstPriceType1, topBottoms, index + 1);
+            index = index + 1;
+            Pair<Integer, Price> pair2 = topBottoms.get(index);
             Integer firstIndex2 = pair2.getFirst();
+            Price firstPrice2 = pair2.getSecond();
             // 判断是否存在5根K线,确定两个坐标之间的非包含K线的数量
             int size = nonContainSize(prices, firstIndex1, firstIndex2);
             if (size >= BI_MIN_SIZE) {
+                biPairs.add(new Pair<>(firstIndex1, firstPrice1));
+                biPairs.add(new Pair<>(firstIndex2, firstPrice2));
+                continue;
+            } else {
+                // 得到下一个
+                index = index + 1;
+                Pair<Integer, Price> pair3 = topBottoms.get(index);
+                Integer secondIndex1 = pair2.getFirst();
+                Price secondPrice1 = pair2.getSecond();
+                // 升笔
+                if (PriceTypeEnum.TOP == firstPriceType1) {
+
+                }
+                // 降笔
+                if (PriceTypeEnum.BOTTOM == firstPriceType1) {
+
+                }
+
 
             }
             // 下次循环开始 index
-            index = index + nextType.getFirst();
-
-
-        }
-
-
-        for (int i = 0; i < prices.size(); i++) {
-            price = prices.get(i);
-            PriceTypeEnum priceType = price.getPriceType();
-            // 确定开始笔方向
-            if (PriceTypeEnum.NONE == priceType) {
-                continue;
-            }
-            // 为第一个笔起点赋值
-            if (firstOnePriceType == null) {
-                firstOnePriceType = priceType;
-                firstOneIndex = i;
-                continue;
-            }
-            // 为第一个笔结束点赋值,赋值条件为：第二个点不能和第一个点的类型相同
-            if (firstTwoPriceType == null && priceType != firstOnePriceType) {
-                firstTwoPriceType = priceType;
-                firstTwoIndex = i;
-                continue;
-            }
-
-
-            // 判断 第一个笔的
-
-            // 为第二个笔起点赋值
-            if (secondOnePriceType == null) {
-                secondOnePriceType = priceType;
-                secondOnePrice = price;
-                continue;
-            }
-            // 为第二个笔结束点赋值
-            if (secondTwoPriceType == null) {
-                secondTwoPriceType = priceType;
-                secondTwoPrice = price;
-                continue;
-            }
-
-
         }
     }
 
@@ -250,10 +240,6 @@ public class ChanLunUtil {
         }
         for (int index = 2; index < size; index++) {
             Price price = prices.get(index);
-            String tradingDate = price.getTradingDate();
-            if ("2019-03-06".equals(tradingDate)) {
-                System.out.println();
-            }
             PriceRunTypeEnum priceType = price.getPriceRunType();
             Price containPrice = price.getContainPrice();
             // 判断是否是包含K线
@@ -284,7 +270,7 @@ public class ChanLunUtil {
                 Pair<Integer, Price> last = getLastPair(pairs);
                 if (last != null && PriceTypeEnum.TOP == last.getSecond().getPriceType()) {
                     last.getSecond().setPriceType(PriceTypeEnum.NONE);
-                    pairs.remove( pairs.size() - 1);
+                    pairs.remove(pairs.size() - 1);
                 }
                 pair.getSecond().setPriceType(PriceTypeEnum.TOP);
                 pairs.add(pair);// 添加新元素
