@@ -25,14 +25,11 @@ public class ChanLunUtil {
     public static List<Price> buildLined(List<Price> prices) throws Exception {
         // 处理包含关系包含关系
         handleContain(prices);
-        // 处理顶底分型,过滤掉连续的同类型分型只保留最后的
+        // 处理顶底分型,过滤掉连续的同类型分型只保留最高或最低的
         List<Pair<Integer, Price>> pairs = topBottomType(prices);
         // 画笔     -：表示空点  "1-"+ MaxPrice：顶分型    "0-"+ MinPrice：低分型
 //        bi(pairs, prices);
-        List<Pair<Integer, BiPrice>> biList = chanBi(pairs, prices);
-
-        Map<String, BiPrice> biMap = biMap(biList);
-
+        Map<String, BiPrice> biMap = chanBi(pairs, prices);
         for (Price price : prices) {
             String tradingDate = price.getTradingDate();
             if (biMap.get(tradingDate) == null) {
@@ -47,7 +44,12 @@ public class ChanLunUtil {
         Map<String, BiPrice> map = new HashMap<>();
         for (Pair<Integer, BiPrice> pair : pairs) {
             BiPrice second = pair.getSecond();
-            map.put(second.getToTradingDate(), second);
+            if (second.getPriceType() == BiPriceTypeEnum.TOP ) {
+                map.put(second.getToTradingDate(), second);
+            }
+            if (second.getPriceType() == BiPriceTypeEnum.BOTTOM) {
+                map.put(second.getFromTradingDate(), second);
+            }
         }
         return map;
     }
@@ -97,7 +99,7 @@ public class ChanLunUtil {
      * @param topBottoms
      * @param prices
      */
-    public static List<Pair<Integer, BiPrice>> chanBi(List<Pair<Integer, Price>> topBottoms, List<Price> prices) {
+    public static Map<String, BiPrice> chanBi(List<Pair<Integer, Price>> topBottoms, List<Price> prices) {
         // 找到笔的特征序列K线
         List<BiPrice> oneTopBottoms = new ArrayList<>();
         List<BiPrice> twoTopBottoms = new ArrayList<>();
@@ -131,7 +133,7 @@ public class ChanLunUtil {
                             .toTradingDate(two.getTradingDate())
                             .todayMaxPrice(todayMaxPrice)
                             .todayMinPrice(todayMinPrice)
-                            .priceType(BiPriceTypeEnum.DOWN)
+                            .priceType(BiPriceTypeEnum.BOTTOM)
                             .priceRunType(PriceRunTypeEnum.NONE)
                             .build();
                     break;
@@ -143,9 +145,8 @@ public class ChanLunUtil {
         // 做包含处理
         biHandleContain(oneTopBottoms);
         // 得到顶底分型
-//        List<Pair<Integer, BiPrice>> pairs = biTopBottomType(oneTopBottoms);
-        return biTopBottomType(oneTopBottoms);
-
+        Map<String, BiPrice> biMap = new HashMap<>();
+        biMap.putAll(biMap(biTopBottomType(oneTopBottoms)));
 //        for (int i = 1; i < size; i++) {
 //            if (i + 1 >= size) {
 //                break;
@@ -187,7 +188,8 @@ public class ChanLunUtil {
 //        // 做包含处理
 //        biHandleContain(twoTopBottoms);
 //        // 得到顶底分型
-//        biTopBottomType(twoTopBottoms);
+//        biMap.putAll(biMap(biTopBottomType(twoTopBottoms)));
+        return biMap;
     }
 
     /**
@@ -462,21 +464,38 @@ public class ChanLunUtil {
             if (firstPrePriceTodayMaxPrice > priceTodayMaxPrice) {
                 Pair<Integer, Price> pair = topPrice(prices, firstPre, index);
                 // 判断上个分型是否是顶分型，如果是去掉，只保留最高的，
-                Pair<Integer, Price> last = getLastPair(pairs);
-                if (last != null && PriceTypeEnum.TOP == last.getSecond().getPriceType()) {
-                    last.getSecond().setPriceType(PriceTypeEnum.NONE);
-                    pairs.remove(pairs.size() - 1);
-                }
+//                Pair<Integer, Price> last = getLastPair(pairs);
+//                if (last != null && PriceTypeEnum.TOP == last.getSecond().getPriceType()) {
+//                    double todayMaxPrice = last.getSecond().getTodayMaxPrice();
+//                    if (pair.getSecond().getTodayMaxPrice() > todayMaxPrice) {
+//                        pair.getSecond().setPriceType(PriceTypeEnum.TOP);
+//                        pairs.add(pair);// 添加新元素
+//                    } else {
+//                        last.getSecond().setPriceType(PriceTypeEnum.NONE);
+//                        pairs.remove(pairs.size() - 1);
+//                    }
+//                } else {
+//
+//                }
                 pair.getSecond().setPriceType(PriceTypeEnum.TOP);
                 pairs.add(pair);// 添加新元素
             } else {
                 Pair<Integer, Price> pair = bottomPrice(prices, firstPre, index);
                 // 判断上个分型是否是底分型，如果是去掉，只保留最底的，
-                Pair<Integer, Price> last = getLastPair(pairs);
-                if (last != null && PriceTypeEnum.BOTTOM == last.getSecond().getPriceType()) {
-                    last.getSecond().setPriceType(PriceTypeEnum.NONE);
-                    pairs.remove(pairs.size() - 1);
-                }
+//                Pair<Integer, Price> last = getLastPair(pairs);
+//                if (last != null && PriceTypeEnum.BOTTOM == last.getSecond().getPriceType()) {
+//                    double todayMinPrice = last.getSecond().getTodayMinPrice();
+//                    if (pair.getSecond().getTodayMinPrice() < todayMinPrice) {
+//                        pair.getSecond().setPriceType(PriceTypeEnum.BOTTOM);
+//                        pairs.add(pair);
+//                    } else {
+//                        last.getSecond().setPriceType(PriceTypeEnum.NONE);
+//                        pairs.remove(pairs.size() - 1);
+//                    }
+//                } else {
+//                    pair.getSecond().setPriceType(PriceTypeEnum.BOTTOM);
+//                    pairs.add(pair);
+//                }
                 pair.getSecond().setPriceType(PriceTypeEnum.BOTTOM);
                 pairs.add(pair);
             }
@@ -525,22 +544,22 @@ public class ChanLunUtil {
             if (firstPrePriceTodayMaxPrice > priceTodayMaxPrice) {
                 Pair<Integer, BiPrice> pair = topBiPrice(prices, firstPre, index);
                 // 判断上个分型是否是顶分型，如果是去掉，只保留最高的，
-                Pair<Integer, BiPrice> last = getLastBiPair(pairs);
-                if (last != null && BiPriceTypeEnum.TOP == last.getSecond().getPriceType()) {
-                    last.getSecond().setPriceType(BiPriceTypeEnum.NONE);
-                    pairs.remove(pairs.size() - 1);
-                }
+//                Pair<Integer, BiPrice> last = getLastBiPair(pairs);
+//                if (last != null && BiPriceTypeEnum.TOP == last.getSecond().getPriceType()) {
+//                    last.getSecond().setPriceType(BiPriceTypeEnum.NONE);
+//                    pairs.remove(pairs.size() - 1);
+//                }
                 pair.getSecond().setPriceType(BiPriceTypeEnum.TOP);
                 pairs.add(pair);// 添加新元素
             } else {
                 Pair<Integer, BiPrice> pair = bottomBiPrice(prices, firstPre, index);
                 // 判断上个分型是否是底分型，如果是去掉，只保留最底的，
-                Pair<Integer, BiPrice> last = getLastBiPair(pairs);
-                if (last != null && BiPriceTypeEnum.DOWN == last.getSecond().getPriceType()) {
-                    last.getSecond().setPriceType(BiPriceTypeEnum.NONE);
-                    pairs.remove(pairs.size() - 1);
-                }
-                pair.getSecond().setPriceType(BiPriceTypeEnum.DOWN);
+//                Pair<Integer, BiPrice> last = getLastBiPair(pairs);
+//                if (last != null && BiPriceTypeEnum.BOTTOM == last.getSecond().getPriceType()) {
+//                    last.getSecond().setPriceType(BiPriceTypeEnum.NONE);
+//                    pairs.remove(pairs.size() - 1);
+//                }
+                pair.getSecond().setPriceType(BiPriceTypeEnum.BOTTOM);
                 pairs.add(pair);
             }
         }

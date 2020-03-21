@@ -8,6 +8,6 @@ public enum BiPriceTypeEnum {
     /**
      * 向上
      */
-    DOWN,
+    BOTTOM,
     NONE
 }

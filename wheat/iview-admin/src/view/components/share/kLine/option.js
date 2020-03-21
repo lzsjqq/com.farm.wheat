@@ -142,8 +142,8 @@ function optionFunction(rawData,echarts) {
         data: data.values,
         itemStyle: {
           normal: {
-            color: '#06B800',
-            color0: '#FA0000',
+            color: '#FA0000',
+            color0: '#06B800',
             borderColor: null,
             borderColor0: null
           }
@@ -171,42 +171,42 @@ function optionFunction(rawData,echarts) {
           normal: {opacity: 0.5}
         }
       },
-      {
-        name: 'MA5',
-        type: 'line',
-        data: calculateMA(5, data),
-        smooth: true,
-        lineStyle: {
-          normal: {opacity: 0.5}
-        }
-      },
-      {
-        name: 'MA10',
-        type: 'line',
-        data: calculateMA(10, data),
-        smooth: true,
-        lineStyle: {
-          normal: {opacity: 0.5}
-        }
-      },
-      {
-        name: 'MA20',
-        type: 'line',
-        data: calculateMA(20, data),
-        smooth: true,
-        lineStyle: {
-          normal: {opacity: 0.5}
-        }
-      },
-      {
-        name: 'MA30',
-        type: 'line',
-        data: calculateMA(30, data),
-        smooth: true,
-        lineStyle: {
-          normal: {opacity: 0.5}
-        }
-      },
+      // {
+      //   name: 'MA5',
+      //   type: 'line',
+      //   data: calculateMA(5, data),
+      //   smooth: true,
+      //   lineStyle: {
+      //     normal: {opacity: 0.5}
+      //   }
+      // },
+      // {
+      //   name: 'MA10',
+      //   type: 'line',
+      //   data: calculateMA(10, data),
+      //   smooth: true,
+      //   lineStyle: {
+      //     normal: {opacity: 0.5}
+      //   }
+      // },
+      // {
+      //   name: 'MA20',
+      //   type: 'line',
+      //   data: calculateMA(20, data),
+      //   smooth: true,
+      //   lineStyle: {
+      //     normal: {opacity: 0.5}
+      //   }
+      // },
+      // {
+      //   name: 'MA30',
+      //   type: 'line',
+      //   data: calculateMA(30, data),
+      //   smooth: true,
+      //   lineStyle: {
+      //     normal: {opacity: 0.5}
+      //   }
+      // },
       {
         name: 'Volumn',
         type: 'bar',
