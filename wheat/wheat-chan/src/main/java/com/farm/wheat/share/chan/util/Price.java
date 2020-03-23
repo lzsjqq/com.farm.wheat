@@ -15,11 +15,15 @@ import lombok.NoArgsConstructor;
 public class Price {
     @JSONField(format = "yyyy-MM-dd")
     private String tradingDate;
-
+    /**
+     * list中的角标
+     */
+    private Integer index;
     /**
      * 包含之后的K线
      */
     private Price containPrice;
+
 
     private double todayOpenPrice;
     /**
@@ -36,9 +40,9 @@ public class Price {
     private PriceTypeEnum priceType = PriceTypeEnum.NONE;
 
     /**
-     * 一笔中的数量
+     * 两个底分型之间的K线数量，0-1 1-2 2-3
      */
-    private int biSize = 1;
+    private int fromToSize = 1;
 
     private int containSize = 1;
 

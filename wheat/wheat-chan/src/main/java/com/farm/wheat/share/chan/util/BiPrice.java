@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @description: 描述笔分型
+ * @description: 描述未成形笔分型
  * @author: xyc
  * @create: 2020-03-18 21:43
  */
@@ -20,10 +20,13 @@ public class BiPrice {
      * 笔分型的开始时间
      */
     private String fromTradingDate;
+    private Integer fromIndex;
     /**
      * 笔分型的结束时间
      */
     private String toTradingDate;
+    private Integer toIndex;
+
     private double todayMaxPrice;
 
     private double todayMinPrice;
@@ -37,4 +40,6 @@ public class BiPrice {
     private BiPrice containPrice;
 
     private int containSize = 1;
+
+
 }
