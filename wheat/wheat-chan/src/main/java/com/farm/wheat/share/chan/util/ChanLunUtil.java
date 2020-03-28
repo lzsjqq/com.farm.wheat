@@ -253,16 +253,16 @@ public class ChanLunUtil {
     }
 
 
-    private static List<Segment> crtSegments(List<Price> topBottoms, List<Pair<Integer, BiSequence>> pairs, List<Price> prices) {
+    private static List<Segment> crtSegments(List<Price> topBottoms, List<Pair<Integer, BiSequence>> sequences, List<Price> prices) {
         List<Segment> segments = new ArrayList<>();
         // 初始化
         Segment segment = new Segment();
-        BiSequence biPrice;
-        for (Pair<Integer, BiSequence> pair : pairs) {
-            biPrice = pair.getSecond();
-            BiSequence second = biPrice;
+        BiSequence sequence;
+        for (Pair<Integer, BiSequence> pair : sequences) {
+            sequence = pair.getSecond();
+            BiSequence second = sequence;
             if (second.getPriceType() == BiPriceTypeEnum.TOP) {
-                Integer toIndex = biPrice.getToIndex();
+                Integer toIndex = sequence.getToIndex();
                 if (segment.getFromIndex() == null) {
                     segment.setFromIndex(toIndex);
                 }
