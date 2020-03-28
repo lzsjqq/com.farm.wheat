@@ -258,15 +258,15 @@ public class ChanLunUtil {
         // 初始化
         Segment segment = new Segment();
         BiSequence sequence;
-        for (Pair<Integer, BiSequence> pair : sequences) {
-            sequence = pair.getSecond();
-            BiSequence second = sequence;
-            if (BiPriceTypeEnum.TOP == second.getPriceType()) {
+        int size = sequences.size();
+        for (int i = 0; i < size; i++) {
+            Pair<Integer, BiSequence> sequencePair = sequences.get(0);
+            sequence = sequencePair.getSecond();
+            if (BiPriceTypeEnum.TOP == sequence.getPriceType()) {
                 Integer toIndex = sequence.getToIndex();
-                if (segment.getFromIndex() == null) {
+                if (null == segment.getFromIndex()) {
                     segment.setFromIndex(toIndex);
                 }
-
                 if (null == segment.getToIndex()) {
                     segment.setToIndex(toIndex);
                 }
@@ -277,8 +277,8 @@ public class ChanLunUtil {
                 segment.setFromIndex(toIndex);
                 continue;
             }
-            if (BiPriceTypeEnum.BOTTOM == second.getPriceType()) {
-                Integer fromIndex = second.getFromIndex();
+            if (BiPriceTypeEnum.BOTTOM == sequence.getPriceType()) {
+                Integer fromIndex = sequence.getFromIndex();
                 if (segment.getToIndex() == null) {
                     segment.setToIndex(fromIndex);
                 }
