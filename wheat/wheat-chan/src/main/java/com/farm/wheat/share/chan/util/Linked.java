@@ -1,10 +1,13 @@
 package com.farm.wheat.share.chan.util;
 
+import lombok.Data;
+
 /**
  * @description:
  * @author: xyc
  * @create: 2020-03-13 23:51
  */
+@Data
 public class Linked<T> {
     private Node<T> first;
     private Node<T> last;

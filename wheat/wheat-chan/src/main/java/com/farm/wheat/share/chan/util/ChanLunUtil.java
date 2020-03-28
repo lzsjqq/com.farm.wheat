@@ -57,8 +57,8 @@ public class ChanLunUtil {
      */
     private static Set<Integer> huaBi(List<Segment> segments) {
         Set<Integer> biTopBottoms = new HashSet<>();
-        List<Bi> bis = new ArrayList<>();
-        for (Segment segment : segments) {
+        for (int i = 0; i < segments.size(); i++) {
+            Segment segment = segments.get(i);
             Linked<Price> biPrices = segment.getBiPrices();
             int size = biPrices.getSize();
 
@@ -80,6 +80,7 @@ public class ChanLunUtil {
                     // 判断
                     if (j <= size - 1) {
                         biTopBottoms.add(fromIndex);
+                        biTopBottoms.add(biPrices.getLast().data.getIndex());
                         continue;
                         // 什么都不做了
                     } else {
@@ -98,6 +99,13 @@ public class ChanLunUtil {
         return biTopBottoms;
     }
 
+    /**
+     * @param biTopBottoms
+     * @param biPrices
+     * @param fromIndex
+     * @param j
+     * @return Triple<Price, Price, Integer> Integer 增量
+     */
     private static Triple<Price, Price, Integer> confirmBiPrice(Set<Integer> biTopBottoms, Linked<Price> biPrices, Integer fromIndex, int j) {
         Triple<Price, Price, Integer> confirmBiPrice = getConfirmBiPrice(biPrices, j + 1, 0);
         confirmBiPrice.getFirst();
@@ -122,9 +130,10 @@ public class ChanLunUtil {
     private static Triple<Price, Price, Integer> getConfirmBiPrice(Linked<Price> biPrices, int index, int incr) {
 
         int size = biPrices.getSize();
+        int lastIndex = size - 1;
         int nowIndex = incr + index;
-        if (size - 1 < nowIndex) {
-            return new Triple<>(null, null, index + 1);
+        if (lastIndex <= nowIndex) {
+            return new Triple<>(biPrices.getLast().data, null, lastIndex);
         }
         Node<Price> now = biPrices.getNode(nowIndex);
         Price nowPrice = now.getData();
@@ -133,24 +142,25 @@ public class ChanLunUtil {
         int fromToSize = nowPrice.getFromToSize();
         Node<Price> next = now.getNext();
         Price nextPrice = next.data;
-        if (fromToSize >= 5 && nextPrice.getFromToSize() >= 5) {
+        int nextFromToSize = nextPrice.getFromToSize();
+        if (fromToSize >= 5 && nextFromToSize >= 5) {
             return new Triple<>(nowPrice, nextPrice, index + 1);
         }
 
-        if (fromToSize >= 5 && nextPrice.getFromToSize() < 5) {
+        if (fromToSize >= 5 && nextFromToSize < 5) {
             if (next.getNext() == null) {
-                return new Triple<>(biPrices.get(nowIndex + 2), null, size - 1);
+                return new Triple<>(biPrices.getLast().data, null, lastIndex);
             } else {
                 return new Triple<>(nowPrice, nextPrice, index + 1);
             }
         }
 
-        if (fromToSize < 5 && nowIndex + 2 < size) {
-            return getConfirmBiPrice(biPrices, index + 2, 0);
+        if (fromToSize < 5 && nowIndex + 2 <= lastIndex) {
+            return getConfirmBiPrice(biPrices, nowIndex + 2, 0);
         }
         // 判断是否是最后一个
-        if (nowIndex + 2 >= size - 1) {
-            return new Triple<>(biPrices.get(size - 1), null, size - 1);
+        if (nowIndex + 2 >= lastIndex) {
+            return new Triple<>(biPrices.get(lastIndex), null, lastIndex);
         }
         return getConfirmBiPrice(biPrices, index, 2);
 
@@ -282,30 +292,28 @@ public class ChanLunUtil {
                 if (null == segment.getFromIndex()) {
                     segment.setFromIndex(toIndex);
                 }
-                if (null == segment.getToIndex()) {
-                    segment.setToIndex(toIndex);
-                }
-                segments.add(segment);
-                // 段之间的顶低分型
-                segment.setBiPrices(getSegmentBiPrice(topBottoms, segment, prices));
-                segment = new Segment();
-                segment.setFromIndex(toIndex);
+                segment = setSegment(topBottoms, prices, segments, segment, toIndex, null, segment.getToIndex());
                 continue;
             }
             if (BiPriceTypeEnum.BOTTOM == sequence.getPriceType()) {
                 Integer fromIndex = sequence.getFromIndex();
-                if (segment.getToIndex() == null) {
-                    segment.setToIndex(fromIndex);
-                }
-                segments.add(segment);
-                // 段之间的顶低分型
-                segment.setBiPrices(getSegmentBiPrice(topBottoms, segment, prices));
-                segment = new Segment();
-                segment.setFromIndex(fromIndex);
+                segment = setSegment(topBottoms, prices, segments, segment, fromIndex, segment.getToIndex(), null);
                 continue;
             }
         }
         return segments;
+    }
+
+    private static Segment setSegment(List<Price> topBottoms, List<Price> prices, List<Segment> segments, Segment segment, Integer fromIndex, Integer toIndex2, Integer o) {
+        if (toIndex2 == o) {
+            segment.setToIndex(fromIndex);
+        }
+        segments.add(segment);
+        // 段之间的顶低分型
+        segment.setBiPrices(getSegmentBiPrice(topBottoms, segment, prices));
+        segment = new Segment();
+        segment.setFromIndex(fromIndex);
+        return segment;
     }
 
     /**
