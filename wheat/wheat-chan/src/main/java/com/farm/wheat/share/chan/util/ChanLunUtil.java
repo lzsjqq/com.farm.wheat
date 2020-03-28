@@ -372,7 +372,7 @@ public class ChanLunUtil {
      */
     public static List<Segment> chanBi(List<Price> topBottoms, List<Price> prices) {
         // 找到笔的特征序列K线
-        List<BiSequence> oneTopBottoms = new ArrayList<>();
+        List<BiSequence> biSequences = new ArrayList<>();
         int size = topBottoms.size();
         for (int i = 0; i < size; i++) {
             if (i + 1 >= size) {
@@ -414,13 +414,13 @@ public class ChanLunUtil {
                 default:
                     break;
             }
-            oneTopBottoms.add(biPrice);
+            biSequences.add(biPrice);
         }
         // 做包含处理
-        biHandleContain(oneTopBottoms);
+        handleSequencesContain(biSequences);
         // 得到顶底分型
         List<Segment> segments = new ArrayList<>();
-        segments.addAll(getSegments(topBottoms, biTopBottomType(oneTopBottoms), prices));
+        segments.addAll(getSegments(topBottoms, biTopBottomType(biSequences), prices));
 //        for (int i = 1; i < size; i++) {
 //            if (i + 1 >= size) {
 //                break;
@@ -471,7 +471,7 @@ public class ChanLunUtil {
      *
      * @param biPrices
      */
-    private static void biHandleContain(List<BiSequence> biPrices) {
+    private static void handleSequencesContain(List<BiSequence> biPrices) {
         int size = biPrices.size();
         for (int index = 0; index < size; index++) {
             BiSequence price = biPrices.get(index);
