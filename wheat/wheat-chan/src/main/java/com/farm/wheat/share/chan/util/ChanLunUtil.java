@@ -261,7 +261,7 @@ public class ChanLunUtil {
         for (Pair<Integer, BiSequence> pair : sequences) {
             sequence = pair.getSecond();
             BiSequence second = sequence;
-            if (second.getPriceType() == BiPriceTypeEnum.TOP) {
+            if (BiPriceTypeEnum.TOP == second.getPriceType()) {
                 Integer toIndex = sequence.getToIndex();
                 if (segment.getFromIndex() == null) {
                     segment.setFromIndex(toIndex);
@@ -277,7 +277,7 @@ public class ChanLunUtil {
                 segment.setFromIndex(toIndex);
                 continue;
             }
-            if (second.getPriceType() == BiPriceTypeEnum.BOTTOM) {
+            if (BiPriceTypeEnum.BOTTOM == second.getPriceType()) {
                 Integer fromIndex = second.getFromIndex();
                 if (segment.getToIndex() == null) {
                     segment.setToIndex(fromIndex);
