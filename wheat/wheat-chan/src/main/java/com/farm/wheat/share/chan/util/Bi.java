@@ -1,6 +1,8 @@
 package com.farm.wheat.share.chan.util;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @description: 笔
@@ -8,6 +10,7 @@ import lombok.Data;
  * @create: 2020-03-23 23:12
  */
 @Data
+@NoArgsConstructor
 public class Bi {
     /**
      * 笔分型的开始

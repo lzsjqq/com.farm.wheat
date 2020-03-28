@@ -1,13 +1,12 @@
 package com.farm.wheat.share.chan.util;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @description: 描述未成形笔分型
+ * @description: 笔的特征序列
  * @author: xyc
  * @create: 2020-03-18 21:43
  */
@@ -15,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BiPrice {
+public class BiSequence {
     /**
      * 笔分型的开始时间
      */
@@ -37,7 +36,7 @@ public class BiPrice {
     /**
      * 包含之后的K线
      */
-    private BiPrice containPrice;
+    private BiSequence containPrice;
 
     private int containSize = 1;
 

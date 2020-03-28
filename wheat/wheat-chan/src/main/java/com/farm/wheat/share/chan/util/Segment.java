@@ -13,17 +13,17 @@ import java.util.List;
 @Data
 public class Segment {
     /**
-     * 笔分型的开始时间
+     * 笔分型的开始index
      */
     private Integer fromIndex;
     /**
-     * 笔分型的结束时间
+     * 笔分型的结束index
      */
     private Integer toIndex;
 
     /**
      * 描述未成形笔分型，段之间
      */
-    private List<Price> biPrices = new ArrayList<>();
+    private Linked<Price> biPrices = new Linked<>();
 
 }
