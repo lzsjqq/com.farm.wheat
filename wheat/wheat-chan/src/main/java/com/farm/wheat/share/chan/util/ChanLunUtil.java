@@ -253,7 +253,7 @@ public class ChanLunUtil {
     }
 
 
-    private static List<Segment> getSegments(List<Price> topBottoms, List<Pair<Integer, BiSequence>> pairs, List<Price> prices) {
+    private static List<Segment> crtSegments(List<Price> topBottoms, List<Pair<Integer, BiSequence>> pairs, List<Price> prices) {
         List<Segment> segments = new ArrayList<>();
         // 初始化
         Segment segment = new Segment();
@@ -420,7 +420,7 @@ public class ChanLunUtil {
         handleSequencesContain(biSequences);
         // 得到顶底分型
         List<Segment> segments = new ArrayList<>();
-        segments.addAll(getSegments(topBottoms, biTopBottomType(biSequences), prices));
+        segments.addAll(crtSegments(topBottoms, biTopBottomType(biSequences), prices));
 //        for (int i = 1; i < size; i++) {
 //            if (i + 1 >= size) {
 //                break;
