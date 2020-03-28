@@ -253,15 +253,14 @@ public class ChanLunUtil {
     }
 
 
-    private static List<Segment> crtSegments(List<Price> topBottoms, List<Pair<Integer, BiSequence>> sequences, List<Price> prices) {
+    private static List<Segment> crtSegments(List<Price> topBottoms, List<BiSequence> sequencePairs, List<Price> prices) {
         List<Segment> segments = new ArrayList<>();
         // 初始化
         Segment segment = new Segment();
         BiSequence sequence;
-        int size = sequences.size();
+        int size = sequencePairs.size();
         for (int i = 0; i < size; i++) {
-            Pair<Integer, BiSequence> sequencePair = sequences.get(0);
-            sequence = sequencePair.getSecond();
+            sequence = sequencePairs.get(0);
             if (BiPriceTypeEnum.TOP == sequence.getPriceType()) {
                 Integer toIndex = sequence.getToIndex();
                 if (null == segment.getFromIndex()) {
@@ -783,8 +782,8 @@ public class ChanLunUtil {
      * @param biPrices
      * @return Pair<Integer, BiPrice> Integer:biPrices的index,  BiPrice:为biPrices的index
      */
-    public static List<Pair<Integer, BiSequence>> biTopBottomType(List<BiSequence> biPrices) {
-        List<Pair<Integer, BiSequence>> pairs = new ArrayList<>();
+    public static List<BiSequence> biTopBottomType(List<BiSequence> biPrices) {
+        List<BiSequence> pairs = new ArrayList<>();
         int size;
         if (NullCheckUtils.isBlank(biPrices) || (size = biPrices.size()) < 3) {
             return pairs;
@@ -816,25 +815,13 @@ public class ChanLunUtil {
             double firstPrePriceTodayMaxPrice = firstPreContainPrice != null ? firstPreContainPrice.getTodayMaxPrice() : firstPrePrice.getTodayMaxPrice();
             double priceTodayMaxPrice = priceContainPrice != null ? priceContainPrice.getTodayMaxPrice() : price.getTodayMaxPrice();
             if (firstPrePriceTodayMaxPrice > priceTodayMaxPrice) {
-                Pair<Integer, BiSequence> pair = topBiPrice(biPrices, firstPre, index);
-                // 判断上个分型是否是顶分型，如果是去掉，只保留最高的，
-//                Pair<Integer, BiPrice> last = getLastBiPair(pairs);
-//                if (last != null && BiPriceTypeEnum.TOP == last.getSecond().getPriceType()) {
-//                    last.getSecond().setPriceType(BiPriceTypeEnum.NONE);
-//                    pairs.remove(pairs.size() - 1);
-//                }
-                pair.getSecond().setPriceType(BiPriceTypeEnum.TOP);
-                pairs.add(pair);// 添加新元素
+                BiSequence sequence = topBiPrice(biPrices, firstPre, index);
+                sequence.setPriceType(BiPriceTypeEnum.TOP);
+                pairs.add(sequence);// 添加新元素
             } else {
-                Pair<Integer, BiSequence> pair = bottomBiPrice(biPrices, firstPre, index);
-                // 判断上个分型是否是底分型，如果是去掉，只保留最底的，
-//                Pair<Integer, BiPrice> last = getLastBiPair(pairs);
-//                if (last != null && BiPriceTypeEnum.BOTTOM == last.getSecond().getPriceType()) {
-//                    last.getSecond().setPriceType(BiPriceTypeEnum.NONE);
-//                    pairs.remove(pairs.size() - 1);
-//                }
-                pair.getSecond().setPriceType(BiPriceTypeEnum.BOTTOM);
-                pairs.add(pair);
+                BiSequence sequence = bottomBiPrice(biPrices, firstPre, index);
+                sequence.setPriceType(BiPriceTypeEnum.BOTTOM);
+                pairs.add(sequence);
             }
         }
         return pairs;
@@ -892,21 +879,16 @@ public class ChanLunUtil {
         return max;
     }
 
-    private static Pair<Integer, BiSequence> topBiPrice(List<BiSequence> biPrices, int firstPre, int index) {
-        Pair<Integer, BiSequence> pair = new Pair<>();
+    private static BiSequence topBiPrice(List<BiSequence> biPrices, int firstPre, int index) {
         BiSequence max = biPrices.get(firstPre);
         BiSequence price;
-        Integer maxIndex = firstPre;
         for (int i = firstPre + 1; i < index; i++) {
             price = biPrices.get(i);
             if (price.getTodayMaxPrice() > max.getTodayMaxPrice()) {
                 max = price;
-                maxIndex = i;
             }
         }
-        pair.setFirst(maxIndex);
-        pair.setSecond(max);
-        return pair;
+        return max;
     }
 
     private static Price bottomPrice(List<Price> prices, int firstPre, int index) {
@@ -921,21 +903,16 @@ public class ChanLunUtil {
         return min;
     }
 
-    private static Pair<Integer, BiSequence> bottomBiPrice(List<BiSequence> prices, int firstPre, int index) {
-        Pair<Integer, BiSequence> pair = new Pair<>();
+    private static BiSequence bottomBiPrice(List<BiSequence> prices, int firstPre, int index) {
         BiSequence min = prices.get(firstPre);
-        Integer minIndex = firstPre;
         BiSequence price;
         for (int i = firstPre + 1; i < index; i++) {
             price = prices.get(i);
             if (price.getTodayMinPrice() < min.getTodayMinPrice()) {
                 min = price;
-                minIndex = i;
             }
         }
-        pair.setFirst(minIndex);
-        pair.setSecond(min);
-        return pair;
+        return min;
     }
 
 
