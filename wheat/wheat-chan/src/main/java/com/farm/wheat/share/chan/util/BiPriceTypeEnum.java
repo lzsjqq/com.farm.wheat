@@ -2,11 +2,11 @@ package com.farm.wheat.share.chan.util;
 
 public enum BiPriceTypeEnum {
     /**
-     * 向下
+     * 顶分型
      */
     TOP,
     /**
-     * 向上
+     * 底分型
      */
     BOTTOM,
     NONE
