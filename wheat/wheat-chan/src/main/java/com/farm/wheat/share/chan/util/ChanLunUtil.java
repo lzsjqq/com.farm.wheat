@@ -34,6 +34,9 @@ public class ChanLunUtil {
         List<Price> topBottoms = topBottomType(prices);
         // 画笔     -：表示空点  "1-"+ MaxPrice：顶分型    "0-"+ MinPrice：低分型
 //        bi(pairs, prices);
+
+//        topBottoms = removeTogether(topBottoms);
+        topBottoms = removeTogether(topBottoms);
         List<Segment> segments = chanBi(topBottoms, prices);
 //        Map<Integer, BiPrice> biMap = null;
 //        if (NullCheckUtils.isBlank(biMap)) {
@@ -49,6 +52,94 @@ public class ChanLunUtil {
             }
         }
         return prices;
+    }
+
+    /**
+     * 去除共用的顶底分型
+     *
+     * @param topBottoms
+     * @return
+     */
+    public static List<Price> removeTogether(List<Price> topBottoms) {
+        int size;
+        if (NullCheckUtils.isBlank(topBottoms) || (size = topBottoms.size()) <= 2) {
+            return topBottoms;
+        }
+        List<Price> newTopBottoms = new ArrayList<>();
+        Price first = null;
+        Price second = null;
+        Price third = null;
+        int validIndex = size - 1;
+        for (int i = 0; i <= validIndex; i++) {
+            if (null == first) {
+                first = topBottoms.get(i);
+                continue;
+            }
+            if (second == null) {
+                second = topBottoms.get(i);
+//                if (second.getIndex() - first.getIndex() == 1 && i + 1 <= validIndex) {
+//                    third = topBottoms.get(i + 1);
+//                    if (moreCondition(first, third)) {
+//                        first = third;
+//                    } else {
+//                        newTopBottoms.add(first);
+//                        first = null;
+//                    }
+//                    i += 1;
+//                    second = null;
+//                    third = null;
+//                }
+                continue;
+            }
+            third = topBottoms.get(i);
+
+            if (third.getIndex() - second.getIndex() == 1) {
+                if (moreCondition(first, third)) {
+                    first = third;
+                } else {
+                    newTopBottoms.add(first);
+                    first = null;
+                }
+                second = null;
+                third = null;
+                continue;
+            }
+            newTopBottoms.add(first);
+            first = second;
+            second = third;
+            third = null;
+        }
+        if (first != null) {
+            newTopBottoms.add(first);
+        }
+        if (second != null) {
+            newTopBottoms.add(first);
+        }
+        if (third != null) {
+            newTopBottoms.add(third);
+        }
+        return newTopBottoms;
+    }
+
+    /**
+     * 在共用K线的情况下是否符合添加条件
+     *
+     * @param first
+     * @param third
+     * @return
+     */
+    private static boolean moreCondition(Price first, Price third) {
+        boolean condition;
+        if (first.getPriceType() == PriceTypeEnum.BOTTOM) {
+            double nextTodayMinPrice = third.getContainPrice() == null ? third.getTodayMinPrice() : third.getContainPrice().getTodayMinPrice();
+            double preTodayMinPrice = first.getContainPrice() == null ? first.getTodayMinPrice() : first.getContainPrice().getTodayMinPrice();
+            condition = nextTodayMinPrice - preTodayMinPrice < 0;
+        } else {
+            double nextTodayMaxPrice = third.getContainPrice() == null ? third.getTodayMaxPrice() : third.getContainPrice().getTodayMaxPrice();
+            double preTodayMaxPrice = first.getContainPrice() == null ? first.getTodayMaxPrice() : first.getContainPrice().getTodayMaxPrice();
+            condition = nextTodayMaxPrice - preTodayMaxPrice > 0;
+        }
+        return condition;
     }
 
     /**
@@ -420,8 +511,8 @@ public class ChanLunUtil {
             BiSequence biPrice = null;
             switch (priceType) {
                 case TOP:
-                    double todayMaxPrice = one.getContainPrice() != null ? one.getContainPrice().getTodayMaxPrice() : one.getTodayMaxPrice();
-                    double todayMinPrice = two.getContainPrice() != null ? two.getTodayMinPrice() : two.getTodayMinPrice();
+                    double todayMaxPrice = one.getTodayMaxPrice();
+                    double todayMinPrice = two.getTodayMinPrice();
                     biPrice = BiSequence.builder()
                             .fromTradingDate(one.getTradingDate())
                             .fromIndex(one.getIndex())
@@ -434,8 +525,8 @@ public class ChanLunUtil {
                             .build();
                     break;
                 case BOTTOM:
-                    todayMinPrice = one.getContainPrice() != null ? one.getTodayMinPrice() : one.getTodayMinPrice();
-                    todayMaxPrice = two.getContainPrice() != null ? two.getTodayMinPrice() : two.getTodayMinPrice();
+                    todayMinPrice = one.getTodayMinPrice();
+                    todayMaxPrice = two.getTodayMaxPrice();
                     biPrice = BiSequence.builder()
                             .fromTradingDate(one.getTradingDate())
                             .fromIndex(one.getIndex())
@@ -511,6 +602,8 @@ public class ChanLunUtil {
      */
     private static void handleSequencesContain(List<BiSequence> biPrices) {
         int size = biPrices.size();
+        List<BiSequence> handledSequence = new ArrayList<>(size / 2 + size / 3);
+
         for (int index = 0; index < size; index++) {
             BiSequence price = biPrices.get(index);
             /**
