@@ -20,6 +20,7 @@ import java.util.Set;
 public class ChanLunUtil {
     private ChanLunUtil() {
     }
+
     /**
      * 添加index
      *
@@ -45,8 +46,9 @@ public class ChanLunUtil {
         // 处理顶底分型,过滤掉连续的同类型分型只保留最高或最低的
         List<Price> topBottoms = topBottomType(prices);
         // 画笔     -：表示空点  "1-"+ MaxPrice：顶分型    "0-"+ MinPrice：低分型
-        topBottoms = removeTogether(topBottoms);
-        topBottoms = removeTogether(topBottoms);
+        topBottoms = removeTogether(topBottoms, 0);
+        topBottoms = removeTogether(topBottoms, 1);
+        topBottoms = removeTogether(topBottoms, 2);
         List<Segment> segments = chanBi(topBottoms, prices);
         List<Integer> huaBiIndex = huaBi(segments);
         for (int i = 0; i < prices.size(); i++) {
@@ -63,9 +65,9 @@ public class ChanLunUtil {
      * @param topBottoms
      * @return
      */
-    public static List<Price> removeTogether(List<Price> topBottoms) {
+    public static List<Price> removeTogether(List<Price> topBottoms, int beginIndex) {
         int size;
-        if (NullCheckUtils.isBlank(topBottoms) || (size = topBottoms.size()) <= 2) {
+        if (NullCheckUtils.isBlank(topBottoms) || ((size = topBottoms.size()) - beginIndex) <= 2) {
             return topBottoms;
         }
         List<Price> newTopBottoms = new ArrayList<>();
@@ -73,17 +75,19 @@ public class ChanLunUtil {
         Price second = null;
         Price third = null;
         int validIndex = size - 1;
-        for (int i = 0; i <= validIndex; i++) {
+        for (int i = beginIndex; i <= validIndex; i++) {
             if (null == first) {
                 first = topBottoms.get(i);
+                third = null;
+                second = null;
                 continue;
             }
             if (second == null) {
                 second = topBottoms.get(i);
+                third = null;
                 continue;
             }
             third = topBottoms.get(i);
-
             if (third.getIndex() - second.getIndex() == 1) {
                 if (moreCondition(first, third)) {
                     first = third;
@@ -98,13 +102,15 @@ public class ChanLunUtil {
             newTopBottoms.add(first);
             first = second;
             second = third;
-            third = null;
+            if (i == validIndex) {
+                third = null;
+            }
         }
         if (first != null) {
             newTopBottoms.add(first);
         }
         if (second != null) {
-            newTopBottoms.add(first);
+            newTopBottoms.add(second);
         }
         if (third != null) {
             newTopBottoms.add(third);
@@ -627,6 +633,9 @@ public class ChanLunUtil {
         }
         if (first != null) {
             handledSequence.add(first);
+        }
+        if (second != null) {
+            handledSequence.add(second);
         }
         return handledSequence;
     }

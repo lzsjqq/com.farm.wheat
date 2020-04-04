@@ -19,6 +19,9 @@ public class Price {
      * list中的角标
      */
     private Integer index;
+    private PriceRunTypeEnum priceRunType;
+
+    private PriceTypeEnum priceType = PriceTypeEnum.NONE;
     /**
      * 包含之后的K线
      */
@@ -35,9 +38,7 @@ public class Price {
 
     private double todayMinPrice;
 
-    private PriceRunTypeEnum priceRunType;
 
-    private PriceTypeEnum priceType = PriceTypeEnum.NONE;
 
     /**
      * 两个底分型之间的K线数量，0-1 1-2 2-3

@@ -26,7 +26,7 @@ public class DrawLineServiceImpl implements IDrawLineService {
     @Override
     public DrawLineData sharePrices(DrawLineDTO drawLine) throws Exception {
 
-        List<SharePriceDto> sharePrices = sharePriceMapper.selectSharePrices("002430");
+        List<SharePriceDto> sharePrices = sharePriceMapper.selectSharePrices("000008");
 //        List<SharePriceDto> sharePrices = JSONObject.parseArray(xx, SharePriceDto.class);
         DrawLineData data = new DrawLineData();
         data.setBaseData(convert(sharePrices));
