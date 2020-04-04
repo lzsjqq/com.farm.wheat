@@ -20,7 +20,6 @@ import java.util.Set;
 public class ChanLunUtil {
     private ChanLunUtil() {
     }
-
     /**
      * 添加index
      *
@@ -81,18 +80,6 @@ public class ChanLunUtil {
             }
             if (second == null) {
                 second = topBottoms.get(i);
-//                if (second.getIndex() - first.getIndex() == 1 && i + 1 <= validIndex) {
-//                    third = topBottoms.get(i + 1);
-//                    if (moreCondition(first, third)) {
-//                        first = third;
-//                    } else {
-//                        newTopBottoms.add(first);
-//                        first = null;
-//                    }
-//                    i += 1;
-//                    second = null;
-//                    third = null;
-//                }
                 continue;
             }
             third = topBottoms.get(i);
