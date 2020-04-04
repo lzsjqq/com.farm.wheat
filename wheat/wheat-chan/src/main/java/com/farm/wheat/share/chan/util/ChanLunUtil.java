@@ -46,20 +46,10 @@ public class ChanLunUtil {
         // 处理顶底分型,过滤掉连续的同类型分型只保留最高或最低的
         List<Price> topBottoms = topBottomType(prices);
         // 画笔     -：表示空点  "1-"+ MaxPrice：顶分型    "0-"+ MinPrice：低分型
-//        bi(pairs, prices);
-
-//        topBottoms = removeTogether(topBottoms);
         topBottoms = removeTogether(topBottoms);
         topBottoms = removeTogether(topBottoms);
         List<Segment> segments = chanBi(topBottoms, prices);
-//        Map<Integer, BiPrice> biMap = null;
-//        if (NullCheckUtils.isBlank(biMap)) {
-//            return prices;
-//        }
-        //
         List<Integer> huaBiIndex = huaBi(segments);
-
-
         for (int i = 0; i < prices.size(); i++) {
             if (!huaBiIndex.contains(i)) {
                 prices.get(i).setPriceType(PriceTypeEnum.NONE);
@@ -227,7 +217,6 @@ public class ChanLunUtil {
      */
     private static Triple<Price, Price, Integer> confirmBiPrice(List<Integer> biTopBottoms, Linked<Price> biPrices, Integer fromIndex, int j) {
         Triple<Price, Price, Integer> confirmBiPrice = getConfirmBiPrice(biPrices, j + 1, 0);
-        confirmBiPrice.getFirst();
         if (null != confirmBiPrice.getFirst()) {
             addBiTopBottomsList(biTopBottoms, fromIndex);
             addBiTopBottomsList(biTopBottoms, confirmBiPrice.getFirst().getIndex());
