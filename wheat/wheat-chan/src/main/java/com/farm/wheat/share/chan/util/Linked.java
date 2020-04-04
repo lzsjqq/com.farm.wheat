@@ -118,6 +118,84 @@ public class Linked<T> {
         }
     }
 
+    /**
+     * 确认输入的数字是否合法
+     *
+     * @param index
+     * @return
+     */
+    public boolean isRight(int index) {
+        return index >= 0 && index < size;
+    }
+
+    /**
+     * 删除指定位置数据
+     *
+     * @param index
+     * @return
+     */
+    public boolean remove(int index) {
+        if (!isRight(index)) {
+            return false;
+        }
+        Node<T> node = node(index);
+        if (node == this.first) {
+            if (node == this.last) {
+                node = null;
+                this.size--;
+                return true;
+            } else {
+                Node<T> temp = this.first;
+                this.first = node.next;
+                temp.next = null;
+                this.first.pre = null;
+                this.size--;
+                return true;
+            }
+        } else if (node == this.last) {
+            Node<T> temp = this.last;
+            this.last = node.pre;
+            temp.pre = null;
+            this.last.next = null;
+            this.size--;
+            return true;
+        }
+        node.next.pre = node.pre;
+        node.pre.next = node.next;
+        node.pre = node.next = null;
+        this.size--;
+        return true;
+    }
+
+    public static void main(String[] args) {
+        Linked<Integer> xx = new Linked<>();
+        xx.add(0);
+        xx.add(1);
+        xx.add(2);
+        xx.add(3);
+        xx.add(4);
+        xx.remove(0);
+        xx.removeLast();
+        System.out.println(xx.get(3));
+    }
+
+    /**
+     * 从链表中删除第一个元素，返回删除的元素
+     *
+     * @return
+     */
+    public boolean removeFirst() {
+        return remove(0);
+    }
+
+    /**
+     * 从链表中删除最后一个元素，返回删除的元素
+     *
+     * @return
+     */
+    public boolean removeLast() {
+        return remove(this.size - 1);
+    }
 
     public void set(int index, T data) {
         Node<T> node = node(index);
@@ -159,20 +237,20 @@ public class Linked<T> {
         return this.size;
     }
 
-    private Node node(int index) {
+    private Node<T> node(int index) {
         if (index >= this.size)
             return null;
         int len = this.size;
         if (index < len) {
             if (index > len / 2) {
-                Node cur = last;
+                Node<T> cur = last;
                 int step = len - index - 1;
                 while (step-- > 0) {
                     cur = cur.pre;
                 }
                 return cur;
             } else {
-                Node cur = first;
+                Node<T> cur = first;
                 int step = index;
                 while (step-- > 0) {
                     cur = cur.next;
