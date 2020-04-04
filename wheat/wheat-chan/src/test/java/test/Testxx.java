@@ -2,7 +2,6 @@ package test;
 
 import com.alibaba.fastjson.JSONObject;
 import com.farm.common.utils.DateUtils;
-import com.farm.wheat.share.chan.util.Linked;
 import com.farm.wheat.share.chan.util.ChanLunUtil;
 import com.farm.wheat.share.chan.util.Price;
 import com.farm.wheat.share.chan.util.SharePriceDto;

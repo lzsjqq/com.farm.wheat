@@ -1,5 +1,6 @@
 package com.farm.wheat.share.chan.util;
 
+import com.farm.common.utils.Linked;
 import lombok.Data;
 
 import java.util.ArrayList;

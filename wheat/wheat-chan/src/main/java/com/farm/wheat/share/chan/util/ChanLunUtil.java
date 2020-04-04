@@ -1,8 +1,15 @@
 package com.farm.wheat.share.chan.util;
 
+import com.farm.common.utils.Linked;
+import com.farm.common.utils.Node;
 import com.farm.common.utils.NullCheckUtils;
+import com.farm.common.utils.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 
 /**
  * @program: wheat
@@ -14,6 +21,12 @@ public class ChanLunUtil {
     private ChanLunUtil() {
     }
 
+    /**
+     * 添加index
+     *
+     * @param prices prices
+     * @return List<Price>
+     */
     public static List<Price> addIndex(List<Price> prices) {
         for (int i = 0; i < prices.size(); i++) {
             prices.get(i).setIndex(i);
@@ -36,6 +49,7 @@ public class ChanLunUtil {
 //        bi(pairs, prices);
 
 //        topBottoms = removeTogether(topBottoms);
+        topBottoms = removeTogether(topBottoms);
         topBottoms = removeTogether(topBottoms);
         List<Segment> segments = chanBi(topBottoms, prices);
 //        Map<Integer, BiPrice> biMap = null;
@@ -367,23 +381,30 @@ public class ChanLunUtil {
         return biTopBottoms;
     }
 
-
+    /**
+     * 创建线段
+     *
+     * @param topBottoms
+     * @param sequences
+     * @param prices
+     * @return
+     */
     private static List<Segment> crtSegments(List<Price> topBottoms, List<BiSequence> sequences, List<Price> prices) {
         List<Segment> segments = new ArrayList<>();
         // 初始化
         Segment segment = null;
         int size = sequences.size();
         BiSequence sequence = sequences.get(0);
-        Price price = topBottoms.get(0);
+        Price topBottomPrice = topBottoms.get(0);
         int index;
         if (BiPriceTypeEnum.TOP == sequence.getPriceType()) {
             index = sequence.getToIndex();
         } else {
             index = sequence.getFromIndex();
         }
-        if (price.getIndex() != index) {
+        if (topBottomPrice.getIndex() != index) {
             segment = new Segment();
-            segment.setFromIndex(price.getIndex());
+            segment.setFromIndex(topBottomPrice.getIndex());
         }
         for (int i = 0; i < size; i++) {
             sequence = sequences.get(i);
@@ -403,14 +424,28 @@ public class ChanLunUtil {
             if (BiPriceTypeEnum.BOTTOM == sequence.getPriceType()) {
                 Integer fromIndex = sequence.getFromIndex();
                 segment = setSegment(topBottoms, prices, segments, segment, fromIndex, segment.getToIndex(), null);
-                continue;
             }
+        }
+        // 处理最后一个
+        sequence = sequences.get(sequences.size() - 1);
+        topBottomPrice = topBottoms.get(topBottoms.size() - 1);
+        if (BiPriceTypeEnum.TOP == sequence.getPriceType()) {
+            index = sequence.getToIndex();
+        } else {
+            index = sequence.getFromIndex();
+        }
+        if (topBottomPrice.getIndex() != index) {
+            segment = new Segment();
+            Integer fromIndex = segments.get(segments.size() - 1).getToIndex();
+            segment.setFromIndex(fromIndex);
+            segment.setToIndex(topBottomPrice.getIndex());
+            setSegment(topBottoms, prices, segments, segment, fromIndex, segment.getToIndex(), null);
         }
         return segments;
     }
 
-    private static Segment setSegment(List<Price> topBottoms, List<Price> prices, List<Segment> segments, Segment segment, Integer fromIndex, Integer toIndex2, Integer o) {
-        if (toIndex2 == o) {
+    private static Segment setSegment(List<Price> topBottoms, List<Price> prices, List<Segment> segments, Segment segment, Integer fromIndex, Integer toIndex, Integer o) {
+        if (toIndex == o) {
             segment.setToIndex(fromIndex);
         }
         segments.add(segment);
@@ -546,107 +581,103 @@ public class ChanLunUtil {
 
 
         // 做包含处理
-        handleSequencesContain(biSequences);
+        biSequences = handleSequencesContain(biSequences);
         // 得到顶底分型
-        List<Segment> segments = new ArrayList<>();
-        segments.addAll(crtSegments(topBottoms, biTopBottomType(biSequences), prices));
-//        for (int i = 1; i < size; i++) {
-//            if (i + 1 >= size) {
-//                break;
-//            }
-//            Price one = topBottoms.get(i).getSecond();
-//            Price two = topBottoms.get(++i).getSecond();
-//            PriceTypeEnum priceType = one.getPriceType();
-//            BiPrice biPrice = null;
-//            switch (priceType) {
-//                case TOP:
-//                    double todayMaxPrice = one.getContainPrice() != null ? one.getContainPrice().getTodayMaxPrice() : one.getTodayMaxPrice();
-//                    double todayMinPrice = two.getContainPrice() != null ? two.getTodayMinPrice() : two.getTodayMinPrice();
-//                    biPrice = BiPrice.builder()
-//                            .fromTradingDate(one.getTradingDate())
-//                            .toTradingDate(two.getTradingDate())
-//                            .todayMaxPrice(todayMaxPrice)
-//                            .todayMinPrice(todayMinPrice)
-//                            .priceType(BiPriceTypeEnum.TOP)
-//                            .priceRunType(PriceRunTypeEnum.NONE)
-//                            .build();
-//                    break;
-//                case BOTTOM:
-//                    todayMinPrice = one.getContainPrice() != null ? one.getTodayMinPrice() : one.getTodayMinPrice();
-//                    todayMaxPrice = two.getContainPrice() != null ? two.getTodayMinPrice() : two.getTodayMinPrice();
-//                    biPrice = BiPrice.builder()
-//                            .fromTradingDate(one.getTradingDate())
-//                            .toTradingDate(two.getTradingDate())
-//                            .todayMaxPrice(todayMaxPrice)
-//                            .todayMinPrice(todayMinPrice)
-//                            .priceType(BiPriceTypeEnum.DOWN)
-//                            .priceRunType(PriceRunTypeEnum.NONE)
-//                            .build();
-//                    break;
-//                default:
-//                    break;
-//            }
-//            twoTopBottoms.add(biPrice);
-//        }
-//        // 做包含处理
-//        biHandleContain(twoTopBottoms);
-//        // 得到顶底分型
-//        biMap.putAll(biMap(biTopBottomType(twoTopBottoms)));
-        return segments;
+        return crtSegments(topBottoms, biTopBottomType(biSequences), prices);
     }
 
     /**
      * 处理包含关系
      *
-     * @param biPrices
+     * @param biSequences
      */
-    private static void handleSequencesContain(List<BiSequence> biPrices) {
-        int size = biPrices.size();
-        List<BiSequence> handledSequence = new ArrayList<>(size / 2 + size / 3);
-
+    private static List<BiSequence> handleSequencesContain(List<BiSequence> biSequences) {
+        int size = biSequences.size();
+        List<BiSequence> handledSequence = new ArrayList<>();
+        BiSequence first = null;
+        BiSequence second = null;
         for (int index = 0; index < size; index++) {
-            BiSequence price = biPrices.get(index);
+            if (first == null) {
+                first = biSequences.get(index);
+                continue;
+            }
+            second = biSequences.get(index);
+
+            if (second.getFromTradingDate().equals("2019-07-23")) {
+                System.out.println("2019-07-23");
+            }
             /**
              * 前一个
              */
-            BiSequence prePrice = getBiPre(biPrices, index);
-            if (prePrice == null) {
-                continue;
-            }
-            double priceMaxPrice = price.getTodayMaxPrice();
-            double priceMinPrice = price.getTodayMinPrice();
+            double secondTodayMaxPrice = second.getTodayMaxPrice();
+            double secondTodayMinPrice = second.getTodayMinPrice();
             // 判断是否是包含K线
-            BiSequence preContainPrice = prePrice.getContainPrice();
-            double prePriceMaxPrice = preContainPrice != null ? preContainPrice.getTodayMaxPrice() : prePrice.getTodayMaxPrice();
-            double prePriceMinPrice = preContainPrice != null ? preContainPrice.getTodayMinPrice() : prePrice.getTodayMinPrice();
-            double max = priceMaxPrice - prePriceMaxPrice;
-            double min = priceMinPrice - prePriceMinPrice;
+            double firstPriceMaxPrice = first.getTodayMaxPrice();
+            double firstPriceMinPrice = first.getTodayMinPrice();
+            double max = secondTodayMaxPrice - firstPriceMaxPrice;
+            double min = secondTodayMinPrice - firstPriceMinPrice;
             if (max > 0 && min > 0) {
                 // 高高 向上
-                price.setPriceRunType(PriceRunTypeEnum.UP);
-//                price.setBiSize(price.getBiSize() + 1);
+                second.setPriceRunType(PriceRunTypeEnum.UP);
+                // 确认方向添加
+                handledSequence.add(first);
+                first = second;
+                second = null;
             } else if (max < 0 && min < 0) {
                 // 低低 向下
-                price.setPriceRunType(PriceRunTypeEnum.DOWN);
-//                price.setBiSize(price.getBiSize() + 1);
+                second.setPriceRunType(PriceRunTypeEnum.DOWN);
+                handledSequence.add(first);
+                first = second;
+                second = null;
             } else {
                 // 类型为包含
-                PriceRunTypeEnum priceType = prePrice.getPriceRunType();
-                price.setPriceRunType(priceType);
-                // 包含类
-                BiSequence containPrice = preContainPrice != null ? preContainPrice : new BiSequence();
-                // 计算k线包含数量
-                containPrice.setContainSize(getBiContainSize(preContainPrice));
-                if (priceType == PriceRunTypeEnum.UP) {
-                    // 向上 包含
-                    biContain(priceMaxPrice, priceMinPrice, prePriceMaxPrice, prePriceMinPrice, containPrice, max > 0, min > 0, PriceRunTypeEnum.UP);
-                } else if (priceType == PriceRunTypeEnum.DOWN) {
-                    // 向下 包含
-                    biContain(priceMaxPrice, priceMinPrice, prePriceMaxPrice, prePriceMinPrice, containPrice, max < 0, min < 0, PriceRunTypeEnum.DOWN);
+                if (max >= 0) {
+                    first = second;
+                    handledSequence = removeContain(handledSequence, first);
+                    BiSequence last = handledSequence.get(handledSequence.size() - 1);
+                    // 设置方向
+                    if (last != null) {
+                        if (firstPriceMaxPrice > last.getTodayMaxPrice()) {
+                            first.setPriceRunType(PriceRunTypeEnum.UP);
+                        } else {
+                            first.setPriceRunType(PriceRunTypeEnum.DOWN);
+                        }
+                    }
+                    second = null;
+                } else {
+                    second = null;
                 }
-                price.setContainPrice(containPrice);
-                prePrice.setContainPrice(containPrice);
             }
+        }
+        if (first != null) {
+            handledSequence.add(first);
+        }
+        return handledSequence;
+    }
+
+    /**
+     * 所有和 first 具有包含关系的都去除掉
+     *
+     * @param handledSequence
+     * @param first
+     * @return
+     */
+    public static List<BiSequence> removeContain(List<BiSequence> handledSequence, BiSequence first) {
+        int size = handledSequence.size();
+        if (size <= 0) {
+            return handledSequence;
+        }
+
+        BiSequence lastSequence = handledSequence.get(size - 1);
+        double todayMaxPrice = lastSequence.getTodayMaxPrice();
+        double todayMinPrice = lastSequence.getTodayMinPrice();
+        double firstTodayMaxPrice = first.getTodayMaxPrice();
+        double firstTodayMinPrice = first.getTodayMinPrice();
+        if (firstTodayMaxPrice > todayMaxPrice && firstTodayMinPrice < todayMinPrice) {
+            handledSequence.remove(size - 1);
+            return removeContain(handledSequence, first);
+        } else {
+            return handledSequence;
         }
     }
 
@@ -915,48 +946,42 @@ public class ChanLunUtil {
      * @return Pair<Integer, BiPrice> Integer:biPrices的index,  BiPrice:为biPrices的index
      */
     public static List<BiSequence> biTopBottomType(List<BiSequence> biPrices) {
-        List<BiSequence> pairs = new ArrayList<>();
+        List<BiSequence> types = new ArrayList<>();
         int size;
         if (NullCheckUtils.isBlank(biPrices) || (size = biPrices.size()) < 3) {
-            return pairs;
+            return types;
         }
         for (int index = 2; index < size; index++) {
             BiSequence price = biPrices.get(index);
-            PriceRunTypeEnum priceType = price.getPriceRunType();
-            BiSequence containPrice = price.getContainPrice();
-            // 判断是否是包含K线
-            if (containPrice != null && containPrice == biPrices.get(index - 1).getContainPrice()) {
-                continue;
-            }
-            Pair<Integer, Integer> nodePair = twoBiPrePrice(biPrices, index);
+            PriceRunTypeEnum priceRunType = price.getPriceRunType();
+
             // 和前两根进行比较
-            Integer firstPre = nodePair.getFirst();
-            Integer secondPre = nodePair.getSecond();
-            if (null == secondPre || null == firstPre || priceType == biPrices.get(firstPre).getPriceRunType()) {
+            int firstPre = index - 1;
+            // 判断当前节点是否是包含K线或和上个方向一致
+            BiSequence firstPrice = biPrices.get(firstPre);
+            PriceRunTypeEnum firstPriceRunType = firstPrice.getPriceRunType();
+            if (priceRunType == firstPriceRunType) {
+                if (index == size - 1) {
+                    if (priceRunType == PriceRunTypeEnum.UP) {
+                        price.setPriceType(BiPriceTypeEnum.TOP);
+                    } else {
+                        price.setPriceType(BiPriceTypeEnum.BOTTOM);
+                    }
+                    // 添加新元素
+                    types.add(price);
+                }
                 // - 表示空点
                 continue;
             }
-            BiSequence firstPrePrice = biPrices.get(firstPre);
-            // 判断当前节点是否是包含K线或和上个方向一致
-            if (priceType == firstPrePrice.getPriceRunType()) {
-                continue;
-            }
             // 至此方向不在一致，确认分型
-            BiSequence firstPreContainPrice = firstPrePrice.getContainPrice();
-            BiSequence priceContainPrice = price.getContainPrice();
-            double firstPrePriceTodayMaxPrice = firstPreContainPrice != null ? firstPreContainPrice.getTodayMaxPrice() : firstPrePrice.getTodayMaxPrice();
-            double priceTodayMaxPrice = priceContainPrice != null ? priceContainPrice.getTodayMaxPrice() : price.getTodayMaxPrice();
-            if (firstPrePriceTodayMaxPrice > priceTodayMaxPrice) {
-                BiSequence sequence = topBiPrice(biPrices, firstPre, index);
-                sequence.setPriceType(BiPriceTypeEnum.TOP);
-                pairs.add(sequence);// 添加新元素
+            if (firstPriceRunType == PriceRunTypeEnum.UP) {
+                firstPrice.setPriceType(BiPriceTypeEnum.TOP);
             } else {
-                BiSequence sequence = bottomBiPrice(biPrices, firstPre, index);
-                sequence.setPriceType(BiPriceTypeEnum.BOTTOM);
-                pairs.add(sequence);
+                firstPrice.setPriceType(BiPriceTypeEnum.BOTTOM);
             }
+            types.add(firstPrice);// 添加新元素
         }
-        return pairs;
+        return types;
     }
 
     /**
@@ -999,7 +1024,6 @@ public class ChanLunUtil {
     }
 
     private static Price topPrice(List<Price> prices, int firstPre, int index) {
-        Pair<Integer, Price> pair = new Pair<>();
         Price max = prices.get(firstPre);
         Price price;
         for (int i = firstPre + 1; i < index; i++) {
