@@ -46,9 +46,9 @@ public class ChanLunUtil {
         // 处理顶底分型,过滤掉连续的同类型分型只保留最高或最低的
         List<Price> topBottoms = topBottomType(prices);
         // 画笔     -：表示空点  "1-"+ MaxPrice：顶分型    "0-"+ MinPrice：低分型
-        topBottoms = removeTogether(topBottoms, 0);
-        topBottoms = removeTogether(topBottoms, 1);
-        topBottoms = removeTogether(topBottoms, 2);
+//        topBottoms = removeTogether(topBottoms, 0);
+//        topBottoms = removeTogether(topBottoms, 1);
+//        topBottoms = removeTogether(topBottoms, 2);
         List<Segment> segments = chanBi(topBottoms, prices);
         List<Integer> huaBiIndex = huaBi(segments);
         for (int i = 0; i < prices.size(); i++) {
@@ -75,7 +75,14 @@ public class ChanLunUtil {
         Price second = null;
         Price third = null;
         int validIndex = size - 1;
+        for (int i = 0; i < beginIndex; i++) {
+            newTopBottoms.add(topBottoms.get(i));
+        }
         for (int i = beginIndex; i <= validIndex; i++) {
+
+            if (topBottoms.get(i).getTradingDate().equals("2019-02-28")) {
+                System.out.println();
+            }
             if (null == first) {
                 first = topBottoms.get(i);
                 third = null;
@@ -388,6 +395,7 @@ public class ChanLunUtil {
             segment = new Segment();
             segment.setFromIndex(topBottomPrice.getIndex());
         }
+        Boolean is = null;
         for (int i = 0; i < size; i++) {
             sequence = sequences.get(i);
             if (null == segment) {
@@ -395,8 +403,13 @@ public class ChanLunUtil {
                 segment.setFromIndex(0);
                 continue;
             }
+            if (null == is) {
+                Price price = prices.get(segment.getFromIndex());
+                PriceTypeEnum priceType = price.getPriceType();
+                is = priceType == PriceTypeEnum.TOP;
+            }
             if (BiPriceTypeEnum.TOP == sequence.getPriceType()) {
-                Integer toIndex = sequence.getToIndex();
+                Integer toIndex = is ? sequence.getFromIndex() : sequence.getToIndex();
                 if (null == segment.getFromIndex()) {
                     segment.setFromIndex(toIndex);
                 }
@@ -404,7 +417,7 @@ public class ChanLunUtil {
                 continue;
             }
             if (BiPriceTypeEnum.BOTTOM == sequence.getPriceType()) {
-                Integer fromIndex = sequence.getFromIndex();
+                Integer fromIndex = is ? sequence.getToIndex() : sequence.getFromIndex();
                 segment = setSegment(topBottoms, prices, segments, segment, fromIndex, segment.getToIndex(), null);
             }
         }
@@ -468,6 +481,21 @@ public class ChanLunUtil {
             }
         }
         return biPrices;
+    }
+
+    private static List<Price> linkToList(Linked<Price> biPrices) {
+        List<Price> list = new ArrayList<>();
+        Node<Price> first = biPrices.getFirst();
+        if (first == null) {
+            return list;
+        }
+        list.add(first.data);
+        while (first.next != null) {
+            list.add(first.next.data);
+            first = first.next;
+        }
+        return list;
+
     }
 
     /**
@@ -560,8 +588,6 @@ public class ChanLunUtil {
             }
             biSequences.add(biPrice);
         }
-
-
         // 做包含处理
         biSequences = handleSequencesContain(biSequences);
         // 得到顶底分型
@@ -584,10 +610,6 @@ public class ChanLunUtil {
                 continue;
             }
             second = biSequences.get(index);
-
-            if (second.getFromTradingDate().equals("2019-07-23")) {
-                System.out.println("2019-07-23");
-            }
             /**
              * 前一个
              */
