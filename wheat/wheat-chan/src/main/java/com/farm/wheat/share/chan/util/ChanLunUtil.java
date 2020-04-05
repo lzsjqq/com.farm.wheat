@@ -425,9 +425,9 @@ public class ChanLunUtil {
         sequence = sequences.get(sequences.size() - 1);
         topBottomPrice = topBottoms.get(topBottoms.size() - 1);
         if (BiPriceTypeEnum.TOP == sequence.getPriceType()) {
-            index = sequence.getToIndex();
+            index = is ? sequence.getFromIndex() : sequence.getToIndex();
         } else {
-            index = sequence.getFromIndex();
+            index = is ? sequence.getToIndex() : sequence.getFromIndex();
         }
         if (topBottomPrice.getIndex() != index) {
             segment = new Segment();
@@ -949,23 +949,22 @@ public class ChanLunUtil {
     /**
      * 得到顶底分型
      *
-     * @param biPrices
+     * @param biSequences
      * @return Pair<Integer, BiPrice> Integer:biPrices的index,  BiPrice:为biPrices的index
      */
-    public static List<BiSequence> biTopBottomType(List<BiSequence> biPrices) {
+    public static List<BiSequence> biTopBottomType(List<BiSequence> biSequences) {
         List<BiSequence> types = new ArrayList<>();
         int size;
-        if (NullCheckUtils.isBlank(biPrices) || (size = biPrices.size()) < 3) {
+        if (NullCheckUtils.isBlank(biSequences) || (size = biSequences.size()) < 3) {
             return types;
         }
         for (int index = 2; index < size; index++) {
-            BiSequence price = biPrices.get(index);
+            BiSequence price = biSequences.get(index);
             PriceRunTypeEnum priceRunType = price.getPriceRunType();
-
             // 和前两根进行比较
             int firstPre = index - 1;
             // 判断当前节点是否是包含K线或和上个方向一致
-            BiSequence firstPrice = biPrices.get(firstPre);
+            BiSequence firstPrice = biSequences.get(firstPre);
             PriceRunTypeEnum firstPriceRunType = firstPrice.getPriceRunType();
             if (priceRunType == firstPriceRunType) {
                 if (index == size - 1) {
