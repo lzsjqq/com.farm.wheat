@@ -370,6 +370,7 @@ public class ChanLunUtil {
         return biTopBottoms;
     }
 
+
     /**
      * 创建线段
      *
@@ -591,7 +592,28 @@ public class ChanLunUtil {
         // 做包含处理
         biSequences = handleSequencesContain(biSequences);
         // 得到顶底分型
-        return crtSegments(topBottoms, biTopBottomType(biSequences), prices);
+        return crtSegmentsByDuan(topBottoms, duan(biSequences, prices), prices);
+    }
+
+    /**
+     * 创建线段
+     *
+     * @param topBottoms
+     * @param prices
+     * @return
+     */
+    private static List<Segment> crtSegmentsByDuan(List<Price> topBottoms, List<Duan> duans, List<Price> prices) {
+        List<Segment> segments = new ArrayList<>();
+        for (Duan duan : duans) {
+            Integer from = duan.getFrom();
+            Integer to = duan.getTo();
+            Segment segment = new Segment();
+            segment.setFromIndex(from);
+            segment.setToIndex(to);
+            segment.setBiPrices(getSegmentBiPrice(topBottoms, segment, prices));
+            segments.add(segment);
+        }
+        return segments;
     }
 
     /**
@@ -988,6 +1010,89 @@ public class ChanLunUtil {
             types.add(firstPrice);// 添加新元素
         }
         return types;
+    }
+
+
+    private static int getMustIndex(BiPriceTypeEnum biPriceType, List<Price> prices, BiSequence biSequences) {
+        Price price = prices.get(biSequences.getFromIndex());
+        boolean isTop = price.getPriceType() == PriceTypeEnum.TOP;
+        int index;
+        if (biPriceType == BiPriceTypeEnum.BOTTOM) {
+            index = isTop ? biSequences.getToIndex() : biSequences.getFromIndex();
+        } else {
+            index = isTop ? biSequences.getFromIndex() : biSequences.getToIndex();
+        }
+        return index;
+    }
+
+    /**
+     * 得到顶底分型
+     *
+     * @param biSequences
+     * @return Pair<Integer, BiPrice> Integer:biPrices的index,  BiPrice:为biPrices的index
+     */
+    public static List<Duan> duan(List<BiSequence> biSequences, List<Price> prices) {
+        List<Duan> duans = new ArrayList<>();
+        List<BiSequence> types = new ArrayList<>();
+        int size;
+        if (NullCheckUtils.isBlank(biSequences) || (size = biSequences.size()) < 3) {
+            return duans;
+        }
+        BiSequence biSequence = biSequences.get(0);
+        Duan duan = new Duan();
+        duan.setFrom(biSequence.getFromIndex());
+        for (int index = 2; index < size; index++) {
+             biSequence = biSequences.get(index);
+            PriceRunTypeEnum priceRunType = biSequence.getPriceRunType();
+            // 和前两根进行比较
+            int firstPre = index - 1;
+            // 判断当前节点是否是包含K线或和上个方向一致
+            BiSequence firstPrice = biSequences.get(firstPre);
+            PriceRunTypeEnum firstPriceRunType = firstPrice.getPriceRunType();
+            if (priceRunType == firstPriceRunType) {
+                if (index == size - 1) {
+                    if (priceRunType == PriceRunTypeEnum.UP) {
+                        biSequence.setPriceType(BiPriceTypeEnum.TOP);
+                    } else {
+                        biSequence.setPriceType(BiPriceTypeEnum.BOTTOM);
+                    }
+                    // 添加新元素
+                    types.add(biSequence);
+                }
+                // - 表示空点
+                continue;
+            }
+            // 至此方向不在一致，确认分型
+            if (firstPriceRunType == PriceRunTypeEnum.UP) {
+                firstPrice.setPriceType(BiPriceTypeEnum.TOP);
+                int mustIndex = getMustIndex(BiPriceTypeEnum.TOP, prices, biSequence);
+                duan.setTo(mustIndex);
+                duan.setPriceRunType(PriceRunTypeEnum.UP);
+                duans.add(duan);
+                duan = new Duan();
+                duan.setFrom(mustIndex);
+            } else {
+                firstPrice.setPriceType(BiPriceTypeEnum.BOTTOM);
+                int mustIndex = getMustIndex(BiPriceTypeEnum.BOTTOM, prices, biSequence);
+                duan.setTo(mustIndex);
+                duan.setPriceRunType(PriceRunTypeEnum.DOWN);
+                duans.add(duan);
+                duan = new Duan();
+                duan.setFrom(mustIndex);
+            }
+            // 添加新元素
+            types.add(firstPrice);
+        }
+
+        BiSequence lastType = types.get(types.size() - 1);
+        BiSequence lastSequence = biSequences.get(biSequences.size() - 1);
+        if (!lastType.getFromIndex().equals(lastSequence.getFromIndex())) {
+            duan = new Duan();
+            duan.setFrom(duans.get(duans.size() - 1).getTo());
+            duan.setTo(lastSequence.getToIndex());
+            duans.add(duan);
+        }
+        return duans;
     }
 
     /**
