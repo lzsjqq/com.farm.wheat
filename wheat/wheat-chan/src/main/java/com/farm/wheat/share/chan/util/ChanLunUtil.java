@@ -863,6 +863,9 @@ public class ChanLunUtil {
         BiSequence first = null;
         BiSequence second = null;
         for (int index = 0; index < size; index++) {
+            if (index == size - 1) {
+                System.out.println(index);
+            }
             if (first == null) {
                 first = biSequences.get(index);
                 continue;
@@ -907,7 +910,9 @@ public class ChanLunUtil {
                     }
                     second = null;
                 } else {
-                    second = null;
+                    if (index != size - 1) {
+                        second = null;
+                    }
                 }
             }
         }
