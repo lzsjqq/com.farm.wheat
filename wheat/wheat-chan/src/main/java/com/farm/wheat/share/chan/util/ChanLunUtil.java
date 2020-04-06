@@ -50,13 +50,25 @@ public class ChanLunUtil {
 //        topBottoms = removeTogether(topBottoms, 1);
 //        topBottoms = removeTogether(topBottoms, 2);
         List<Segment> segments = chanBi(topBottoms, prices);
-        List<Integer> huaBiIndex = huaBi(segments);
+        List<Bi> bis = huaBi2(segments);
+        List<Integer> huaBiIndex = getHuaBiIndex(bis);
+//        List<Integer> huaBiIndex = huaBi(segments, prices);
         for (int i = 0; i < prices.size(); i++) {
             if (!huaBiIndex.contains(i)) {
                 prices.get(i).setPriceType(PriceTypeEnum.NONE);
             }
         }
         return prices;
+    }
+
+    private static List<Integer> getHuaBiIndex(List<Bi> bis) {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < bis.size(); i++) {
+            Bi bi = bis.get(i);
+            addBiTopBottomsList(list, bi.getFromIndex());
+            addBiTopBottomsList(list, bi.getToIndex());
+        }
+        return list;
     }
 
     /**
@@ -159,17 +171,37 @@ public class ChanLunUtil {
     }
 
     /**
+     * 获取最后一个值
+     *
+     * @param biPrices
+     * @return
+     */
+    private static Price getLastPrice(List<Price> biPrices) {
+        return biPrices.get(biPrices.size() - 1);
+    }
+
+    /**
+     * 获取下一个值
+     *
+     * @param biPrices
+     * @return
+     */
+    private static Price getNextPrice(List<Price> biPrices, Integer nowIndex) {
+        return biPrices.size() - 1 > nowIndex ? biPrices.get(nowIndex + 1) : null;
+    }
+
+    /**
      * 画笔
      *
      * @param segments
      * @return
      */
-    private static List<Integer> huaBi(List<Segment> segments) {
+    private static List<Integer> huaBi(List<Segment> segments, List<Price> prices) {
         List<Integer> biTopBottoms = new ArrayList<>();
         for (int i = 0; i < segments.size(); i++) {
             Segment segment = segments.get(i);
-            Linked<Price> biPrices = segment.getBiPrices();
-            int size = biPrices.getSize();
+            List<Price> biPrices = segment.getBiPrices();
+            int size = biPrices.size();
 
             if (size <= 2) {
                 addBiTopBottomsList(biTopBottoms, biPrices.get(0).getIndex());
@@ -187,25 +219,165 @@ public class ChanLunUtil {
                 if (price.getFromToSize() < 5) {
                     j += 3;
                     // 判断
-                    if (j <= size - 1) {
+                    if (j >= size - 1) {
                         addBiTopBottomsList(biTopBottoms, fromIndex);
-                        addBiTopBottomsList(biTopBottoms, biPrices.getLast().data.getIndex());
+                        addBiTopBottomsList(biTopBottoms, getLastPrice(biPrices).getIndex());
                         continue;
                         // 什么都不做了
                     } else {
                         Triple<Price, Price, Integer> confirmBiPrice = confirmBiPrice(biTopBottoms, biPrices, fromIndex, j);
-                        j += confirmBiPrice.getThird();
+                        j = confirmBiPrice.getThird();
                         fromIndex = null;
                     }
                 } else {
                     // 第一笔大于5
                     Triple<Price, Price, Integer> confirmBiPrice = confirmBiPrice(biTopBottoms, biPrices, fromIndex, j);
-                    j += confirmBiPrice.getThird();
+                    j = confirmBiPrice.getThird();
                     fromIndex = null;
                 }
             }
         }
         return biTopBottoms;
+    }
+
+    /**
+     * 画笔
+     *
+     * @param segments
+     * @return
+     */
+    private static List<Bi> huaBi2(List<Segment> segments) {
+        List<Bi> confirmBis = new ArrayList<>();
+        for (int i = 0; i < segments.size(); i++) {
+            Segment segment = segments.get(i);
+            List<Price> biPrices = segment.getBiPrices();
+            int size = biPrices.size();
+            if (size <= 2) {
+                justTwo(confirmBis, biPrices);
+                continue;
+            }
+            // 第一个笔是否成型
+            List<Bi> unConfirmOneBis = getUnConfirmBis(biPrices, size, 0);
+            List<Bi> unConfirmTwoBis = getUnConfirmBis(biPrices, size, 1);
+            confirmBis.addAll(getConfirmBis(unConfirmOneBis, unConfirmTwoBis));
+        }
+        return confirmBis;
+    }
+
+    private static List<Bi> getConfirmBis(List<Bi> unConfirmOneBis, List<Bi> unConfirmTwoBis) {
+        List<Bi> confirmBis = new ArrayList<>();
+        Bi bi = null;
+        for (int i = 0; i < unConfirmOneBis.size(); i++) {
+            Bi one = unConfirmOneBis.get(i);
+            if (null == bi) {
+                bi = new Bi();
+                setBiFrom(bi, one.getFromPrice());
+            }
+            if (i <= unConfirmTwoBis.size() - 1) {
+                Bi tow = unConfirmTwoBis.get(i);
+                // 小于5说明，反向笔没有确定
+                if (tow.getFromPrice().getFromToSize() < 5) {
+                    continue;
+                }
+                // 大于5,反向笔确定
+                // 判断是否为此时的i+1不是最后一个待定笔
+                if (i + 1 < unConfirmOneBis.size() - 1) {
+                    // 第一笔
+                    setBiTo(bi, one.getToPrice());
+                    // 添加确定笔
+                    confirmBis.add(bi);
+                    // 第二笔
+                    bi = new Bi();
+                    setBiFrom(bi, tow.getFromPrice());
+                    setBiTo(bi, tow.getToPrice());
+                    confirmBis.add(bi);
+                    // 第三笔
+                    bi = null;
+                    continue;
+                }
+                // 判断是否为此时的i+1是最后一个待定笔且是最后一个待定笔时不足五根
+                if (i + 1 == unConfirmOneBis.size() - 1 && unConfirmOneBis.get(i + 1).getFromPrice().getFromToSize() < 5) {
+                    // 第一笔
+                    setBiTo(bi, unConfirmOneBis.get(i + 1).getToPrice());
+                    // 添加确定笔
+                    confirmBis.add(bi);
+                    break;
+                }
+                // 判断是否为此时的i+1是最后一个待定笔且是最后一个待定笔时足五根
+                if (i + 1 == unConfirmOneBis.size() - 1 && unConfirmOneBis.get(i + 1).getFromPrice().getFromToSize() >= 5) {
+                    // 第一笔
+                    setBiTo(bi, one.getToPrice());
+                    // 添加确定笔
+                    confirmBis.add(bi);
+                    // 第二笔
+                    bi = new Bi();
+                    setBiFrom(bi, one.getToPrice());
+                    setBiTo(bi, tow.getToPrice());
+                    confirmBis.add(bi);
+                    // 第三笔
+                    bi = new Bi();
+                    setBiFrom(bi, tow.getToPrice());
+                    setBiTo(bi, unConfirmOneBis.get(i + 1).getToPrice());
+                    confirmBis.add(bi);
+                    break;
+                }
+
+
+            } else {
+                // 此时走到最后
+                setBiTo(bi, one.getToPrice());
+                // 添加确定笔
+                confirmBis.add(bi);
+                break;
+            }
+
+        }
+        return confirmBis;
+    }
+
+    private static List<Bi> getUnConfirmBis(List<Price> biPrices, int size, int i2) {
+        List<Bi> unConfirmBis = new ArrayList<>(size / 2);
+        for (int j = i2; j + 1 < size; j += 2) {
+            Bi bi = new Bi();
+            setBiFrom(bi, biPrices.get(j));
+            setBiTo(bi, biPrices.get(j + 1));
+            unConfirmBis.add(bi);
+        }
+        return unConfirmBis;
+    }
+
+    private static void setBiFrom(Bi bi, Price price) {
+        bi.setFromIndex(price.getIndex());
+        bi.setFromPrice(price);
+    }
+
+    private static void justTwo(List<Bi> bis, List<Price> biPrices) {
+        Bi bi = new Bi();
+        Price price = biPrices.get(0);
+        setBiFrom(bi, price);
+        Price price1 = biPrices.get(1);
+        setBiTo(bi, price1);
+        bis.add(bi);
+    }
+
+    private static void lastTwo(int index, List<Bi> bis, List<Price> biPrices) {
+        Bi bi = new Bi();
+        Price price = biPrices.get(index);
+        setBiFrom(bi, price);
+        Price lastPrice = getLastPrice(biPrices);
+        setBiTo(bi, lastPrice);
+        bis.add(bi);
+    }
+
+    private static void lastTwo(Bi bi, List<Bi> bis, List<Price> biPrices) {
+        Price lastPrice = getLastPrice(biPrices);
+        setBiTo(bi, lastPrice);
+        bis.add(bi);
+    }
+
+    private static void setBiTo(Bi bi, Price lastPrice) {
+        bi.setToIndex(lastPrice.getIndex());
+        bi.setToPrice(lastPrice);
     }
 
     /**
@@ -215,7 +387,7 @@ public class ChanLunUtil {
      * @param j
      * @return Triple<Price, Price, Integer> Integer 增量
      */
-    private static Triple<Price, Price, Integer> confirmBiPrice(List<Integer> biTopBottoms, Linked<Price> biPrices, Integer fromIndex, int j) {
+    private static Triple<Price, Price, Integer> confirmBiPrice(List<Integer> biTopBottoms, List<Price> biPrices, Integer fromIndex, int j) {
         Triple<Price, Price, Integer> confirmBiPrice = getConfirmBiPrice(biPrices, j + 1, 0);
         if (null != confirmBiPrice.getFirst()) {
             addBiTopBottomsList(biTopBottoms, fromIndex);
@@ -228,6 +400,28 @@ public class ChanLunUtil {
     }
 
     /**
+     * @param biPrices
+     * @param j
+     * @return Triple<Price, Price, Integer> Integer 增量
+     */
+    private static Triple<Price, Price, Integer> confirmBiPrice(List<Bi> bis, List<Price> biPrices, Bi unConfirmBi, int j) {
+        Triple<Price, Price, Integer> confirmBiPrice = getConfirmBi(biPrices, j, 0);
+        if (null != confirmBiPrice.getFirst()) {
+            setBiTo(unConfirmBi, confirmBiPrice.getFirst());
+            bis.add(unConfirmBi);
+            unConfirmBi = new Bi();
+            setBiFrom(unConfirmBi, confirmBiPrice.getFirst());
+            if (null != confirmBiPrice.getSecond()) {
+                setBiTo(unConfirmBi, confirmBiPrice.getSecond());
+                bis.add(unConfirmBi);
+                unConfirmBi = new Bi();
+                setBiFrom(unConfirmBi, confirmBiPrice.getFirst());
+            }
+        }
+        return confirmBiPrice;
+    }
+
+    /**
      * 获取成笔price
      *
      * @param biPrices
@@ -235,31 +429,73 @@ public class ChanLunUtil {
      * @param incr
      * @return
      */
-    private static Triple<Price, Price, Integer> getConfirmBiPrice(Linked<Price> biPrices, int index, int incr) {
-
-        int size = biPrices.getSize();
+    private static Triple<Price, Price, Integer> getConfirmBi(List<Price> biPrices, int index, int incr) {
+        int size = biPrices.size();
         int lastIndex = size - 1;
         int nowIndex = incr + index;
         if (lastIndex <= nowIndex) {
-            return new Triple<>(biPrices.getLast().data, null, lastIndex);
+            return new Triple<>(getLastPrice(biPrices), null, lastIndex);
         }
-        Node<Price> now = biPrices.getNode(nowIndex);
-        Price nowPrice = now.getData();
-
+        Price nowPrice = biPrices.get(nowIndex);
         // 判断当前是否是5个
         int fromToSize = nowPrice.getFromToSize();
-        Node<Price> next = now.getNext();
-        Price nextPrice = next.data;
+        Price nextPrice = getNextPrice(biPrices, nowIndex);
+        int nextFromToSize = nextPrice.getFromToSize();
+        // 都大于5，确定两笔
+        if (fromToSize >= 5 && nextFromToSize >= 5) {
+            int nextIndex = nowIndex + 1;
+            return new Triple<>(nowPrice, nextPrice, nextIndex);
+        }
+
+        if (fromToSize >= 5 && nextFromToSize < 5) {
+            if (getNextPrice(biPrices, nowIndex + 1) == null) {
+                return new Triple<>(getLastPrice(biPrices), null, lastIndex);
+            } else {
+                return new Triple<>(null, null, nowIndex + 1);
+            }
+        }
+
+        if (fromToSize < 5 && nowIndex + 2 <= lastIndex) {
+            return getConfirmBiPrice(biPrices, nowIndex + 2, 0);
+        }
+        // 判断是否是最后一个
+        if (nowIndex + 2 >= lastIndex) {
+            return new Triple<>(biPrices.get(lastIndex), null, lastIndex);
+        }
+        return getConfirmBiPrice(biPrices, index, 2);
+
+    }
+
+    /**
+     * 获取成笔price
+     *
+     * @param biPrices
+     * @param index
+     * @param incr
+     * @return
+     */
+    private static Triple<Price, Price, Integer> getConfirmBiPrice(List<Price> biPrices, int index, int incr) {
+
+        int size = biPrices.size();
+        int lastIndex = size - 1;
+        int nowIndex = incr + index;
+        if (lastIndex <= nowIndex) {
+            return new Triple<>(getLastPrice(biPrices), null, lastIndex);
+        }
+        Price nowPrice = biPrices.get(nowIndex);
+        // 判断当前是否是5个
+        int fromToSize = nowPrice.getFromToSize();
+        Price nextPrice = getNextPrice(biPrices, nowIndex);
         int nextFromToSize = nextPrice.getFromToSize();
         if (fromToSize >= 5 && nextFromToSize >= 5) {
             return new Triple<>(nowPrice, nextPrice, index + 1);
         }
 
         if (fromToSize >= 5 && nextFromToSize < 5) {
-            if (next.getNext() == null) {
-                return new Triple<>(biPrices.getLast().data, null, lastIndex);
+            if (getNextPrice(biPrices, nowIndex + 1) == null) {
+                return new Triple<>(getLastPrice(biPrices), null, lastIndex);
             } else {
-                return new Triple<>(nowPrice, nextPrice, index + 1);
+                return new Triple<>(null, null, nowIndex + 1);
             }
         }
 
@@ -459,12 +695,12 @@ public class ChanLunUtil {
      * @param segment
      * @return
      */
-    private static Linked<Price> getSegmentBiPrice(List<Price> topBottoms, Segment segment, List<Price> prices) {
+    private static List<Price> getSegmentBiPrice(List<Price> topBottoms, Segment segment, List<Price> prices) {
         Integer fromIndex = segment.getFromIndex();
         Integer toIndex = segment.getToIndex();
-        Linked<Price> biPrices = new Linked<>();
+        List<Price> biPrices = new ArrayList<>();
         Price price;
-        Node<Price> last;
+        Price last;
         Price pre;
         for (int i = 0; i < topBottoms.size(); i++) {
             price = topBottoms.get(i);
@@ -472,13 +708,13 @@ public class ChanLunUtil {
             if (fromIndex <= first && first <= toIndex) {
                 // 处理两个顶底分型的K线数量
                 biPrices.add(price);
-                last = biPrices.getNode(biPrices.getSize() - 1);
-                if (1 == biPrices.getSize()) {
+                last = biPrices.get(biPrices.size() - 1);
+                if (1 == biPrices.size()) {
                     continue;
                 }
-                pre = last.getPre().data;
+                pre = biPrices.get(biPrices.size() - 2);
                 // 计算两者之间的K线数量
-                pre.setFromToSize(nonContainSize(prices, pre.getIndex(), last.data.getIndex()));
+                pre.setFromToSize(nonContainSize(prices, pre.getIndex(), last.getIndex()));
             }
         }
         return biPrices;
@@ -1042,22 +1278,21 @@ public class ChanLunUtil {
         Duan duan = new Duan();
         duan.setFrom(biSequence.getFromIndex());
         for (int index = 2; index < size; index++) {
-             biSequence = biSequences.get(index);
-            PriceRunTypeEnum priceRunType = biSequence.getPriceRunType();
+            BiSequence price = biSequences.get(index);
+            PriceRunTypeEnum priceRunType = price.getPriceRunType();
             // 和前两根进行比较
-            int firstPre = index - 1;
             // 判断当前节点是否是包含K线或和上个方向一致
-            BiSequence firstPrice = biSequences.get(firstPre);
+            BiSequence firstPrice = biSequences.get(index - 1);
             PriceRunTypeEnum firstPriceRunType = firstPrice.getPriceRunType();
             if (priceRunType == firstPriceRunType) {
                 if (index == size - 1) {
                     if (priceRunType == PriceRunTypeEnum.UP) {
-                        biSequence.setPriceType(BiPriceTypeEnum.TOP);
+                        price.setPriceType(BiPriceTypeEnum.TOP);
                     } else {
-                        biSequence.setPriceType(BiPriceTypeEnum.BOTTOM);
+                        price.setPriceType(BiPriceTypeEnum.BOTTOM);
                     }
                     // 添加新元素
-                    types.add(biSequence);
+                    types.add(price);
                 }
                 // - 表示空点
                 continue;
@@ -1065,7 +1300,7 @@ public class ChanLunUtil {
             // 至此方向不在一致，确认分型
             if (firstPriceRunType == PriceRunTypeEnum.UP) {
                 firstPrice.setPriceType(BiPriceTypeEnum.TOP);
-                int mustIndex = getMustIndex(BiPriceTypeEnum.TOP, prices, biSequence);
+                int mustIndex = getMustIndex(BiPriceTypeEnum.TOP, prices, firstPrice);
                 duan.setTo(mustIndex);
                 duan.setPriceRunType(PriceRunTypeEnum.UP);
                 duans.add(duan);
@@ -1073,7 +1308,7 @@ public class ChanLunUtil {
                 duan.setFrom(mustIndex);
             } else {
                 firstPrice.setPriceType(BiPriceTypeEnum.BOTTOM);
-                int mustIndex = getMustIndex(BiPriceTypeEnum.BOTTOM, prices, biSequence);
+                int mustIndex = getMustIndex(BiPriceTypeEnum.BOTTOM, prices, firstPrice);
                 duan.setTo(mustIndex);
                 duan.setPriceRunType(PriceRunTypeEnum.DOWN);
                 duans.add(duan);

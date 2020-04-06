@@ -25,6 +25,6 @@ public class Segment {
     /**
      * 描述未成形笔分型，段之间
      */
-    private Linked<Price> biPrices = new Linked<>();
+    private List<Price> biPrices = new ArrayList<>();
 
 }
