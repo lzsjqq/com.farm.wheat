@@ -193,7 +193,7 @@
             <if test="rRate != null">
                 #{rRate,jdbcType=DECIMAL},
             </if>
-             <if test="changeMoney != null">
+            <if test="changeMoney != null">
                 #{changeMoney,jdbcType=DECIMAL},
             </if>
             <if test="stampDuty != null">
@@ -304,6 +304,7 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id_deal_info = #{idDealInfo,jdbcType=INTEGER}
   </update>
+
     <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.farm.wheat.share.biz.dto.DealInfoDTO">
         SELECT
         <include refid="Base_Column_List"/>
@@ -311,7 +312,7 @@
         <where>
             <if test="tradingDate!=null">and trading_date=#{tradingDate}</if>
         </where>
-
+        order by update_time desc
     </select>
 
     <update id="completeDeal">

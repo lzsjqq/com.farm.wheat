@@ -21,7 +21,7 @@ public class DealDetailInfoDTO extends EntityDto {
 
     private Integer volume;
 
-    private String target;
+    private DealTargetEnum target;
 
     private BigDecimal stopLossPrice;
 

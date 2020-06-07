@@ -863,9 +863,6 @@ public class ChanLunUtil {
         BiSequence first = null;
         BiSequence second = null;
         for (int index = 0; index < size; index++) {
-            if (index == size - 1) {
-                System.out.println(index);
-            }
             if (first == null) {
                 first = biSequences.get(index);
                 continue;
@@ -910,9 +907,7 @@ public class ChanLunUtil {
                     }
                     second = null;
                 } else {
-                    if (index != size - 1) {
-                        second = null;
-                    }
+                    second = null;
                 }
             }
         }
@@ -922,6 +917,21 @@ public class ChanLunUtil {
         if (second != null) {
             handledSequence.add(second);
         }
+        // 判断是否是最后一个
+        BiSequence biSequence = handledSequence.get(handledSequence.size() - 1);
+        int biSequencesSize = biSequences.size() - 1;
+        int lastIndex = biSequencesSize;
+        for (int i = 0; i < biSequences.size(); i++) {
+            if (biSequences.get(i).getFromIndex() == biSequence.getFromIndex()) {
+                lastIndex = i;
+                break;
+            }
+        }
+        if (lastIndex != biSequencesSize) {
+            biSequences.subList(lastIndex, biSequencesSize);
+        }
+
+
         return handledSequence;
     }
 

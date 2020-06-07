@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 交易记录相关
@@ -102,75 +101,146 @@ public class DealServiceImpl implements DealService {
     @Transactional
     @Override
     public int insertDetail(DealDetailInfoDTO dealDetailInfoDTO) throws Exception {
+        // 计算交易时间
         String tradingDate = dealDetailInfoDTO.getTradingDate();
         if (NullCheckUtils.isBlank(tradingDate)) {
             tradingDate = DateUtils.dateToString(new Date(), DateUtils.YYYY_MM_DD);
         }
-        BigDecimal stopLossPrice = dealDetailInfoDTO.getStopLossPrice();
-        String target = dealDetailInfoDTO.getTarget();
-        if (DealTargetEnum.MR.equals(target) && null == stopLossPrice) {
-            throw new Exception("止损价格不能为空哦！");
-        }
-        dealDetailInfoDTO.setTradingDate(tradingDate);
-        String plan = dealDetailInfoDTO.getPlan();
-        plan = getPlan(plan);
-        dealDetailInfoDTO.setPlan(plan);
-        String shareCode = dealDetailInfoDTO.getShareCode();
-        // 查询未完成的
-        DealInfoPO dealInfoPO = dealInfoMapper.selectByShareCode(shareCode, DealInfoStatusEnum.CC.getValue());
-        Integer idDealInfo;
-        Integer volumeNow = dealDetailInfoDTO.getVolume();
         BigDecimal dealPrice = dealDetailInfoDTO.getDealPrice();
-        BigDecimal multiplyNow = dealPrice.multiply(new BigDecimal(volumeNow));
-        BigDecimal changeMoney = getChangeMoney(multiplyNow);
-        BigDecimal stampDuty = getStampDuty(multiplyNow);
+        Integer volumeNow = dealDetailInfoDTO.getVolume();
+        // 当次的市值
+        BigDecimal multiplyNowThisTime = getMultiply(dealPrice, volumeNow);
+        // 当次的手续费
+        BigDecimal changeMoney = getChangeMoney(multiplyNowThisTime);
+        // 当次的印花税
+        BigDecimal stampDuty = getStampDuty(multiplyNowThisTime, dealDetailInfoDTO.getTarget());
+        // 查询以往投资记录总记录
+        DealInfoPO dealInfoPO = dealInfoMapper.selectByShareCode(dealDetailInfoDTO.getShareCode(), DealInfoStatusEnum.CC.getValue());
+        Integer idDealInfo;
+        // 当次收益
+        BigDecimal spendNow = changeMoney.add(stampDuty).multiply(new BigDecimal(-1));
+        DealTargetEnum target = dealDetailInfoDTO.getTarget();
         if (dealInfoPO == null) {
-            dealDetailInfoDTO.setChangeMoney(changeMoney);
-            DealInfoPO record = new DealInfoPO();
-            record.setShareCode(shareCode);
-            record.setShareName(dealDetailInfoDTO.getShareName());
-            record.setVolume(dealDetailInfoDTO.getVolume());
-            record.setFirstCost(dealDetailInfoDTO.getDealPrice());
-            record.setChangeMoney(changeMoney);
-            if (!DealTargetEnum.MR.equals(target)) {
-                record.setStampDuty(stampDuty);
-            }
+            DealInfoPO record = buildDealInfoPO(dealDetailInfoDTO, changeMoney, spendNow);
             dealInfoMapper.insertSelective(record);
             idDealInfo = record.getIdDealInfo();
         } else {
             idDealInfo = dealInfoPO.getIdDealInfo();
+            // 设置总手续费
             dealInfoPO.setChangeMoney(changeMoney.add(dealInfoPO.getChangeMoney() == null ? BigDecimal.ZERO : dealInfoPO.getChangeMoney()));
-            if (DealTargetEnum.MR.equals(target)) {
-                Integer volume = dealInfoPO.getVolume();
-                BigDecimal firstCost = dealInfoPO.getFirstCost();
-                BigDecimal multiply = firstCost.multiply(new BigDecimal(volume));
-                Integer now = volume + volumeNow;
-                BigDecimal costNow = multiplyNow.add(multiply).divide(new BigDecimal(now)).setScale(2, BigDecimal.ROUND_HALF_UP);
-                dealInfoPO.setFirstCost(costNow);
-                dealInfoPO.setVolume(now);
-            } else {
-                Integer volume = dealInfoPO.getVolume();
-                BigDecimal firstCost = dealInfoPO.getFirstCost();
-                BigDecimal multiply = firstCost.multiply(new BigDecimal(volume));
-                Integer now = volume - volumeNow;
-
-                if (now < 0) {
-                    throw new Exception("小于零了哦！");
-                }
-                dealDetailInfoDTO.setStampDuty(stampDuty);
-                dealDetailInfoDTO.setChangeMoney(changeMoney);
-//                BigDecimal costNow = multiply.subtract(multiplyNow).divide(new BigDecimal(now)).setScale(3, BigDecimal.ROUND_HALF_UP);
-//                dealInfoPO.setFirstCost(costNow);
-                dealInfoPO.setVolume(now);
-                dealInfoPO.setStampDuty(stampDuty.add(dealInfoPO.getStampDuty() == null ? BigDecimal.ZERO : dealInfoPO.getStampDuty()));
-                dealDetailInfoDTO.setChangeMoney(changeMoney);
-            }
-            dealInfoMapper.updateByPrimaryKey(dealInfoPO);
+            // 设置总印花税
+            dealInfoPO.setStampDuty(stampDuty.add(dealInfoPO.getStampDuty() == null ? BigDecimal.ZERO : dealInfoPO.getStampDuty()));
+            int totalVolume = getVolume(volumeNow, dealInfoPO.getVolume(), target);
+            // 设置当前总手数
+            dealInfoPO.setVolume(totalVolume);
+            // 获取当前总市值
+            BigDecimal multiply = getMultiply(dealInfoPO.getFirstCost(), dealInfoPO.getVolume());
+            // 获取当前每股成本价
+            BigDecimal costNow = getCostNow(multiplyNowThisTime, totalVolume, multiply);
+            BigDecimal profitNow = getProfitNow(multiplyNowThisTime, dealInfoPO.getFirstCost(), volumeNow, target);
+            BigDecimal profit = getProfit(dealInfoPO.getProfit(), profitNow, spendNow, target);
+            dealInfoPO.setFirstCost(costNow);
+            dealInfoPO.setProfit(profit);
         }
+        dealDetailInfoDTO.setTradingDate(tradingDate);
+        dealDetailInfoDTO.setPlan(getPlan(dealDetailInfoDTO.getPlan()));
+        dealDetailInfoDTO.setStampDuty(stampDuty);
+        dealDetailInfoDTO.setChangeMoney(changeMoney);
         dealDetailInfoDTO.setIdDealInfo(idDealInfo);
         return dealDetailInfoMapper.insert(dealDetailInfoDTO);
     }
 
+    /**
+     * @param multiplyNowThisTime 当次的成交金额
+     * @param firstCostHis        历史成本
+     * @param volumeNow           当次数量
+     * @return BigDecimal
+     */
+    private BigDecimal getProfitNow(BigDecimal multiplyNowThisTime, BigDecimal firstCostHis, Integer volumeNow, DealTargetEnum target) {
+        if (DealTargetEnum.MR == target) {
+            return BigDecimal.ZERO;
+        } else {
+            return multiplyNowThisTime.subtract(firstCostHis.multiply(new BigDecimal(volumeNow)));
+        }
+    }
+
+    /**
+     * 获取收益
+     * <p>
+     * 买入：历史收益+当前成本
+     * 卖出：历史收益+当前收益+当前成本
+     *
+     * @param profitHistory 历史收益
+     * @param profitNow     当前收益
+     * @param spendNow      当前成本
+     * @param target        买卖方向
+     * @return
+     */
+    private BigDecimal getProfit(BigDecimal profitHistory, BigDecimal profitNow, BigDecimal spendNow, DealTargetEnum target) {
+        if (DealTargetEnum.MR == target) {
+            return profitHistory.add(spendNow);
+        } else {
+            return profitHistory.add(profitNow).add(spendNow);
+        }
+    }
+
+    /**
+     * 计算当前成本价
+     *
+     * @param multiplyNowThisTime
+     * @param totalVolume
+     * @param multiplyHistory
+     * @return
+     */
+    private BigDecimal getCostNow(BigDecimal multiplyNowThisTime, int totalVolume, BigDecimal multiplyHistory) {
+        return multiplyNowThisTime.add(multiplyHistory).divide(new BigDecimal(totalVolume)).setScale(3, BigDecimal.ROUND_HALF_UP);
+    }
+
+    /**
+     * 获取成交后的股数
+     *
+     * @param volumeNow     当次成交的股数
+     * @param volumeHistory 历史股数
+     * @return
+     */
+    private int getVolume(Integer volumeNow, Integer volumeHistory, DealTargetEnum target) throws Exception {
+        int now = DealTargetEnum.MR == target ? volumeHistory + volumeNow : volumeHistory - volumeNow;
+        if (now < 0) {
+            throw new Exception("小于零了哦！");
+        }
+        return now;
+    }
+
+    /**
+     * 获取交易时市值
+     *
+     * @param dealPrice 成交价
+     * @param volumeNow 成交量
+     * @return BigDecimal
+     */
+    private BigDecimal getMultiply(BigDecimal dealPrice, Integer volumeNow) {
+        return dealPrice.multiply(new BigDecimal(volumeNow));
+    }
+
+    private DealInfoPO buildDealInfoPO(DealDetailInfoDTO dealDetailInfoDTO, BigDecimal changeMoney, BigDecimal profitNow) {
+        DealInfoPO record = new DealInfoPO();
+        Integer volume = dealDetailInfoDTO.getVolume();
+        record.setShareCode(dealDetailInfoDTO.getShareCode());
+        record.setShareName(dealDetailInfoDTO.getShareName());
+        record.setVolume(volume);
+        record.setFirstCost(getMultiply(dealDetailInfoDTO.getDealPrice(), volume).add(dealDetailInfoDTO.getChangeMoney()).add(dealDetailInfoDTO.getStampDuty()).divide(new BigDecimal(volume)).setScale(3, BigDecimal.ROUND_HALF_UP));
+        record.setChangeMoney(changeMoney);
+        // 印花税+手续费
+        record.setProfit(profitNow);
+        return record;
+    }
+
+    /**
+     * 计算手续费
+     *
+     * @param multiplyNow multiplyNow
+     * @return BigDecimal
+     */
     private BigDecimal getChangeMoney(BigDecimal multiplyNow) {
         BigDecimal stampDuty;
         BigDecimal changeMoney;
@@ -182,9 +252,17 @@ public class DealServiceImpl implements DealService {
         return changeMoney;
     }
 
-    private BigDecimal getStampDuty(BigDecimal multiplyNow) {
-        BigDecimal stampDuty = multiplyNow.multiply(new BigDecimal(1)).divide(new BigDecimal(1000)).setScale(2, BigDecimal.ROUND_HALF_UP);
-        return stampDuty;
+    /**
+     * 计算印花税
+     *
+     * @param multiplyNow multiplyNow
+     * @return BigDecimal
+     */
+    private BigDecimal getStampDuty(BigDecimal multiplyNow, DealTargetEnum target) {
+        if (DealTargetEnum.MR == target) {
+            return BigDecimal.ZERO;
+        }
+        return multiplyNow.multiply(new BigDecimal(1)).divide(new BigDecimal(1000)).setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     private String getPlan(String plan) {
