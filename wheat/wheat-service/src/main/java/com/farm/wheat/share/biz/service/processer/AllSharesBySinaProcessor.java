@@ -39,7 +39,7 @@ public class AllSharesBySinaProcessor implements PageProcessor {
     private static String url = "http://vip.stock.finance.sina.com.cn/q/go.php/vIR_CustomSearch/index.phtml?p=%s&sr_p=-1";
     //    private static String testUrl = "https://www.baidu.com/";
     // 部分一：抓取网站的相关配置，包括编码、抓取间隔、重试次数等
-    private Site site = Site.me().setRetryTimes(3).setSleepTime(1000);
+    private Site site = Site.me().addHeader("User-Agent","Mozilla/5.0 (Linux; U; Android 10; zh-CN; LYA-AL00 Build/HUAWEILYA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.108 UCBrowser/12.7.6.1056 Mobile Safari/537.36").setRetryTimes(3).setSleepTime(1000);
 
     public void start() {
         List<Pipeline> list = new ArrayList<>();
