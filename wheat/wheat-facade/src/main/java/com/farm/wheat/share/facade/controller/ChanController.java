@@ -1,7 +1,7 @@
 package com.farm.wheat.share.facade.controller;
 
 import com.farm.wheat.share.api.chan.ChanApi;
-import com.farm.wheat.share.biz.service.chan.IChanLunService;
+import com.farm.wheat.share.service.service.chan.IChanLunService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

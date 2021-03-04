@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.farm.wheat.share.service.mapper.simple.ShareTurnoverRateMapper">
+    <resultMap id="BaseResultMap" type="com.farm.wheat.share.service.vo.ShareTurnoverRateVO">
+        <id column="ID_TURNOVER_RATE" property="idTurnoverRate" jdbcType="INTEGER"/>
+        <result column="ID_SHARE_INFO" property="idShareInfo" jdbcType="INTEGER"/>
+        <result column="NEW_RATE" property="newRate" jdbcType="DECIMAL"/>
+        <result column="THREE_CHANGE_RATE" property="threeChangeRate" jdbcType="DECIMAL"/>
+        <result column="FIVE_CHANGE_RATE" property="fiveChangeRate" jdbcType="DECIMAL"/>
+        <result column="TEN_CHANGE_RATE" property="tenChangeRate" jdbcType="DECIMAL"/>
+        <result column="THREE_RATE" property="threeRate" jdbcType="DECIMAL"/>
+        <result column="FIVE_RATE" property="fiveRate" jdbcType="DECIMAL"/>
+        <result column="TEN_RATE" property="tenRate" jdbcType="DECIMAL"/>
+        <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID_TURNOVER_RATE, ID_SHARE_INFO, NEW_RATE, THREE_CHANGE_RATE, FIVE_CHANGE_RATE, TEN_CHANGE_RATE,
+    THREE_RATE, FIVE_RATE, TEN_RATE, CREATE_TIME, UPDATE_TIME
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from share_turnover_rate
+        where ID_TURNOVER_RATE = #{idTurnoverRate,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from share_turnover_rate
+    where ID_TURNOVER_RATE = #{idTurnoverRate,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.farm.wheat.share.service.vo.ShareTurnoverRateVO">
+    insert into share_turnover_rate (ID_TURNOVER_RATE, ID_SHARE_INFO, NEW_RATE,
+      THREE_CHANGE_RATE, FIVE_CHANGE_RATE, TEN_CHANGE_RATE,
+      THREE_RATE, FIVE_RATE, TEN_RATE,
+      CREATE_TIME, UPDATE_TIME)
+    values (#{idTurnoverRate,jdbcType=INTEGER}, #{idShareInfo,jdbcType=INTEGER}, #{newRate,jdbcType=DECIMAL},
+      #{threeChangeRate,jdbcType=DECIMAL}, #{fiveChangeRate,jdbcType=DECIMAL}, #{tenChangeRate,jdbcType=DECIMAL},
+      #{threeRate,jdbcType=DECIMAL}, #{fiveRate,jdbcType=DECIMAL}, #{tenRate,jdbcType=DECIMAL},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+    <insert id="insertSelective" parameterType="com.farm.wheat.share.service.vo.ShareTurnoverRateVO">
+        REPLACE into share_turnover_rate
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="idTurnoverRate != null">
+                ID_TURNOVER_RATE,
+            </if>
+            <if test="idShareInfo != null">
+                ID_SHARE_INFO,
+            </if>
+            <if test="newRate != null">
+                NEW_RATE,
+            </if>
+            <if test="threeChangeRate != null">
+                THREE_CHANGE_RATE,
+            </if>
+            <if test="fiveChangeRate != null">
+                FIVE_CHANGE_RATE,
+            </if>
+            <if test="tenChangeRate != null">
+                TEN_CHANGE_RATE,
+            </if>
+            <if test="threeRate != null">
+                THREE_RATE,
+            </if>
+            <if test="fiveRate != null">
+                FIVE_RATE,
+            </if>
+            <if test="tenRate != null">
+                TEN_RATE,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="idTurnoverRate != null">
+                #{idTurnoverRate,jdbcType=INTEGER},
+            </if>
+            <if test="idShareInfo != null">
+                #{idShareInfo,jdbcType=INTEGER},
+            </if>
+            <if test="newRate != null">
+                #{newRate,jdbcType=DECIMAL},
+            </if>
+            <if test="threeChangeRate != null">
+                #{threeChangeRate,jdbcType=DECIMAL},
+            </if>
+            <if test="fiveChangeRate != null">
+                #{fiveChangeRate,jdbcType=DECIMAL},
+            </if>
+            <if test="tenChangeRate != null">
+                #{tenChangeRate,jdbcType=DECIMAL},
+            </if>
+            <if test="threeRate != null">
+                #{threeRate,jdbcType=DECIMAL},
+            </if>
+            <if test="fiveRate != null">
+                #{fiveRate,jdbcType=DECIMAL},
+            </if>
+            <if test="tenRate != null">
+                #{tenRate,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.farm.wheat.share.service.vo.ShareTurnoverRateVO">
+        update share_turnover_rate
+        <set>
+            <if test="idShareInfo != null">
+                ID_SHARE_INFO = #{idShareInfo,jdbcType=INTEGER},
+            </if>
+            <if test="newRate != null">
+                NEW_RATE = #{newRate,jdbcType=DECIMAL},
+            </if>
+            <if test="threeChangeRate != null">
+                THREE_CHANGE_RATE = #{threeChangeRate,jdbcType=DECIMAL},
+            </if>
+            <if test="fiveChangeRate != null">
+                FIVE_CHANGE_RATE = #{fiveChangeRate,jdbcType=DECIMAL},
+            </if>
+            <if test="tenChangeRate != null">
+                TEN_CHANGE_RATE = #{tenChangeRate,jdbcType=DECIMAL},
+            </if>
+            <if test="threeRate != null">
+                THREE_RATE = #{threeRate,jdbcType=DECIMAL},
+            </if>
+            <if test="fiveRate != null">
+                FIVE_RATE = #{fiveRate,jdbcType=DECIMAL},
+            </if>
+            <if test="tenRate != null">
+                TEN_RATE = #{tenRate,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where ID_TURNOVER_RATE = #{idTurnoverRate,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.farm.wheat.share.service.vo.ShareTurnoverRateVO">
+    update share_turnover_rate
+    set ID_SHARE_INFO = #{idShareInfo,jdbcType=INTEGER},
+      NEW_RATE = #{newRate,jdbcType=DECIMAL},
+      THREE_CHANGE_RATE = #{threeChangeRate,jdbcType=DECIMAL},
+      FIVE_CHANGE_RATE = #{fiveChangeRate,jdbcType=DECIMAL},
+      TEN_CHANGE_RATE = #{tenChangeRate,jdbcType=DECIMAL},
+      THREE_RATE = #{threeRate,jdbcType=DECIMAL},
+      FIVE_RATE = #{fiveRate,jdbcType=DECIMAL},
+      TEN_RATE = #{tenRate,jdbcType=DECIMAL},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+    where ID_TURNOVER_RATE = #{idTurnoverRate,jdbcType=INTEGER}
+  </update>
+    
+    <select id="selectMaxChangeShares" resultType="com.farm.wheat.share.service.dto.ShareTurnoverRateDTO">
+        select
+        s.SHARE_CODE shareCode,
+        s.SHARE_NAME shareName,
+        r.NEW_RATE newRate,
+        r.THREE_CHANGE_RATE threeChangeRate,
+        r.FIVE_CHANGE_RATE  fiveChangeRate,
+        r.TEN_CHANGE_RATE tenChangeRate,
+        r.THREE_RATE threeRate,
+        r.FIVE_RATE fiveRate,
+        r.TEN_RATE tenRate,
+        r.CREATE_TIME,
+        r.UPDATE_TIME
+        from share_turnover_rate r inner join  share_info s
+        on r.ID_SHARE_INFO=s.ID_SHARE_INFO
+        order by THREE_CHANGE_RATE desc
+    </select>
+</mapper>

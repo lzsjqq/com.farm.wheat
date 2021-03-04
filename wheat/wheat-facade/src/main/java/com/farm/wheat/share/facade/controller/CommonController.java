@@ -1,8 +1,8 @@
 package com.farm.wheat.share.facade.controller;
 
 import com.farm.wheat.share.api.deal.CommonApi;
-import com.farm.wheat.share.biz.po.SysDicPO;
-import com.farm.wheat.share.biz.service.common.CommonService;
+import com.farm.wheat.share.service.po.SysDicPO;
+import com.farm.wheat.share.service.service.common.CommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

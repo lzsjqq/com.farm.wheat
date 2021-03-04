@@ -1,14 +1,9 @@
 package com.farm.wheat.share.api.search;
 
 import com.farm.wheat.share.api.vo.DrawLineVO;
-import com.farm.wheat.share.api.vo.ShareInfoVO;
-import com.farm.wheat.share.api.vo.request.SharesReq;
-import com.farm.wheat.share.biz.vo.DrawLineData;
-import com.github.pagehelper.PageInfo;
+import com.farm.wheat.share.service.vo.DrawLineData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
-import java.util.List;
 
 /**
  *

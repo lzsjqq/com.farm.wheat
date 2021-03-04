@@ -4,16 +4,14 @@ import com.farm.wheat.share.api.vo.CompleteDealVO;
 import com.farm.wheat.share.api.vo.DealDetailInfoVO;
 import com.farm.wheat.share.api.vo.DealInfoVO;
 import com.farm.wheat.share.api.vo.EventVO;
-import com.farm.wheat.share.biz.dto.DealDetailInfoDTO;
-import com.farm.wheat.share.biz.dto.DealInfoDTO;
-import com.farm.wheat.share.biz.dto.EntityDto;
-import com.farm.wheat.share.biz.po.DealDetailInfoPO;
-import com.farm.wheat.share.biz.po.EventPO;
+import com.farm.wheat.share.service.dto.DealDetailInfoDTO;
+import com.farm.wheat.share.service.dto.DealInfoDTO;
+import com.farm.wheat.share.service.dto.EntityDto;
+import com.farm.wheat.share.service.po.DealDetailInfoPO;
+import com.farm.wheat.share.service.po.EventPO;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
-import java.util.List;
 
 @Api(description = "DealApi")
 public interface DealApi {

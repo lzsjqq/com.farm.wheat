@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.farm.wheat.share.service.mapper.simple.ShareIndustryInfoMapper">
+    <resultMap id="BaseResultMap" type="com.farm.wheat.share.service.vo.ShareIndustryInfoVO">
+        <id column="id_industry_info" property="idIndustryInfo" jdbcType="INTEGER"/>
+        <result column="industry_name" property="industryName" jdbcType="VARCHAR"/>
+        <result column="number" property="number" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.farm.wheat.share.service.vo.ShareIndustryInfoVO" extends="BaseResultMap">
+        <result column="desc" property="desc" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id_industry_info, industry_name, number, create_time, update_time
+  </sql>
+    <sql id="Blob_Column_List">
+    desc
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from share_industry_info
+        where id_industry_info = #{idIndustryInfo,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from share_industry_info
+    where id_industry_info = #{idIndustryInfo,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.farm.wheat.share.service.vo.ShareIndustryInfoVO">
+    insert into share_industry_info (id_industry_info, industry_name, number,
+      create_time, update_time, desc
+      )
+    values (#{idIndustryInfo,jdbcType=INTEGER}, #{industryName,jdbcType=VARCHAR}, #{number,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{desc,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.farm.wheat.share.service.vo.ShareIndustryInfoVO">
+        insert into share_industry_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="idIndustryInfo != null">
+                id_industry_info,
+            </if>
+            <if test="industryName != null">
+                industry_name,
+            </if>
+            <if test="number != null">
+                number,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="desc != null">
+                desc,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="idIndustryInfo != null">
+                #{idIndustryInfo,jdbcType=INTEGER},
+            </if>
+            <if test="industryName != null">
+                #{industryName,jdbcType=VARCHAR},
+            </if>
+            <if test="number != null">
+                #{number,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="desc != null">
+                #{desc,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.farm.wheat.share.service.vo.ShareIndustryInfoVO">
+        update share_industry_info
+        <set>
+            <if test="industryName != null">
+                industry_name = #{industryName,jdbcType=VARCHAR},
+            </if>
+            <if test="number != null">
+                number = #{number,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="desc != null">
+                desc = #{desc,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id_industry_info = #{idIndustryInfo,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.farm.wheat.share.service.vo.ShareIndustryInfoVO">
+    update share_industry_info
+    set industry_name = #{industryName,jdbcType=VARCHAR},
+      number = #{number,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      desc = #{desc,jdbcType=LONGVARCHAR}
+    where id_industry_info = #{idIndustryInfo,jdbcType=INTEGER}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.farm.wheat.share.service.vo.ShareIndustryInfoVO">
+    update share_industry_info
+    set industry_name = #{industryName,jdbcType=VARCHAR},
+      number = #{number,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id_industry_info = #{idIndustryInfo,jdbcType=INTEGER}
+  </update>
+</mapper>
