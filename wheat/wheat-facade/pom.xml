@@ -72,7 +72,7 @@
         </dependency>
         <dependency>
             <groupId>com.farm.wheat</groupId>
-            <artifactId>wheat-biz</artifactId>
+            <artifactId>wheat-share-service</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

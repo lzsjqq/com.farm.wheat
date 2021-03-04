@@ -24,7 +24,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>wheat-biz</module>
+        <module>wheat-share-service</module>
         <module>wheat-facade</module>
         <module>wheat-common</module>
         <module>wheat-api</module>

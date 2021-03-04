@@ -2,13 +2,13 @@ package com.farm.wheat.share.service.service.search.impl;
 
 import com.farm.common.utils.DateUtils;
 import com.farm.common.utils.NullCheckUtils;
+import com.farm.wheat.share.chan.dto.KLine;
 import com.farm.wheat.share.service.dto.DrawLineDTO;
 import com.farm.wheat.share.service.dto.SharePriceDto;
 import com.farm.wheat.share.service.mapper.simple.SharePriceMapper;
 import com.farm.wheat.share.service.service.search.IDrawLineService;
 import com.farm.wheat.share.service.vo.DrawLineData;
 import com.farm.wheat.share.chan.util.ChanLunUtil;
-import com.farm.wheat.share.chan.util.Price;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,28 +29,30 @@ public class DrawLineServiceImpl implements IDrawLineService {
         String x = "000008";
 //        String x = "002430";
         List<SharePriceDto> sharePrices = sharePriceMapper.selectSharePrices(x);
+
 //        List<SharePriceDto> sharePrices = JSONObject.parseArray(xx, SharePriceDto.class);
         DrawLineData data = new DrawLineData();
         data.setBaseData(convert(sharePrices));
-        List<Price> prices = ChanLunUtil.buildLined(convertToPrice(sharePrices));
+        List<KLine> KLines = ChanLunUtil.buildLined(convertToPrice(sharePrices));
         // 得到顶底分型
-        List<String> priceType = ChanLunUtil.priceType(prices);
+        List<String> priceType = ChanLunUtil.priceType(KLines);
         data.setPriceType(priceType);
         return data;
     }
 
 
-    private static List<Price> convertToPrice(List<SharePriceDto> sharePrices) throws Exception {
-        List<Price> list = new ArrayList<>();
-        Price price;
+
+    private static List<KLine> convertToPrice(List<SharePriceDto> sharePrices) throws Exception {
+        List<KLine> list = new ArrayList<>();
+        KLine KLine;
         for (SharePriceDto sharePrice : sharePrices) {
-            price = new Price();
-            price.setTodayMinPrice(sharePrice.getTodayMinPrice().doubleValue());
-            price.setTodayMaxPrice(sharePrice.getTodayMaxPrice().doubleValue());
-            price.setTodayEndPrice(sharePrice.getTodayEndPrice().doubleValue());
-            price.setTodayOpenPrice(sharePrice.getTodayOpenPrice().doubleValue());
-            price.setTradingDate(DateUtils.dateToString(sharePrice.getTradingDate(), DateUtils.YYYY_MM_DD));
-            list.add(price);
+            KLine = new KLine();
+            KLine.setTodayMinPrice(sharePrice.getTodayMinPrice().doubleValue());
+            KLine.setTodayMaxPrice(sharePrice.getTodayMaxPrice().doubleValue());
+            KLine.setTodayEndPrice(sharePrice.getTodayEndPrice().doubleValue());
+            KLine.setTodayOpenPrice(sharePrice.getTodayOpenPrice().doubleValue());
+            KLine.setTradingDate(DateUtils.dateToString(sharePrice.getTradingDate(), DateUtils.YYYY_MM_DD));
+            list.add(KLine);
         }
         return list;
     }

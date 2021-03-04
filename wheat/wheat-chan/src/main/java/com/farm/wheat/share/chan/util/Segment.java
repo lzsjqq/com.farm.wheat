@@ -1,6 +1,6 @@
 package com.farm.wheat.share.chan.util;
 
-import com.farm.common.utils.Linked;
+import com.farm.wheat.share.chan.dto.KLine;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -25,6 +25,6 @@ public class Segment {
     /**
      * 描述未成形笔分型，段之间
      */
-    private List<Price> biPrices = new ArrayList<>();
+    private List<KLine> biKLines = new ArrayList<>();
 
 }

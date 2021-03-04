@@ -3,7 +3,7 @@ package test;
 import com.alibaba.fastjson.JSONObject;
 import com.farm.common.utils.DateUtils;
 import com.farm.wheat.share.chan.util.ChanLunUtil;
-import com.farm.wheat.share.chan.util.Price;
+import com.farm.wheat.share.chan.dto.KLine;
 import com.farm.wheat.share.chan.util.SharePriceDto;
 import org.junit.Test;
 
@@ -22,18 +22,18 @@ public class Testxx {
     @Test
     public void xx() throws Exception {
         List<SharePriceDto> sharePrices = JSONObject.parseArray(xx, SharePriceDto.class);
-        List<Price> list = new ArrayList<>();
-        Price price;
+        List<KLine> list = new ArrayList<>();
+        KLine KLine;
         for (SharePriceDto sharePrice : sharePrices) {
-            price = new Price();
-            price.setTodayMinPrice(sharePrice.getTodayMinPrice().doubleValue());
-            price.setTodayMaxPrice(sharePrice.getTodayMaxPrice().doubleValue());
-            price.setTodayEndPrice(sharePrice.getTodayEndPrice().doubleValue());
-            price.setTodayOpenPrice(sharePrice.getTodayOpenPrice().doubleValue());
-            price.setTradingDate(DateUtils.dateToString(sharePrice.getTradingDate(), DateUtils.YYYY_MM_DD));
-            list.add(price);
+            KLine = new KLine();
+            KLine.setTodayMinPrice(sharePrice.getTodayMinPrice().doubleValue());
+            KLine.setTodayMaxPrice(sharePrice.getTodayMaxPrice().doubleValue());
+            KLine.setTodayEndPrice(sharePrice.getTodayEndPrice().doubleValue());
+            KLine.setTodayOpenPrice(sharePrice.getTodayOpenPrice().doubleValue());
+            KLine.setTradingDate(DateUtils.dateToString(sharePrice.getTradingDate(), DateUtils.YYYY_MM_DD));
+            list.add(KLine);
         }
-        List<Price> linked = ChanLunUtil.buildLined(list);
+        List<KLine> linked = ChanLunUtil.buildLined(list);
         // 处理包含关系
         int size = linked.size();
         for (int i = 0; i < size; i++) {

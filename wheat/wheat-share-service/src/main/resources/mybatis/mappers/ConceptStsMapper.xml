@@ -13,7 +13,7 @@
         SELECT
           sci.simple_name,
           sci.`concept_name`,
-          price.TRADING_DATE,
+          KLine.TRADING_DATE,
           COUNT(1),
           #{type}
         FROM
@@ -32,8 +32,8 @@
                 ON sp.`ID_SHARE_INFO` = si.`ID_SHARE_INFO`
             WHERE sp.`TRADING_DATE` = #{date}
             ORDER BY PRICE_CHANGE_RATIO DESC
-            LIMIT  #{limit}) AS price
-            ON price.SHARE_CODE = scd.`share_code`
+            LIMIT  #{limit}) AS KLine
+            ON KLine.SHARE_CODE = scd.`share_code`
         GROUP BY sci.simple_name
     </insert>
 </mapper>

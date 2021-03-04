@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wheat-biz</artifactId>
+    <artifactId>wheat-share-service</artifactId>
     <dependencies>
         <!-- Spring Boot Mybatis 依赖 -->
         <dependency>

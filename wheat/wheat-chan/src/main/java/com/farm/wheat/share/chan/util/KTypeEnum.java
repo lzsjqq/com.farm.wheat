@@ -3,7 +3,7 @@ package com.farm.wheat.share.chan.util;
 /**
  * K线类型
  */
-public enum PriceTypeEnum {
+public enum KTypeEnum {
     /**
      * 顶分型
      */

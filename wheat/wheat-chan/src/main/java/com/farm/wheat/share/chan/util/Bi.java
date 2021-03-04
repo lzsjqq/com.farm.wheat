@@ -1,6 +1,6 @@
 package com.farm.wheat.share.chan.util;
 
-import lombok.Builder;
+import com.farm.wheat.share.chan.dto.KLine;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,9 +23,9 @@ public class Bi {
     /**
      * 笔分型的开始
      */
-    private Price fromPrice;
+    private KLine fromKLine;
     /**
      * 笔分型的结束
      */
-    private Price toPrice;
+    private KLine toKLine;
 }

@@ -34,7 +34,6 @@ public class SharePricePipeline implements Pipeline {
     private SharePriceMapper sharePriceMapper;
 
     @Override
-    @Transactional
     public void process(ResultItems resultItems, Task task) {
         try {
             if (resultItems == null) {

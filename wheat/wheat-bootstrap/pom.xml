@@ -44,7 +44,6 @@
 
         <filters>
             <filter>src/main/resources/application-${activatedProperties}.properties</filter>
-            <filter>${basedir}/src/main/resources/envs/albatross-app-web-${activatedProperties}.filter</filter>
         </filters>
 
         <resources>
@@ -66,7 +65,6 @@
             </resource>
 
         </resources>
-
 
         <plugins>
             <plugin>
