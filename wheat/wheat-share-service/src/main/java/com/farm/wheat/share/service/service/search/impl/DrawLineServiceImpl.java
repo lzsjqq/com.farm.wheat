@@ -1,5 +1,6 @@
 package com.farm.wheat.share.service.service.search.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.farm.common.utils.DateUtils;
 import com.farm.common.utils.NullCheckUtils;
 import com.farm.wheat.share.chan.dto.KLine;
@@ -26,14 +27,14 @@ public class DrawLineServiceImpl implements IDrawLineService {
     @Override
     public DrawLineData sharePrices(DrawLineDTO drawLine) throws Exception {
 
-        String x = "000008";
-//        String x = "002430";
-        List<SharePriceDto> sharePrices = sharePriceMapper.selectSharePrices(x);
+        String shareCode = "000008";
+//      String shareCode = "002430";
+        List<SharePriceDto> sharePrices = sharePriceMapper.selectSharePrices(shareCode);
 
-//        List<SharePriceDto> sharePrices = JSONObject.parseArray(xx, SharePriceDto.class);
+        System.out.println(JSONObject.toJSONString(sharePrices.subList(0,10)));
         DrawLineData data = new DrawLineData();
         data.setBaseData(convert(sharePrices));
-        List<KLine> KLines = ChanLunUtil.buildLined(convertToPrice(sharePrices));
+        List<KLine> KLines = ChanLunUtil.buildLined(convertToKLine(sharePrices));
         // 得到顶底分型
         List<String> priceType = ChanLunUtil.priceType(KLines);
         data.setPriceType(priceType);
@@ -41,18 +42,20 @@ public class DrawLineServiceImpl implements IDrawLineService {
     }
 
 
-
-    private static List<KLine> convertToPrice(List<SharePriceDto> sharePrices) throws Exception {
+    private static List<KLine> convertToKLine(List<SharePriceDto> sharePrices) throws Exception {
         List<KLine> list = new ArrayList<>();
-        KLine KLine;
-        for (SharePriceDto sharePrice : sharePrices) {
-            KLine = new KLine();
-            KLine.setTodayMinPrice(sharePrice.getTodayMinPrice().doubleValue());
-            KLine.setTodayMaxPrice(sharePrice.getTodayMaxPrice().doubleValue());
-            KLine.setTodayEndPrice(sharePrice.getTodayEndPrice().doubleValue());
-            KLine.setTodayOpenPrice(sharePrice.getTodayOpenPrice().doubleValue());
-            KLine.setTradingDate(DateUtils.dateToString(sharePrice.getTradingDate(), DateUtils.YYYY_MM_DD));
-            list.add(KLine);
+        KLine kLine;
+        SharePriceDto sharePrice;
+        for (int index = 0; index < sharePrices.size(); index++) {
+            sharePrice = sharePrices.get(index);
+            kLine = new KLine();
+            kLine.setIndex(index);
+            kLine.setMinPrice(sharePrice.getTodayMinPrice().doubleValue());
+            kLine.setMaxPrice(sharePrice.getTodayMaxPrice().doubleValue());
+            kLine.setEndPrice(sharePrice.getTodayEndPrice().doubleValue());
+            kLine.setOpenPrice(sharePrice.getTodayOpenPrice().doubleValue());
+            kLine.setTradingDate(DateUtils.dateToString(sharePrice.getTradingDate(), DateUtils.YYYY_MM_DD));
+            list.add(kLine);
         }
         return list;
     }

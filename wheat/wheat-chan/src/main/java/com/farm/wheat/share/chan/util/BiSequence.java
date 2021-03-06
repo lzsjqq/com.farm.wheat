@@ -32,7 +32,7 @@ public class BiSequence {
 
     private BiPriceTypeEnum priceType;
 
-    private PriceRunTypeEnum priceRunType;
+    private RunTypeEnum priceRunType;
     /**
      * 包含之后的K线
      */

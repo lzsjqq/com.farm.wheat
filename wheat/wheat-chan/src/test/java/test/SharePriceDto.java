@@ -1,4 +1,4 @@
-package com.farm.wheat.share.chan.util;
+package test;
 
 import lombok.Data;
 
@@ -7,7 +7,6 @@ import java.util.Date;
 
 @Data
 public class SharePriceDto {
-
     private Integer idSharePrice;
 
     private Integer idShareInfo;

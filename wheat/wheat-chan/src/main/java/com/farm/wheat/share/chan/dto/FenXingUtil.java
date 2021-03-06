@@ -3,7 +3,7 @@ package com.farm.wheat.share.chan.dto;
 import com.farm.common.utils.NullCheckUtils;
 import com.farm.common.utils.Pair;
 import com.farm.wheat.share.chan.util.KTypeEnum;
-import com.farm.wheat.share.chan.util.PriceRunTypeEnum;
+import com.farm.wheat.share.chan.util.RunTypeEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class FenXingUtil {
         }
         for (int index = 2; index < size; index++) {
             KLine KLine = KLines.get(index);
-            PriceRunTypeEnum priceType = KLine.getPriceRunType();
+            RunTypeEnum priceType = KLine.getRunType();
             KLine containKLine = KLine.getContainKLine();
             // 判断是否是包含K线
             if (containKLine != null && containKLine == KLines.get(index - 1).getContainKLine()) {
@@ -39,20 +39,20 @@ public class FenXingUtil {
             // 和前两根进行比较
             Integer firstPre = nodePair.getFirst();
             Integer secondPre = nodePair.getSecond();
-            if (null == secondPre || null == firstPre || priceType == KLines.get(firstPre).getPriceRunType()) {
+            if (null == secondPre || null == firstPre || priceType == KLines.get(firstPre).getRunType()) {
                 // - 表示空点
                 continue;
             }
             KLine firstPreKLine = KLines.get(firstPre);
             // 判断当前节点是否是包含K线或和上个方向一致
-            if (priceType == firstPreKLine.getPriceRunType()) {
+            if (priceType == firstPreKLine.getRunType()) {
                 continue;
             }
             // 至此方向不在一致，确认分型
             KLine firstPreContainKLine = firstPreKLine.getContainKLine();
             KLine priceContainKLine = KLine.getContainKLine();
-            double firstPrePriceTodayMaxPrice = firstPreContainKLine != null ? firstPreContainKLine.getTodayMaxPrice() : firstPreKLine.getTodayMaxPrice();
-            double priceTodayMaxPrice = priceContainKLine != null ? priceContainKLine.getTodayMaxPrice() : KLine.getTodayMaxPrice();
+            double firstPrePriceTodayMaxPrice = firstPreContainKLine != null ? firstPreContainKLine.getMaxPrice() : firstPreKLine.getMaxPrice();
+            double priceTodayMaxPrice = priceContainKLine != null ? priceContainKLine.getMaxPrice() : KLine.getMaxPrice();
             if (firstPrePriceTodayMaxPrice > priceTodayMaxPrice) {
                 KLine topKLine = topPrice(KLines, firstPre, index);
                 // 判断上个分型是否是顶分型，如果是去掉，只保留最高的，
@@ -100,7 +100,7 @@ public class FenXingUtil {
         KLine KLine;
         for (int i = firstPre + 1; i < index; i++) {
             KLine = KLines.get(i);
-            if (KLine.getTodayMaxPrice() > max.getTodayMaxPrice()) {
+            if (KLine.getMaxPrice() > max.getMaxPrice()) {
                 max = KLine;
             }
         }
@@ -112,7 +112,7 @@ public class FenXingUtil {
         KLine KLine;
         for (int i = firstPre + 1; i < index; i++) {
             KLine = KLines.get(i);
-            if (KLine.getTodayMinPrice() < min.getTodayMinPrice()) {
+            if (KLine.getMinPrice() < min.getMinPrice()) {
                 min = KLine;
             }
         }

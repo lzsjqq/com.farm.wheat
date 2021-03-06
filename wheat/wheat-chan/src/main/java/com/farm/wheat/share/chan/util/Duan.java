@@ -11,5 +11,5 @@ import lombok.Data;
 public class Duan {
     private Integer from;
     private Integer to;
-    private PriceRunTypeEnum priceRunType;
+    private RunTypeEnum priceRunType;
 }

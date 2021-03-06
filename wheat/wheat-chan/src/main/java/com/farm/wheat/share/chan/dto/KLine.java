@@ -2,7 +2,7 @@ package com.farm.wheat.share.chan.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.farm.wheat.share.chan.util.KTypeEnum;
-import com.farm.wheat.share.chan.util.PriceRunTypeEnum;
+import com.farm.wheat.share.chan.util.RunTypeEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,25 +21,45 @@ public class KLine {
      * list中的角标
      */
     private Integer index;
-    private PriceRunTypeEnum priceRunType;
 
+
+    /**
+     * 后一根K线相较前一根K线的运行关系，
+     * UP：前一根的K线高点和低点都比后一个K线的高点和低点底
+     * DOWN：前一根的K线高点和低点都比后一个K线的高点和低点高
+     * NONE：前面无K线或和前一根是包含关系
+     */
+    private RunTypeEnum runType;
+
+    /**
+     * 是否是分型
+     */
     private KTypeEnum priceType = KTypeEnum.NONE;
     /**
      * 包含之后的K线
      */
     private KLine containKLine;
+    /**
+     * 包含之后的K线
+     */
+    private ContainedKLine containedKLine;
 
-
-    private double todayOpenPrice;
+    /**
+     * 开盘价
+     */
+    private double openPrice;
     /**
      * 今日收盘价
      */
-    private double todayEndPrice;
-
-    private double todayMaxPrice;
-
-    private double todayMinPrice;
-
+    private double endPrice;
+    /**
+     * 最高价
+     */
+    private double maxPrice;
+    /**
+     * 最低价
+     */
+    private double minPrice;
 
 
     /**
