@@ -1,7 +1,7 @@
 package com.farm.wheat.share.chan.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.farm.wheat.share.chan.util.KTypeEnum;
+import com.farm.wheat.share.chan.util.FengXingTypeEnum;
 import com.farm.wheat.share.chan.util.RunTypeEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,7 +34,7 @@ public class KLine {
     /**
      * 是否是分型
      */
-    private KTypeEnum priceType = KTypeEnum.NONE;
+    private FengXingTypeEnum kType = FengXingTypeEnum.NONE;
     /**
      * 包含之后的K线
      */

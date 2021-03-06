@@ -7,7 +7,7 @@ import com.farm.common.utils.Pair;
 import com.farm.wheat.share.chan.util.BiPriceTypeEnum;
 import com.farm.wheat.share.chan.util.BiSequence;
 import com.farm.wheat.share.chan.util.Duan;
-import com.farm.wheat.share.chan.util.KTypeEnum;
+import com.farm.wheat.share.chan.util.FengXingTypeEnum;
 import com.farm.wheat.share.chan.util.RunTypeEnum;
 import com.farm.wheat.share.chan.util.Segment;
 
@@ -43,7 +43,7 @@ public class BiUtil {
             }
             KLine one = topBottoms.get(i);
             KLine two = topBottoms.get(++i);
-            KTypeEnum priceType = one.getPriceType();
+            FengXingTypeEnum priceType = one.getKType();
             BiSequence biPrice = null;
             switch (priceType) {
                 case TOP:
@@ -154,7 +154,7 @@ public class BiUtil {
     }
     private static int getMustIndex(BiPriceTypeEnum biPriceType, List<KLine> KLines, BiSequence biSequences) {
         KLine KLine = KLines.get(biSequences.getFromIndex());
-        boolean isTop = KLine.getPriceType() == KTypeEnum.TOP;
+        boolean isTop = KLine.getKType() == FengXingTypeEnum.TOP;
         int index;
         if (biPriceType == BiPriceTypeEnum.BOTTOM) {
             index = isTop ? biSequences.getToIndex() : biSequences.getFromIndex();
@@ -463,8 +463,8 @@ public class BiUtil {
             }
             if (null == is) {
                 KLine KLine = KLines.get(segment.getFromIndex());
-                KTypeEnum priceType = KLine.getPriceType();
-                is = priceType == KTypeEnum.TOP;
+                FengXingTypeEnum priceType = KLine.getKType();
+                is = priceType == FengXingTypeEnum.TOP;
             }
             if (BiPriceTypeEnum.TOP == sequence.getPriceType()) {
                 Integer toIndex = is ? sequence.getFromIndex() : sequence.getToIndex();
@@ -541,7 +541,7 @@ public class BiUtil {
             Pair<Integer, KLine> pair1 = topBottoms.get(index);
             Integer firstIndex1 = pair1.getFirst();
             KLine firstKLine1 = pair1.getSecond();
-            KTypeEnum firstPriceType1 = firstKLine1.getPriceType();
+            FengXingTypeEnum firstPriceType1 = firstKLine1.getKType();
             // 直接判断下一个
             if (index + 1 == topBottomsSize) {
                 continue;
@@ -564,11 +564,11 @@ public class BiUtil {
                 Integer secondIndex1 = pair2.getFirst();
                 KLine secondKLine1 = pair2.getSecond();
                 // 升笔
-                if (KTypeEnum.TOP == firstPriceType1) {
+                if (FengXingTypeEnum.TOP == firstPriceType1) {
 
                 }
                 // 降笔
-                if (KTypeEnum.BOTTOM == firstPriceType1) {
+                if (FengXingTypeEnum.BOTTOM == firstPriceType1) {
 
                 }
 
@@ -587,11 +587,11 @@ public class BiUtil {
             Pair<Integer, KLine> one = topBottoms.get(i);
             KLine KLine = one.getSecond();
             Integer first = one.getFirst();
-            KTypeEnum priceType = KLine.getPriceType();
-            if (priceType == KTypeEnum.TOP) {
+            FengXingTypeEnum priceType = KLine.getKType();
+            if (priceType == FengXingTypeEnum.TOP) {
                 Pair<Integer, KLine> two = getNextTopBottom(topBottoms, ++i);
             }
-            if (priceType == KTypeEnum.BOTTOM) {
+            if (priceType == FengXingTypeEnum.BOTTOM) {
                 Pair<Integer, KLine> two = getNextTopBottom(topBottoms, ++i);
                 Pair<Integer, KLine> three = getNextTopBottom(topBottoms, ++i);
                 Pair<Integer, KLine> four = getNextTopBottom(topBottoms, ++i);
@@ -623,14 +623,14 @@ public class BiUtil {
      * @param index
      * @return Pair<Integer, Pair < Integer, Price>>
      */
-    private static Pair<Integer, Pair<Integer, KLine>> getNextType(KTypeEnum priceType1, List<Pair<Integer, KLine>> topBottoms, int index) {
+    private static Pair<Integer, Pair<Integer, KLine>> getNextType(FengXingTypeEnum priceType1, List<Pair<Integer, KLine>> topBottoms, int index) {
         boolean isHaveNext = false;
         Pair<Integer, KLine> target = null;
         Integer topBottomIndex = null;
         for (int i = index; i < topBottoms.size(); i++) {
             Pair<Integer, KLine> pair = topBottoms.get(i);
             KLine second = pair.getSecond();
-            KTypeEnum priceType2 = second.getPriceType();
+            FengXingTypeEnum priceType2 = second.getKType();
             // 找到第一个相反分型
             if (!isHaveNext && priceType1 != priceType2) {
                 isHaveNext = true;

@@ -3,7 +3,7 @@ package com.farm.wheat.share.chan.util;
 /**
  * K线类型
  */
-public enum KTypeEnum {
+public enum FengXingTypeEnum {
     /**
      * 顶分型
      */

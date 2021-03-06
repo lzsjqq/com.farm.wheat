@@ -2,7 +2,9 @@ package com.farm.wheat.share.chan.dto;
 
 import com.farm.wheat.share.chan.util.KLineTypeEnum;
 import com.farm.wheat.share.chan.util.RunTypeEnum;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @description: 处理包含后的K线
@@ -17,9 +19,13 @@ public class ContainedKLine {
 
     }
 
-    public ContainedKLine(double openPrice, int fromIndex, KLineTypeEnum lineTypeEnum) {
+    public ContainedKLine(double openPrice, double minPrice, double maxPrice, int fromIndex, KLineTypeEnum lineTypeEnum) {
         this.openPrice = openPrice;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
         this.fromIndex = fromIndex;
+        this.minIndex = fromIndex;
+        this.maxIndex = fromIndex;
         this.lineTypeEnum = lineTypeEnum;
     }
 
@@ -62,6 +68,31 @@ public class ContainedKLine {
      * 包含K线的结束位置
      */
     private int endIndex;
+
+    /**
+     * minPrice的位置
+     */
+    private int minIndex;
+
+    /**
+     * maxPrice的位置
+     */
+    private int maxIndex;
+
+
+    public void setMinPrice(double minPrice, int minIndex) {
+        if (this.minPrice > minPrice) {
+            this.minIndex = minIndex;
+        }
+        this.minPrice = minPrice;
+    }
+
+    public void setMaxPrice(double maxPrice, int maxIndex) {
+        if (this.maxPrice < maxPrice) {
+            this.maxIndex = maxIndex;
+        }
+        this.maxPrice = maxPrice;
+    }
 
 
 }

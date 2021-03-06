@@ -2,11 +2,13 @@ package com.farm.wheat.share.chan.dto;
 
 import com.farm.common.utils.NullCheckUtils;
 import com.farm.common.utils.Pair;
-import com.farm.wheat.share.chan.util.KTypeEnum;
+import com.farm.wheat.share.chan.util.FengXingTypeEnum;
 import com.farm.wheat.share.chan.util.RunTypeEnum;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description: 分型处理
@@ -55,45 +57,106 @@ public class FenXingUtil {
             double priceTodayMaxPrice = priceContainKLine != null ? priceContainKLine.getMaxPrice() : KLine.getMaxPrice();
             if (firstPrePriceTodayMaxPrice > priceTodayMaxPrice) {
                 KLine topKLine = topPrice(KLines, firstPre, index);
-                // 判断上个分型是否是顶分型，如果是去掉，只保留最高的，
-//                Pair<Integer, Price> last = getLastPair(pairs);
-//                if (last != null && PriceTypeEnum.TOP == last.getSecond().getPriceType()) {
-//                    double todayMaxPrice = last.getSecond().getTodayMaxPrice();
-//                    if (pair.getSecond().getTodayMaxPrice() > todayMaxPrice) {
-//                        pair.getSecond().setPriceType(PriceTypeEnum.TOP);
-//                        pairs.add(pair);// 添加新元素
-//                    } else {
-//                        last.getSecond().setPriceType(PriceTypeEnum.NONE);
-//                        pairs.remove(pairs.size() - 1);
-//                    }
-//                } else {
-//
-//                }
-                topKLine.setPriceType(KTypeEnum.TOP);
+                topKLine.setKType(FengXingTypeEnum.TOP);
                 pairs.add(topKLine);// 添加新元素
             } else {
                 KLine bottomKLine = bottomPrice(KLines, firstPre, index);
-                // 判断上个分型是否是底分型，如果是去掉，只保留最底的，
-//                Pair<Integer, Price> last = getLastPair(pairs);
-//                if (last != null && PriceTypeEnum.BOTTOM == last.getSecond().getPriceType()) {
-//                    double todayMinPrice = last.getSecond().getTodayMinPrice();
-//                    if (pair.getSecond().getTodayMinPrice() < todayMinPrice) {
-//                        pair.getSecond().setPriceType(PriceTypeEnum.BOTTOM);
-//                        pairs.add(pair);
-//                    } else {
-//                        last.getSecond().setPriceType(PriceTypeEnum.NONE);
-//                        pairs.remove(pairs.size() - 1);
-//                    }
-//                } else {
-//                    pair.getSecond().setPriceType(PriceTypeEnum.BOTTOM);
-//                    pairs.add(pair);
-//                }
-                bottomKLine.setPriceType(KTypeEnum.BOTTOM);
+                bottomKLine.setKType(FengXingTypeEnum.BOTTOM);
                 pairs.add(bottomKLine);
             }
         }
         return pairs;
     }
+
+    /**
+     * 顶底分型简单处理
+     *
+     * @param containedKLineList containedKLineList
+     * @return List<FenXing>
+     */
+    public static List<FenXing> fenXingSimpleHandle(List<ContainedKLine> containedKLineList) {
+        int size = containedKLineList.size();
+        if (NullCheckUtils.isBlank(containedKLineList) || size <= 2) {
+            return Collections.emptyList();
+        }
+        List<FenXing> fenXingList = new ArrayList<>();
+        //第一根K线
+        ContainedKLine startLine = containedKLineList.get(0);
+        // 第二根K线
+        ContainedKLine middleLine = containedKLineList.get(1);
+        // 第三根K线
+        ContainedKLine endLine;
+
+        for (int index = 2; index < containedKLineList.size(); index++) {
+            endLine = containedKLineList.get(index);
+            FengXingTypeEnum kType = checkFengXing(startLine, middleLine, endLine);
+            if (FengXingTypeEnum.NONE == kType) {
+                continue;
+            } else {
+                FenXing fenXing = new FenXing();
+                fenXing.setStartLine(startLine);
+                fenXing.setMiddleLine(middleLine);
+                fenXing.setEndLine(endLine);
+                fenXing.setMaxPrice(fengXingMaxPrice(startLine, middleLine, endLine));
+                fenXing.setMinPrice(fengXingMinPrice(startLine, middleLine, endLine));
+                fenXing.setFengXingTypeEnum(kType);
+                fenXingList.add(fenXing);
+            }
+            startLine = middleLine;
+            middleLine = endLine;
+        }
+        return fenXingList;
+    }
+
+    /**
+     * 顶分型定义：不含包含关系的3根K线，中间一根的高点最高，低点也最高；
+     * 底分型定义：不含包含关系的3根K线，中间一根的低点最低，高点也最低；
+     *
+     * @param startLine  startLine
+     * @param middleLine middleLine
+     * @param endLine    endLine
+     * @return KTypeEnum
+     */
+    private static FengXingTypeEnum checkFengXing(ContainedKLine startLine, ContainedKLine middleLine, ContainedKLine endLine) {
+        int middleStartMax = Double.compare(middleLine.getMaxPrice(), startLine.getMaxPrice());
+        int middleEndMax = Double.compare(middleLine.getMaxPrice(), endLine.getMaxPrice());
+        int middleStartMin = Double.compare(middleLine.getMinPrice(), startLine.getMinPrice());
+        int middleEndMin = Double.compare(middleLine.getMinPrice(), endLine.getMinPrice());
+
+        if (middleStartMax >= 0 && middleEndMax >= 0 && middleStartMin >= 0 && middleEndMin >= 0) {
+            return FengXingTypeEnum.TOP;
+        }
+        if (middleStartMax <= 0 && middleEndMax <= 0 && middleStartMin <= 0 && middleEndMin <= 0) {
+            return FengXingTypeEnum.BOTTOM;
+        }
+        return FengXingTypeEnum.NONE;
+    }
+
+    /**
+     * 顶分型定义：不含包含关系的3根K线，中间一根的高点最高，低点也最高；
+     * 底分型定义：不含包含关系的3根K线，中间一根的低点最低，高点也最低；
+     *
+     * @param startLine  startLine
+     * @param middleLine middleLine
+     * @param endLine    endLine
+     * @return KTypeEnum
+     */
+    private static double fengXingMaxPrice(ContainedKLine startLine, ContainedKLine middleLine, ContainedKLine endLine) {
+        return Math.max(Math.max(startLine.getMaxPrice(), middleLine.getMaxPrice()), endLine.getMaxPrice());
+    }
+   /**
+     * 顶分型定义：不含包含关系的3根K线，中间一根的高点最高，低点也最高；
+     * 底分型定义：不含包含关系的3根K线，中间一根的低点最低，高点也最低；
+     *
+     * @param startLine  startLine
+     * @param middleLine middleLine
+     * @param endLine    endLine
+     * @return KTypeEnum
+     */
+    private static double fengXingMinPrice(ContainedKLine startLine, ContainedKLine middleLine, ContainedKLine endLine) {
+        return Math.min(Math.max(startLine.getMinPrice(), middleLine.getMinPrice()), endLine.getMinPrice());
+    }
+
 
     private static KLine topPrice(List<KLine> KLines, int firstPre, int index) {
         KLine max = KLines.get(firstPre);

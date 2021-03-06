@@ -3,6 +3,7 @@ package com.farm.wheat.share.service.service.search.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.farm.common.utils.DateUtils;
 import com.farm.common.utils.NullCheckUtils;
+import com.farm.wheat.share.chan.dto.FenXing;
 import com.farm.wheat.share.chan.dto.KLine;
 import com.farm.wheat.share.service.dto.DrawLineDTO;
 import com.farm.wheat.share.service.dto.SharePriceDto;
@@ -30,13 +31,14 @@ public class DrawLineServiceImpl implements IDrawLineService {
         String shareCode = "000008";
 //      String shareCode = "002430";
         List<SharePriceDto> sharePrices = sharePriceMapper.selectSharePrices(shareCode);
-
-        System.out.println(JSONObject.toJSONString(sharePrices.subList(0,10)));
         DrawLineData data = new DrawLineData();
         data.setBaseData(convert(sharePrices));
-        List<KLine> KLines = ChanLunUtil.buildLined(convertToKLine(sharePrices));
+//        List<KLine> KLines = ChanLunUtil.buildLined(convertToKLine(sharePrices));
+        List<KLine> kLines = convertToKLine(sharePrices);
+        List<FenXing> fenXingList = ChanLunUtil.buildFengXing(kLines);
+        ChanLunUtil.setKType(kLines,fenXingList);
         // 得到顶底分型
-        List<String> priceType = ChanLunUtil.priceType(KLines);
+        List<String> priceType = ChanLunUtil.priceType(kLines);
         data.setPriceType(priceType);
         return data;
     }

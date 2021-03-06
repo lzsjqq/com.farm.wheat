@@ -90,12 +90,12 @@ public class KLineUtil {
             double firstMinPrice = firstContainKLine != null ? firstContainKLine.getMinPrice() : firstKLine.getMinPrice();
             double max = secondMaxPrice - firstMaxPrice;
             double min = secondMinPrice - firstMinPrice;
-            if (max > 0 && min > 0 || max > 0 && min >= 0 || max >= 0 && min > 0) {
+            if ((max > 0 && min > 0) || (max > 0 && min >= 0) || (max >= 0 && min > 0)) {
                 // 高高 向上
                 kLine.setRunType(RunTypeEnum.UP);
                 continue;
 //                price.setBiSize(price.getBiSize() + 1);
-            } else if (max < 0 && min < 0 || max < 0 && min <= 0 || max <= 0 && min < 0) {
+            } else if ((max < 0 && min < 0) || (max < 0 && min <= 0) || (max <= 0 && min < 0)) {
                 // 低低 向下
                 kLine.setRunType(RunTypeEnum.DOWN);
                 continue;
@@ -105,7 +105,7 @@ public class KLineUtil {
             kLine.setRunType(priceType);
             // 包含类
             KLine containKLine = firstContainKLine != null ? firstContainKLine : new KLine();
-            containedKLine = containedKLine != null ? containedKLine : new ContainedKLine(firstKLine.getOpenPrice(), firstKLine.getIndex(), KLineTypeEnum.C);
+            containedKLine = containedKLine != null ? containedKLine : new ContainedKLine(firstKLine.getOpenPrice(), firstMinPrice, firstMaxPrice, firstKLine.getIndex(), KLineTypeEnum.C);
             // 计算k线包含数量
             containKLine.setContainSize(getContainSize(firstContainKLine));
             if (priceType == RunTypeEnum.UP) {
@@ -117,8 +117,8 @@ public class KLineUtil {
             }
             containedKLine.setEndPrice(kLine.getEndPrice());
             containedKLine.setEndIndex(kLine.getIndex());
-            containedKLine.setMinPrice(containKLine.getMinPrice());
-            containedKLine.setMaxPrice(containKLine.getMaxPrice());
+            containedKLine.setMinPrice(containKLine.getMinPrice(), kLine.getIndex());
+            containedKLine.setMaxPrice(containKLine.getMaxPrice(), kLine.getIndex());
             containedKLine.setRunType(containKLine.getRunType());
             kLine.setContainedKLine(containedKLine);
             firstKLine.setContainedKLine(containedKLine);
@@ -128,7 +128,7 @@ public class KLineUtil {
     }
 
     /**
-     * 处理包含关系包含关系
+     * 处理包含关系
      *
      * @param kLines
      * @return false 不包含 true 包含
@@ -169,6 +169,8 @@ public class KLineUtil {
         ContainedKLine containedKLine = new ContainedKLine();
         containedKLine.setFromIndex(KLine.getIndex());
         containedKLine.setEndIndex(KLine.getIndex());
+        containedKLine.setMaxIndex(KLine.getIndex());
+        containedKLine.setMinIndex(KLine.getIndex());
         containedKLine.setOpenPrice(KLine.getOpenPrice());
         containedKLine.setEndPrice(KLine.getEndPrice());
         containedKLine.setMinPrice(KLine.getMinPrice());

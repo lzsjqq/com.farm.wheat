@@ -5,6 +5,7 @@ import com.farm.common.utils.NullCheckUtils;
 import com.farm.common.utils.Pair;
 import com.farm.wheat.share.chan.dto.BiUtil;
 import com.farm.wheat.share.chan.dto.ContainedKLine;
+import com.farm.wheat.share.chan.dto.FenXing;
 import com.farm.wheat.share.chan.dto.FenXingUtil;
 import com.farm.wheat.share.chan.dto.KLine;
 import com.farm.wheat.share.chan.dto.KLineUtil;
@@ -30,13 +31,8 @@ public class ChanLunUtil {
      * @return
      */
     public static List<KLine> buildLined(List<KLine> KLines) throws Exception {
-
-
         // 处理包含关系包含关系
         KLineUtil.handleContain(KLines);
-        // 获取包含处理后的K线
-        List<ContainedKLine> containedKLineList = KLineUtil.buildContained(KLines);
-
         // 处理顶底分型,过滤掉连续的同类型分型只保留最高或最低的
         List<KLine> topBottoms = FenXingUtil.topBottomType(KLines);
         List<Segment> segments = BiUtil.chanBi(topBottoms, KLines);
@@ -45,10 +41,24 @@ public class ChanLunUtil {
 //        List<Integer> huaBiIndex = huaBi(segments, prices);
         for (int i = 0; i < KLines.size(); i++) {
             if (!huaBiIndex.contains(i)) {
-                KLines.get(i).setPriceType(KTypeEnum.NONE);
+                KLines.get(i).setKType(FengXingTypeEnum.NONE);
             }
         }
         return KLines;
+    }
+
+    /**
+     * 构建链表
+     *
+     * @return
+     */
+    public static List<FenXing> buildFengXing(List<KLine> KLines) throws Exception {
+        // 处理包含关系包含关系
+        KLineUtil.handleContain(KLines);
+        // 获取包含处理后的K线
+        List<ContainedKLine> containedKLineList = KLineUtil.buildContained(KLines);
+        List<FenXing> fenXingList = FenXingUtil.fenXingSimpleHandle(containedKLineList);
+        return fenXingList;
     }
 
     private static List<Integer> getHuaBiIndex(List<Bi> bis) {
@@ -136,7 +146,7 @@ public class ChanLunUtil {
      */
     private static boolean moreCondition(KLine first, KLine third) {
         boolean condition;
-        if (first.getPriceType() == KTypeEnum.BOTTOM) {
+        if (first.getKType() == FengXingTypeEnum.BOTTOM) {
             double nextTodayMinPrice = third.getContainKLine() == null ? third.getMinPrice() : third.getContainKLine().getMinPrice();
             double preTodayMinPrice = first.getContainKLine() == null ? first.getMinPrice() : first.getContainKLine().getMinPrice();
             condition = nextTodayMinPrice - preTodayMinPrice < 0;
@@ -536,11 +546,11 @@ public class ChanLunUtil {
         if (null == KLines || (size = KLines.size()) == 0) {
             return bi;
         }
-        KTypeEnum priceType;
+        FengXingTypeEnum priceType;
         KLine KLine;
         for (int i = 0; i < size; i++) {
             KLine = KLines.get(i);
-            priceType = KLine.getPriceType();
+            priceType = KLine.getKType();
             switch (priceType) {
                 case TOP:
                     bi.add("1-" + KLine.getMaxPrice());
@@ -555,6 +565,25 @@ public class ChanLunUtil {
         }
 
         return bi;
+    }
+
+    /**
+     * 分型 -：表示空点  "1-"+ MaxPrice：顶分型  "0-"+ MinPrice：低分型
+     *
+     * @param KLines
+     * @return
+     */
+    public static void setKType(List<KLine> KLines, List<FenXing> fenXingList) {
+        if (NullCheckUtils.isBlank(fenXingList) || NullCheckUtils.isBlank(KLines)) {
+            return;
+        }
+        for (FenXing fenXing : fenXingList) {
+            ContainedKLine middleLine = fenXing.getMiddleLine();
+            FengXingTypeEnum kType = fenXing.getFengXingTypeEnum();
+            int index = FengXingTypeEnum.TOP == kType ? middleLine.getMaxIndex() : middleLine.getMinIndex();
+            KLines.get(index).setKType(kType);
+        }
+
     }
 
 
