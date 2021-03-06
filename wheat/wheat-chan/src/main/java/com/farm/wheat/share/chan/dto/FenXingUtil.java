@@ -90,9 +90,7 @@ public class FenXingUtil {
         for (int index = 2; index < containedKLineList.size(); index++) {
             endLine = containedKLineList.get(index);
             FengXingTypeEnum kType = checkFengXing(startLine, middleLine, endLine);
-            if (FengXingTypeEnum.NONE == kType) {
-                continue;
-            } else {
+            if (FengXingTypeEnum.NONE != kType) {
                 FenXing fenXing = new FenXing();
                 fenXing.setStartLine(startLine);
                 fenXing.setMiddleLine(middleLine);
@@ -144,7 +142,8 @@ public class FenXingUtil {
     private static double fengXingMaxPrice(ContainedKLine startLine, ContainedKLine middleLine, ContainedKLine endLine) {
         return Math.max(Math.max(startLine.getMaxPrice(), middleLine.getMaxPrice()), endLine.getMaxPrice());
     }
-   /**
+
+    /**
      * 顶分型定义：不含包含关系的3根K线，中间一根的高点最高，低点也最高；
      * 底分型定义：不含包含关系的3根K线，中间一根的低点最低，高点也最低；
      *

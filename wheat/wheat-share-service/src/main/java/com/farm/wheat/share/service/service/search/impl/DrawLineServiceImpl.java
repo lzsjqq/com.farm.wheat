@@ -3,6 +3,7 @@ package com.farm.wheat.share.service.service.search.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.farm.common.utils.DateUtils;
 import com.farm.common.utils.NullCheckUtils;
+import com.farm.wheat.common.utils.FileUtil;
 import com.farm.wheat.share.chan.dto.FenXing;
 import com.farm.wheat.share.chan.dto.KLine;
 import com.farm.wheat.share.service.dto.DrawLineDTO;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,15 +31,23 @@ public class DrawLineServiceImpl implements IDrawLineService {
     @Override
     public DrawLineData sharePrices(DrawLineDTO drawLine) throws Exception {
 
-        String shareCode = "000008";
-//      String shareCode = "002430";
-        List<SharePriceDto> sharePrices = sharePriceMapper.selectSharePrices(shareCode);
+//        String shareCode = "000008";
+////      String shareCode = "002430";
+//        List<SharePriceDto> sharePrices = sharePriceMapper.selectSharePrices(shareCode);
+        List<SharePriceDto> sharePrices = null;
+//        String line = FileUtil.readFileAll("C:\\Users\\41328\\Desktop\\xx.txt");
+//        sharePrices = JSONObject.parseArray(line, SharePriceDto.class);
+        sharePrices = ChanDataCreateUtil.crtUp(new ArrayList<>(), 5);
+        sharePrices = ChanDataCreateUtil.crtLeftContain(sharePrices);
+        sharePrices = ChanDataCreateUtil.crtTop(sharePrices);
+        sharePrices = ChanDataCreateUtil.crtDown(sharePrices,5);
+        sharePrices = ChanDataCreateUtil.crtBottom(sharePrices);
         DrawLineData data = new DrawLineData();
         data.setBaseData(convert(sharePrices));
 //        List<KLine> KLines = ChanLunUtil.buildLined(convertToKLine(sharePrices));
         List<KLine> kLines = convertToKLine(sharePrices);
         List<FenXing> fenXingList = ChanLunUtil.buildFengXing(kLines);
-        ChanLunUtil.setKType(kLines,fenXingList);
+        ChanLunUtil.setKType(kLines, fenXingList);
         // 得到顶底分型
         List<String> priceType = ChanLunUtil.priceType(kLines);
         data.setPriceType(priceType);
@@ -56,7 +67,7 @@ public class DrawLineServiceImpl implements IDrawLineService {
             kLine.setMaxPrice(sharePrice.getTodayMaxPrice().doubleValue());
             kLine.setEndPrice(sharePrice.getTodayEndPrice().doubleValue());
             kLine.setOpenPrice(sharePrice.getTodayOpenPrice().doubleValue());
-            kLine.setTradingDate(DateUtils.dateToString(sharePrice.getTradingDate(), DateUtils.YYYY_MM_DD));
+//            kLine.setTradingDate(DateUtils.dateToString(sharePrice.getTradingDate(), DateUtils.YYYY_MM_DD));
             list.add(kLine);
         }
         return list;
@@ -73,15 +84,19 @@ public class DrawLineServiceImpl implements IDrawLineService {
         List<Object[]> result = new ArrayList<>();
         if (NullCheckUtils.isNotBlank(sharePrices)) {
             Object[] arr;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
             for (SharePriceDto sharePrice : sharePrices) {
                 arr = new Object[6];
-                arr[0] = DateUtils.dateToString(sharePrice.getTradingDate(), "yyyy/M/dd");
+//                arr[0] = DateUtils.dateToString(sharePrice.getTradingDate(), "yyyy/M/dd");
+                arr[0] = DateUtils.dateToString(calendar.getTime(), "yyyy/M/dd");
                 arr[1] = sharePrice.getTodayOpenPrice().doubleValue();
                 arr[2] = sharePrice.getTodayEndPrice().doubleValue();
                 arr[3] = sharePrice.getTodayMinPrice().doubleValue();
                 arr[4] = sharePrice.getTodayMaxPrice().doubleValue();
                 arr[5] = sharePrice.getTradingVolume().intValue() * 100;
                 result.add(arr);
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
         }
         return result;
