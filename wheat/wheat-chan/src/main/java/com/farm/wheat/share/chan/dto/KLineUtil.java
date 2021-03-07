@@ -167,7 +167,7 @@ public class KLineUtil {
 
     private static ContainedKLine buildContainKLine(KLine KLine) {
         ContainedKLine containedKLine = new ContainedKLine();
-        containedKLine.setFromIndex(KLine.getIndex());
+        containedKLine.setStartIndex(KLine.getIndex());
         containedKLine.setEndIndex(KLine.getIndex());
         containedKLine.setMaxIndex(KLine.getIndex());
         containedKLine.setMinIndex(KLine.getIndex());

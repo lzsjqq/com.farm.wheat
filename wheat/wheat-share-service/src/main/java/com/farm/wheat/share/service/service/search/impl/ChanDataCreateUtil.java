@@ -32,10 +32,22 @@ public class ChanDataCreateUtil {
     public static List<SharePriceDto> crtBottom(List<SharePriceDto> org) {
         org = init(org);
         SharePriceDto downSharePriceDto = getDownSharePriceDto(getLastOne(org));
-        if(NullCheckUtils.isNotBlank(downSharePriceDto)){
+        if (NullCheckUtils.isNotBlank(downSharePriceDto)) {
             org.add(downSharePriceDto);
         }
         org.add(getUpSharePriceDto(getLastOne(org)));
+        return org;
+    }
+
+    /**
+     * 共用K线底分型
+     *
+     * @return List<SharePriceDto
+     */
+    public static List<SharePriceDto> crtTogetherBottom(List<SharePriceDto> org) {
+        org = init(org);
+        org.add(getUpSharePriceDto(getLastOne(org)));
+        org.add(getDownSharePriceDto(getLastOne(org)));
         return org;
     }
 
@@ -103,19 +115,24 @@ public class ChanDataCreateUtil {
         return org;
     }
 
-    public static SharePriceDto getUpSharePriceDto(SharePriceDto first) {
+    public static SharePriceDto getUpSharePriceDto(SharePriceDto first, int size) {
         SharePriceDto second = crtSharePriceDto();
-        BigDecimal minPrice = first.getTodayMinPrice().add(new BigDecimal(1));
-        BigDecimal maxPrice = first.getTodayMaxPrice().add(new BigDecimal(1));
+        BigDecimal decimal = new BigDecimal(size);
+        BigDecimal minPrice = first.getTodayMinPrice().add(decimal);
+        BigDecimal maxPrice = first.getTodayMaxPrice().add(decimal);
         BigDecimal subtract = maxPrice.subtract(minPrice);
-        if (subtract.compareTo(BigDecimal.ONE) > 0) {
-            minPrice = maxPrice.subtract(BigDecimal.ONE);
+        if (subtract.compareTo(decimal) > 0) {
+            minPrice = maxPrice.subtract(decimal);
         }
         second.setTodayOpenPrice(minPrice);
         second.setTodayMinPrice(minPrice);
         second.setTodayMaxPrice(maxPrice);
         second.setTodayEndPrice(maxPrice);
         return second;
+    }
+
+    public static SharePriceDto getUpSharePriceDto(SharePriceDto first) {
+        return getUpSharePriceDto(first, 1);
     }
 
     /**

@@ -12,6 +12,7 @@ import com.farm.wheat.share.chan.util.RunTypeEnum;
 import com.farm.wheat.share.chan.util.Segment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +27,45 @@ public class BiUtil {
      * 笔的最小根数
      */
     private static final int BI_MIN_SIZE = 5;
+
+    /**
+     * 由分型得到笔
+     * 1.从第一个分型开始，到下一个分型之间是否具有5根K线
+     *
+     * @param fenXingList
+     * @param containedKLineList
+     * @return
+     */
+    public static List<Bi> biSimpleHandle(List<FenXing> fenXingList, List<ContainedKLine> containedKLineList) {
+        if (NullCheckUtils.isBlank(fenXingList) || NullCheckUtils.isBlank(containedKLineList)) {
+            return Collections.emptyList();
+        }
+        List<Bi> biList = new ArrayList<>();
+        FenXing firstFenXing = fenXingList.get(0);
+        for (int index = 1; index < fenXingList.size(); index++) {
+            FenXing secondFenXing = fenXingList.get(index);
+            int kLineSize = kLineSize(firstFenXing, secondFenXing);
+
+        }
+
+        return biList;
+    }
+
+    /**
+     * 两个分型之间K线的数量
+     *
+     * @param firstFenXing  firstFenXing
+     * @param secondFenXing secondFenXing
+     * @return int
+     */
+    private static int kLineSize(FenXing firstFenXing, FenXing secondFenXing) {
+        ContainedKLine firstEndLine = firstFenXing.getEndLine();
+        ContainedKLine secondStartLine = secondFenXing.getStartLine();
+        int firstEndIndex = firstEndLine.getEndIndex();
+        int secondStartIndex = secondStartLine.getStartIndex();
+        return 3 + secondStartIndex - firstEndIndex;
+    }
+
 
     /**
      * 画笔
@@ -84,6 +124,7 @@ public class BiUtil {
         // 得到顶底分型
         return crtSegmentsByDuan(topBottoms, duan(biSequences, KLines), KLines);
     }
+
     /**
      * 得到顶底分型
      *
@@ -152,6 +193,7 @@ public class BiUtil {
         }
         return duans;
     }
+
     private static int getMustIndex(BiPriceTypeEnum biPriceType, List<KLine> KLines, BiSequence biSequences) {
         KLine KLine = KLines.get(biSequences.getFromIndex());
         boolean isTop = KLine.getKType() == FengXingTypeEnum.TOP;
@@ -272,6 +314,7 @@ public class BiUtil {
             return handledSequence;
         }
     }
+
     /**
      * 创建线段
      *
@@ -602,6 +645,7 @@ public class BiUtil {
             return;
         }
     }
+
     /**
      * @param topBottoms
      * @param index

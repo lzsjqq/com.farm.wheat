@@ -42,6 +42,15 @@ public class DrawLineServiceImpl implements IDrawLineService {
         sharePrices = ChanDataCreateUtil.crtTop(sharePrices);
         sharePrices = ChanDataCreateUtil.crtDown(sharePrices,5);
         sharePrices = ChanDataCreateUtil.crtBottom(sharePrices);
+        sharePrices = ChanDataCreateUtil.crtUp(sharePrices, 5);
+        sharePrices = ChanDataCreateUtil.crtTop(sharePrices);
+        sharePrices = ChanDataCreateUtil.crtDown(sharePrices,5);
+        sharePrices = ChanDataCreateUtil.crtBottom(sharePrices);
+        sharePrices = ChanDataCreateUtil.crtTop(sharePrices);
+        sharePrices = ChanDataCreateUtil.crtBottom(sharePrices);
+        sharePrices = ChanDataCreateUtil.crtTop(sharePrices);
+        sharePrices = ChanDataCreateUtil.crtTogetherBottom(sharePrices);
+
         DrawLineData data = new DrawLineData();
         data.setBaseData(convert(sharePrices));
 //        List<KLine> KLines = ChanLunUtil.buildLined(convertToKLine(sharePrices));
