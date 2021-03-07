@@ -9,6 +9,7 @@ import com.farm.wheat.share.chan.dto.FenXing;
 import com.farm.wheat.share.chan.dto.FenXingUtil;
 import com.farm.wheat.share.chan.dto.KLine;
 import com.farm.wheat.share.chan.dto.KLineUtil;
+import com.farm.wheat.share.chan.dto.XinBi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +49,8 @@ public class ChanLunUtil {
     }
 
 
-
-
-
     /**
-     * 构建链表
+     * 构建分型
      *
      * @return
      */
@@ -61,9 +59,25 @@ public class ChanLunUtil {
         KLineUtil.handleContain(KLines);
         // 获取包含处理后的K线
         List<ContainedKLine> containedKLineList = KLineUtil.buildContained(KLines);
-        List<FenXing> fenXingList = FenXingUtil.fenXingSimpleHandle(containedKLineList);
-        return fenXingList;
+        return FenXingUtil.fenXingSimpleHandle(containedKLineList);
     }
+
+    /**
+     * 构建分型
+     *
+     * @return
+     */
+    public static List<XinBi> buildBi(List<KLine> KLines) throws Exception {
+        // 处理包含关系包含关系
+        KLineUtil.handleContain(KLines);
+        // 获取包含处理后的K线
+        List<ContainedKLine> containedKLineList = KLineUtil.buildContained(KLines);
+        List<FenXing> fenXingList = FenXingUtil.fenXingSimpleHandle(containedKLineList);
+        List<XinBi> xinBiList = BiUtil.biHandle(fenXingList);
+
+        return xinBiList;
+    }
+
 
     private static List<Integer> getHuaBiIndex(List<Bi> bis) {
         List<Integer> list = new ArrayList<>();
@@ -577,17 +591,24 @@ public class ChanLunUtil {
      * @param KLines
      * @return
      */
-    public static void setKType(List<KLine> KLines, List<FenXing> fenXingList) {
-        if (NullCheckUtils.isBlank(fenXingList) || NullCheckUtils.isBlank(KLines)) {
+    public static void setKType(List<KLine> KLines, List<XinBi> xinBiList) {
+        if (NullCheckUtils.isBlank(xinBiList) || NullCheckUtils.isBlank(KLines)) {
             return;
         }
-        for (FenXing fenXing : fenXingList) {
-            ContainedKLine middleLine = fenXing.getMiddleLine();
-            FengXingTypeEnum kType = fenXing.getFengXingTypeEnum();
-            int index = FengXingTypeEnum.TOP == kType ? middleLine.getMaxIndex() : middleLine.getMinIndex();
-            KLines.get(index).setKType(kType);
-        }
 
+        for (XinBi xinBi : xinBiList) {
+            if(!xinBi.isZhuanZhe()){
+                continue;
+            }
+            FenXing startFenXing = xinBi.getStartFenXing();
+            FenXing endFenXing = xinBi.getEndFenXing();
+            FengXingTypeEnum startFenXingTypeEnum = startFenXing.getFenXingTypeEnum();
+            FengXingTypeEnum endFenXingTypeEnum = endFenXing.getFenXingTypeEnum();
+            FengXingTypeEnum startKType = startFenXing.getFenXingTypeEnum();
+            FengXingTypeEnum endKType = endFenXing.getFenXingTypeEnum();
+            KLines.get(FengXingTypeEnum.TOP == startKType ? startFenXing.getMiddleLine().getMaxIndex() : startFenXing.getMiddleLine().getMinIndex()).setKType(startKType);
+            KLines.get(FengXingTypeEnum.TOP == endKType ? endFenXing.getMiddleLine().getMaxIndex() : endFenXing.getMiddleLine().getMinIndex()).setKType(endKType);
+        }
     }
 
 

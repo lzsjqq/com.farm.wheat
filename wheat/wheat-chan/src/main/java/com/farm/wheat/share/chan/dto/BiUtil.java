@@ -5,6 +5,7 @@ import com.farm.common.utils.Node;
 import com.farm.common.utils.NullCheckUtils;
 import com.farm.common.utils.Pair;
 import com.farm.wheat.share.chan.util.BiPriceTypeEnum;
+import com.farm.wheat.share.chan.util.BiRunTypeEnum;
 import com.farm.wheat.share.chan.util.BiSequence;
 import com.farm.wheat.share.chan.util.Duan;
 import com.farm.wheat.share.chan.util.FengXingTypeEnum;
@@ -28,6 +29,107 @@ public class BiUtil {
      */
     private static final int BI_MIN_SIZE = 5;
 
+
+    /**
+     * 由分型得到笔
+     * 1.从第一个分型开始，到下一个分型之间是否具有5根K线
+     *
+     * @param fenXingList
+     * @return
+     */
+    public static List<XinBi> biSimpleHandle(List<FenXing> fenXingList) {
+        if (NullCheckUtils.isBlank(fenXingList)) {
+            return null;
+        }
+        int fenXingSize = fenXingList.size();
+        List<XinBi> xinBiList = new ArrayList<>();
+
+        FenXing firstFenXing = fenXingList.get(0);
+        FenXing secondFenXing;
+        for (int index = 1; index < fenXingSize; index++) {
+            XinBi xinBi = new XinBi();
+            secondFenXing = fenXingList.get(index);
+            xinBi.setStartFenXing(firstFenXing);
+            xinBi.setEndFenXing(secondFenXing);
+            xinBi.setKSize(kLineSize(firstFenXing, secondFenXing));
+            xinBi.setBiRunTypeEnum(getBiRunTypeEnum(firstFenXing));
+            xinBi.setMaxPrice(getMaxPrice(firstFenXing, secondFenXing));
+            xinBi.setMinPrice(getMinPrice(firstFenXing, secondFenXing));
+            xinBiList.add(xinBi);
+            firstFenXing = secondFenXing;
+        }
+        return xinBiList;
+    }
+
+    /**
+     * 由分型得到笔
+     * 1.从第一个分型开始，到下一个分型之间是否具有5根K线
+     *
+     * @param fenXingList
+     * @return
+     */
+    public static List<XinBi> biHandle(List<FenXing> fenXingList) {
+        List<XinBi> xinBiSimpleHandle = biSimpleHandle(fenXingList);
+        List<XinBi> sequence = sequence(xinBiSimpleHandle);
+        List<Integer> zhuanZhe = zhuanZhe(sequence);
+        if(NullCheckUtils.isNotBlank(zhuanZhe)){
+            for (Integer zhuan : zhuanZhe) {
+                sequence.get(zhuan).setZhuanZhe(true);
+            }
+        }
+        return sequence;
+    }
+
+    /**
+     * @param biList
+     */
+    private static void dd(Linked<XinBi> biList) {
+        if (NullCheckUtils.isBlank(biList)) {
+            return;
+        }
+        int size = biList.getSize();
+        for (int index = 0; index < size; index++) {
+            Node<XinBi> node = biList.getNode(index);
+            XinBi xinBi = node.getData();
+            double maxPrice = xinBi.getMaxPrice();
+            double minPrice = xinBi.getMinPrice();
+            int kSize = xinBi.getKSize();
+            BiRunTypeEnum biRunTypeEnum = xinBi.getBiRunTypeEnum();
+            FenXing startFenXing = xinBi.getStartFenXing();
+            FenXing endFenXing = xinBi.getEndFenXing();
+            if (kSize >= BI_MIN_SIZE) {
+                Node<XinBi> next = node.getNext();
+                XinBi nextXinBi = next.getData();
+                int nextBiKSize = nextXinBi.getKSize();
+                if (nextBiKSize < BI_MIN_SIZE) {
+
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取偶数笔，偶数特征序列
+     *
+     * @param xinBiList biList
+     * @return List<Bi>
+     */
+    private static List<XinBi> getOuShu(List<XinBi> xinBiList) {
+        if (NullCheckUtils.isBlank(xinBiList)) {
+            return Collections.emptyList();
+        }
+        List<XinBi> ouShu = new ArrayList<>();
+        for (int i = 0; i < xinBiList.size(); i += 2) {
+            ouShu.add(xinBiList.get(i));
+        }
+        return ouShu;
+    }
+
+
+    private static BiRunTypeEnum getBiRunTypeEnum(FenXing firstFenXing) {
+        return FengXingTypeEnum.TOP == firstFenXing.getFenXingTypeEnum() ? BiRunTypeEnum.DOWN : BiRunTypeEnum.UP;
+    }
+
     /**
      * 由分型得到笔
      * 1.从第一个分型开始，到下一个分型之间是否具有5根K线
@@ -36,19 +138,155 @@ public class BiUtil {
      * @param containedKLineList
      * @return
      */
-    public static List<Bi> biSimpleHandle(List<FenXing> fenXingList, List<ContainedKLine> containedKLineList) {
+    public static List<XinBi> xx(List<FenXing> fenXingList, List<ContainedKLine> containedKLineList) {
         if (NullCheckUtils.isBlank(fenXingList) || NullCheckUtils.isBlank(containedKLineList)) {
             return Collections.emptyList();
         }
-        List<Bi> biList = new ArrayList<>();
+        int fenXingSize = fenXingList.size();
+        List<XinBi> xinBiList = new ArrayList<>();
+        XinBi firstXinBi = new XinBi();
+        XinBi secondXinBi = new XinBi();
         FenXing firstFenXing = fenXingList.get(0);
-        for (int index = 1; index < fenXingList.size(); index++) {
-            FenXing secondFenXing = fenXingList.get(index);
+        firstXinBi.setStartFenXing(firstFenXing);
+        FenXing secondFenXing;
+        FenXing thirdFenXing;
+        for (int index = 1; index < fenXingSize; ) {
+            secondFenXing = fenXingList.get(index);
             int kLineSize = kLineSize(firstFenXing, secondFenXing);
+            if (kLineSize >= BI_MIN_SIZE) {
+                firstXinBi.setEndFenXing(secondFenXing);
+                secondXinBi.setStartFenXing(secondFenXing);
 
+            } else {
+                if (index + 1 <= fenXingSize - 1) {
+                    boolean result = compareFenXing(firstFenXing, fenXingList.get(index + 1));
+                    if (result) {
+                        index = index + 1;
+                        continue;
+                    } else {
+                        firstFenXing = secondFenXing;
+                        firstXinBi.setStartFenXing(firstFenXing);
+                        index = index + 1;
+                        continue;
+                    }
+                }
+
+            }
+        }
+        return xinBiList;
+    }
+
+
+    private void xx(FenXing firstFenXing, FenXing secondFenXing, FenXing thirdFenXing, List<FenXing> fenXingList) {
+        if (NullCheckUtils.isBlank(fenXingList)) {
+            return;
+        }
+        // 第一个分型和第二个分型之间的K线数量，是否满5根
+        boolean firstAndSecond = false;
+        if (NullCheckUtils.isNotBlank(firstFenXing) && NullCheckUtils.isNotBlank(secondFenXing)) {
+            // 判断是否大于5根
+            int kLineSize = kLineSize(firstFenXing, secondFenXing);
+            firstAndSecond = kLineSize >= BI_MIN_SIZE;
+        }
+        // 第二个分型和第三个分型之间的K线数量，是否满5根
+        boolean secondAndThird = false;
+        if (NullCheckUtils.isNotBlank(secondFenXing) && NullCheckUtils.isNotBlank(thirdFenXing)) {
+            // 判断是否大于5根
+            int kLineSize = kLineSize(secondFenXing, thirdFenXing);
+            secondAndThird = kLineSize >= BI_MIN_SIZE;
         }
 
-        return biList;
+
+        int startIndex = 0;
+        int fenXingSize = fenXingList.size();
+        if (NullCheckUtils.isBlank(firstFenXing)) {
+            firstFenXing = fenXingList.get(startIndex);
+        }
+        for (int index = ++startIndex; index < fenXingSize; ) {
+            secondFenXing = fenXingList.get(index);
+            int kLineSize = kLineSize(firstFenXing, secondFenXing);
+            if (kLineSize >= BI_MIN_SIZE) {
+                xx(firstFenXing, secondFenXing, null, fenXingList.subList(index, fenXingSize - 1));
+            } else {
+                if (index + 1 <= fenXingSize - 1) {
+                    boolean result = compareFenXing(firstFenXing, fenXingList.get(index + 1));
+                    if (result) {
+                        index = index + 1;
+                        continue;
+                    } else {
+                        firstFenXing = secondFenXing;
+                        index = index + 1;
+                        continue;
+                    }
+                }
+
+            }
+        }
+        return;
+    }
+
+
+    private static Integer getNext(int startIndex, List<FenXing> fenXingList) {
+        if (NullCheckUtils.isBlank(fenXingList)) {
+            return null;
+        }
+
+        FenXing firstFenXing;
+        FenXing secondFenXing;
+        int fenXingSize = fenXingList.size();
+        firstFenXing = fenXingList.get(startIndex);
+        for (int index = ++startIndex; index < fenXingSize; ) {
+            secondFenXing = fenXingList.get(index);
+            int kLineSize = kLineSize(firstFenXing, secondFenXing);
+            if (kLineSize >= BI_MIN_SIZE) {
+                return index;
+            } else {
+                if (index + 1 <= fenXingSize - 1) {
+                    boolean result = compareFenXing(firstFenXing, fenXingList.get(index + 1));
+                    if (result) {
+                        index = index + 1;
+                        continue;
+                    } else {
+                        firstFenXing = secondFenXing;
+                        index = index + 1;
+                        continue;
+                    }
+                }
+
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 比较两个分型的高低，
+     * 顶分型比较最高点，前者高为true,后者高为false
+     * 低分型比较低高点，前者低为true,后者低为false
+     *
+     * @param firstFenXing  firstFenXing
+     * @param secondFenXing secondFenXing
+     * @return boolean
+     */
+    private static boolean compareFenXing(FenXing firstFenXing, FenXing secondFenXing) {
+        FengXingTypeEnum firstFengXingTypeEnum = firstFenXing.getFenXingTypeEnum();
+        FengXingTypeEnum secondFengXingTypeEnum = secondFenXing.getFenXingTypeEnum();
+        if (firstFengXingTypeEnum != secondFengXingTypeEnum) {
+            throw new RuntimeException();
+        }
+        boolean result = false;
+        switch (firstFengXingTypeEnum) {
+            case TOP:
+                result = firstFenXing.getMiddleLine().getMaxPrice() >= secondFenXing.getMiddleLine().getMaxPrice();
+                break;
+            case BOTTOM:
+                result = firstFenXing.getMiddleLine().getMinIndex() <= secondFenXing.getMiddleLine().getMinIndex();
+                break;
+            case NONE:
+                throw new RuntimeException();
+        }
+
+        return result;
     }
 
     /**
@@ -64,6 +302,29 @@ public class BiUtil {
         int firstEndIndex = firstEndLine.getEndIndex();
         int secondStartIndex = secondStartLine.getStartIndex();
         return 3 + secondStartIndex - firstEndIndex;
+    }
+
+    /**
+     * 获取最大值
+     *
+     * @param firstFenXing  firstFenXing
+     * @param secondFenXing secondFenXing
+     * @return int
+     */
+    private static double getMaxPrice(FenXing firstFenXing, FenXing secondFenXing) {
+        return Math.max(firstFenXing.getMaxPrice(), secondFenXing.getMaxPrice());
+    }
+
+    /**
+     * 获取最小值
+     *
+     * @param firstFenXing  firstFenXing
+     * @param secondFenXing secondFenXing
+     * @return int
+     */
+    private static double getMinPrice(FenXing firstFenXing, FenXing secondFenXing) {
+
+        return Math.min(firstFenXing.getMinPrice(), secondFenXing.getMinPrice());
     }
 
 
@@ -287,6 +548,101 @@ public class BiUtil {
 
 
         return handledSequence;
+    }
+
+    private static List<XinBi> sequence(List<XinBi> xinBiList) {
+        if (NullCheckUtils.isBlank(xinBiList)) {
+            return Collections.emptyList();
+        }
+        XinBi first = null;
+        XinBi second = null;
+        // 处理完包含之后的数据
+        List<XinBi> result = new ArrayList<>();
+        for (int index = 0; index < xinBiList.size(); index += 2) {
+            if (NullCheckUtils.isBlank(first)) {
+                first = xinBiList.get(index);
+                result.add(first);
+                continue;
+            }
+            second = xinBiList.get(index);
+            double minPrice = second.getMinPrice() - first.getMinPrice();
+            double maxPrice = second.getMaxPrice() - second.getMaxPrice();
+            if ((maxPrice > 0 && minPrice > 0) || (maxPrice > 0 && minPrice >= 0) || (maxPrice >= 0 && minPrice > 0)) {
+                // 向上
+                setBiRunType(second, result, BiRunTypeEnum.UP);
+                first = second;
+                second = null;
+                continue;
+            } else if ((maxPrice < 0 && minPrice < 0) || (maxPrice < 0 && minPrice <= 0) || (maxPrice <= 0 && minPrice < 0)) {
+                // 向下
+                setBiRunType(second, result, BiRunTypeEnum.DOWN);
+                first = second;
+                second = null;
+                continue;
+            } else {
+                // 包含
+                if (maxPrice >= 0) {
+                    // 说明second高
+                    setBiRunType(second, result, first.getBiRunTypeEnum());
+                    first = second;
+                    second = null;
+                } else {
+                    // 说明second低，忽略掉这个second
+                    result.add(second);
+                    second = null;
+                }
+            }
+        }
+
+        if (first != null) {
+            result.add(first);
+        }
+        if (second != null) {
+            result.add(second);
+        }
+        return result;
+    }
+
+
+    private static List<Integer> zhuanZhe(List<XinBi> xinBiList) {
+        if (NullCheckUtils.isBlank(xinBiList)) {
+            return Collections.emptyList();
+        }
+        List<Integer> zzd = new ArrayList<>();
+        //  trend,lastTrend 值一样说明方向没变,true=向上，false=向下
+        XinBi first = null;
+        XinBi second = null;
+        for (int index = 0; index < xinBiList.size(); index++) {
+            if (NullCheckUtils.isBlank(first)) {
+                first = xinBiList.get(index);
+                continue;
+            }
+            second = xinBiList.get(index);
+            BiRunTypeEnum firstBiRunTypeEnum = first.getBiRunTypeEnum();
+            BiRunTypeEnum secondBiRunTypeEnum = second.getBiRunTypeEnum();
+            if (firstBiRunTypeEnum != secondBiRunTypeEnum) {
+                zzd.add(index - 1);
+            }
+            first = second;
+        }
+        return zzd;
+    }
+
+    private static void setBiRunType(XinBi second, List<XinBi> list, BiRunTypeEnum biRunTypeEnum) {
+        second.setBiRunTypeEnum(biRunTypeEnum);
+        XinBi lastXinBi = getLastBi(list);
+        if (NullCheckUtils.isNotBlank(lastXinBi) && NullCheckUtils.isBlank(lastXinBi.getBiRunTypeEnum())) {
+            lastXinBi.setBiRunTypeEnum(biRunTypeEnum);
+        }
+        list.add(second);
+    }
+
+
+    private static XinBi getLastBi(List<XinBi> list) {
+        if (NullCheckUtils.isBlank(list)) {
+            return null;
+        }
+        return list.get(list.size() - 1);
     }
 
     /**

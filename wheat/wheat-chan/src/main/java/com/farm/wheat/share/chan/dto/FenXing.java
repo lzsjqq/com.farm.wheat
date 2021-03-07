@@ -18,7 +18,7 @@ public class FenXing {
     /**
      * 是否是分型
      */
-    private FengXingTypeEnum fengXingTypeEnum = FengXingTypeEnum.NONE;
+    private FengXingTypeEnum fenXingTypeEnum = FengXingTypeEnum.NONE;
     /**
      * 最高价
      */

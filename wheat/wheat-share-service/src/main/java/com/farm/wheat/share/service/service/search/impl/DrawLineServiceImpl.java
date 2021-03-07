@@ -6,6 +6,7 @@ import com.farm.common.utils.NullCheckUtils;
 import com.farm.wheat.common.utils.FileUtil;
 import com.farm.wheat.share.chan.dto.FenXing;
 import com.farm.wheat.share.chan.dto.KLine;
+import com.farm.wheat.share.chan.dto.XinBi;
 import com.farm.wheat.share.service.dto.DrawLineDTO;
 import com.farm.wheat.share.service.dto.SharePriceDto;
 import com.farm.wheat.share.service.mapper.simple.SharePriceMapper;
@@ -55,8 +56,9 @@ public class DrawLineServiceImpl implements IDrawLineService {
         data.setBaseData(convert(sharePrices));
 //        List<KLine> KLines = ChanLunUtil.buildLined(convertToKLine(sharePrices));
         List<KLine> kLines = convertToKLine(sharePrices);
-        List<FenXing> fenXingList = ChanLunUtil.buildFengXing(kLines);
-        ChanLunUtil.setKType(kLines, fenXingList);
+        List<XinBi> xinBiList = ChanLunUtil.buildBi(kLines);
+
+        ChanLunUtil.setKType(kLines, xinBiList);
         // 得到顶底分型
         List<String> priceType = ChanLunUtil.priceType(kLines);
         data.setPriceType(priceType);

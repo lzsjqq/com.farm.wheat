@@ -8,7 +8,6 @@ import com.farm.wheat.share.chan.util.RunTypeEnum;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @description: 分型处理
@@ -97,7 +96,7 @@ public class FenXingUtil {
                 fenXing.setEndLine(endLine);
                 fenXing.setMaxPrice(fengXingMaxPrice(startLine, middleLine, endLine));
                 fenXing.setMinPrice(fengXingMinPrice(startLine, middleLine, endLine));
-                fenXing.setFengXingTypeEnum(kType);
+                fenXing.setFenXingTypeEnum(kType);
                 fenXingList.add(fenXing);
             }
             startLine = middleLine;
@@ -105,7 +104,7 @@ public class FenXingUtil {
         }
         return fenXingList;
     }
-    
+
     /**
      * 顶分型定义：不含包含关系的3根K线，中间一根的高点最高，低点也最高；
      * 底分型定义：不含包含关系的3根K线，中间一根的低点最低，高点也最低；

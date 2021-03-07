@@ -12,15 +12,15 @@ import java.util.List;
  * @create: 2021-03-05 00:08
  */
 @Data
-public class Bi {
+public class XinBi {
     /**
      * 最高价
      */
-    private BigDecimal mxPrice;
+    private double maxPrice;
     /**
      * 最低价
      */
-    private BigDecimal minPrice;
+    private double minPrice;
 
     /**
      * 笔的运行方向，
@@ -44,5 +44,14 @@ public class Bi {
      */
     private FenXing endFenXing;
 
+    /**
+     * 分型之间K线的数量
+     */
+    private int kSize;
+
+    /**
+     * 是否是转折
+     */
+    private boolean isZhuanZhe;
 
 }
